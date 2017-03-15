@@ -20,9 +20,9 @@ public class Stick extends Entity implements ICollidable, IMovement {
 	}
 
 	@Override
-	public Vector2f getNextPosition(Vector2f oldposition, float stickSpeed, float StickOrientaion, int delta) {
+	public Vector2f getNextPosition(Vector2f arg0, float arg1, float arg2, int arg3) {
 		// TODO Auto-generated method stub
-		return null;
+		return arg0;
 	}
 
 	@Override

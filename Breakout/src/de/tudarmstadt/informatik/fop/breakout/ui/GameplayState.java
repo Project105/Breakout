@@ -11,10 +11,13 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
+import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
+import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
+import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 
 public class GameplayState extends BasicGameState implements GameParameters {
@@ -55,13 +58,32 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		
 		
 		
-		Entity stick= new Stick("stick"); 
+		Stick stick= new Stick(STICK_ID); 
 		stick.setPosition(new Vector2f(400,580));
-		
-	
-		stick.addComponent(new ImageRenderComponent(new Image("/images/stick.png")));
-		
+		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));	
 		entityManager.addEntity(GAMEPLAY_STATE, stick);
+		
+		Entity left = new Entity("left");
+		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
+		Action moveleft=new Action(){
+
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int delta, Component arg3) {
+				if(entityManager.getEntity(GAMEPLAY_STATE, STICK_ID) instanceof Stick){
+					Stick change =(Stick) entityManager.getEntity(GAMEPLAY_STATE, STICK_ID);
+					
+					change.setPosition(new Vector2f(change.getPosition().getX()-STICK_SPEED*delta,change.getPosition().getY()));
+				
+				}
+			}
+			
+			
+		};
+		leftDown.addAction(moveleft);
+		left.addComponent(leftDown);
+		entityManager.addEntity(idState, left);
+		
+		
 	}
 
 	@Override
