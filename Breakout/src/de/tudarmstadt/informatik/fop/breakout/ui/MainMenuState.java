@@ -38,7 +38,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		Entity background = new Entity("menu");
 		background.setPosition(new Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
 		background.addComponent(new ImageRenderComponent(new Image(BACK_IMAGE)));
-		entityManager.addEntity(MAINMENU_STATE, background);
+		entityManager.addEntity(idState, background);
 
 		// Buttons
 		/*
@@ -60,7 +60,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		// adding eventComponent
 		nGame.addComponent(nEvents);
 		// adding Entity in EntityManager
-		entityManager.addEntity(MAINMENU_STATE, nGame);
+		entityManager.addEntity(idState, nGame);
 		/*
 		 * unused Button0
 		 */
@@ -68,7 +68,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		high.setPosition(new Vector2f(218, 290));
 
 		high.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
-		entityManager.addEntity(MAINMENU_STATE, high);
+		entityManager.addEntity(idState, high);
 
 		/*
 		 * unused Button1
@@ -77,7 +77,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		credits.setPosition(new Vector2f(218, 390));
 
 		credits.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
-		entityManager.addEntity(MAINMENU_STATE, credits);
+		entityManager.addEntity(idState, credits);
 
 		/*
 		 * Exit Game Button, setting position, image, events and action
@@ -97,7 +97,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		// Adding eventComponent
 		exitGame.addComponent(exitEvents);
 		// adding entity in entityManager
-		entityManager.addEntity(MAINMENU_STATE, exitGame);
+		entityManager.addEntity(idState, exitGame);
 	}
 
 	@Override
