@@ -69,4 +69,13 @@ public interface GameParameters {
 
 	// Highscore
 	public static final String HIGHSCORE_FILE = "highscores/highscore.hsc";
+
+/*
+ * @Author Denis Andric
+ * 
+ * Parameters for States
+*/
+
+public static final String BACK_IMAGE = "/images/menu.png";
+public static final String ENTRY_IMAGE="/images/entry.png";
 }
