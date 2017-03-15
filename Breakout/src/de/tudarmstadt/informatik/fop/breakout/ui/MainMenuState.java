@@ -9,9 +9,13 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
+import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
+import eea.engine.event.ANDEvent;
+import eea.engine.event.basicevents.MouseClickedEvent;
+import eea.engine.event.basicevents.MouseEnteredEvent;
 /*
  * @Author Denis Andric
  */
@@ -45,15 +49,39 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		/*
 		 * New Game Button, setting position, image, events and action
 		 * 
-		 * On click need to go in GameplayState
+		 * On click need to go in GameplayState                           
 		 */
 		
 		Entity nGame =new Entity("New Game");
 		nGame.setPosition(new Vector2f(218,190));
 		
 		nGame.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
+		ANDEvent nEvents=new ANDEvent(new MouseEnteredEvent(),new MouseClickedEvent());
+		nEvents.addAction(new ChangeStateAction(GAMEPLAY_STATE));
+		nGame.addComponent(nEvents);
 		
 		entityManager.addEntity(MAINMENU_STATE, nGame);
+		/*
+		 * unused Button0
+		 */
+		Entity butt0 = new Entity("butt0");
+		butt0.setPosition(new Vector2f(218,290));
+		
+		butt0.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
+		entityManager.addEntity(MAINMENU_STATE, butt0);
+		
+		/*
+		 * unused Button1
+		 */
+		Entity butt1 = new Entity("butt1");
+		butt1.setPosition(new Vector2f(218,390));
+		
+		butt1.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
+		entityManager.addEntity(MAINMENU_STATE, butt1);
+		
+		
+		
+		
 		
 		/*
 		 * Exit Game Button, setting position, image, events and action
@@ -62,7 +90,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		 */
 		
 		Entity exitGame= new Entity("Exit Game");
-		exitGame.setPosition(new Vector2f(218,290));
+		exitGame.setPosition(new Vector2f(218,490));
 		exitGame.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
 		entityManager.addEntity(MAINMENU_STATE, exitGame);
 	}
