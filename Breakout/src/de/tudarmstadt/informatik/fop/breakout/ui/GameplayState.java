@@ -62,17 +62,22 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		
 		
 		Stick stick= new Stick(STICK_ID); 
+		//default Position
 		stick.setPosition(new Vector2f(400,580));
+		//adding image to entity
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));	
+		
+		//left Movment of stick
 		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
 		leftDown.addAction(new MoveLeftAction(STICK_SPEED));
 		stick.addComponent(leftDown);
 		
+		//Right Movment of stick
 		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
 		rightDown.addAction(new MoveRightAction(STICK_SPEED));
 		stick.addComponent(rightDown);
 		
-		entityManager.addEntity(GAMEPLAY_STATE, stick);
+		entityManager.addEntity(idState, stick);
 		
 	
 		
