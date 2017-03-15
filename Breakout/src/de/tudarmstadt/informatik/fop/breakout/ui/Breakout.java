@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
+import eea.engine.entity.StateBasedEntityManager;
 
 public class Breakout extends StateBasedGame implements GameParameters {
 
@@ -57,15 +58,15 @@ public class Breakout extends StateBasedGame implements GameParameters {
 
 		// Add the game states (the first added state will be started initially)
 	  // This may look as follows, assuming you use the associated class names and constants:
-	  /*
-	    addState(new MainMenuState(MAINMENU_STATE));
-		  addState(new GameplayState(GAMEPLAY_STATE));
-		  addState(new HighscoreState(HIGHSCORE_STATE));
+	  
+	      addState(new MainMenuState(MAINMENU_STATE));
+		//  addState(new GameplayState(GAMEPLAY_STATE));
+		//  addState(new HighscoreState(HIGHSCORE_STATE));
 
 		  // Add the states to the StateBasedEntityManager
 		  StateBasedEntityManager.getInstance().addState(MAINMENU_STATE);
-		  StateBasedEntityManager.getInstance().addState(GAMEPLAY_STATE);
-		  StateBasedEntityManager.getInstance().addState(HIGHSCORE_STATE);
-    */
+		 // StateBasedEntityManager.getInstance().addState(GAMEPLAY_STATE);
+		 // StateBasedEntityManager.getInstance().addState(HIGHSCORE_STATE);
+    
 	}
 }
