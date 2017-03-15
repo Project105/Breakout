@@ -24,11 +24,11 @@ import eea.engine.event.basicevents.MouseEnteredEvent;
 public class MainMenuState extends BasicGameState implements GameParameters {
 
 	private int idState;
-	
+	private StateBasedEntityManager entityManager;
 
 	public MainMenuState(int id) {
 		idState = id;
-		
+		entityManager = StateBasedEntityManager.getInstance();
 	}
 
 	@Override
