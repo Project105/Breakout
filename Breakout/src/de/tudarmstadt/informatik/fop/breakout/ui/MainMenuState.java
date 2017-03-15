@@ -46,48 +46,56 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		 * 
 		 * On click need to go in GameplayState
 		 */
-
+		// Setting up entity
 		Entity nGame = new Entity("New Game");
+		// Postion setting
 		nGame.setPosition(new Vector2f(218, 190));
-
+		// setting image
 		nGame.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
+		// Event- mouse relevant
 		ANDEvent nEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		// Action- going into GameplayState
 		nEvents.addAction(new ChangeStateInitAction(GAMEPLAY_STATE));
+		// adding eventComponent
 		nGame.addComponent(nEvents);
-
+		// adding Entity in EntityManager
 		entityManager.addEntity(MAINMENU_STATE, nGame);
 		/*
 		 * unused Button0
 		 */
-		Entity butt0 = new Entity("butt0");
-		butt0.setPosition(new Vector2f(218, 290));
+		Entity high = new Entity("Highscore");
+		high.setPosition(new Vector2f(218, 290));
 
-		butt0.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
-		entityManager.addEntity(MAINMENU_STATE, butt0);
+		high.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
+		entityManager.addEntity(MAINMENU_STATE, high);
 
 		/*
 		 * unused Button1
 		 */
-		Entity butt1 = new Entity("butt1");
-		butt1.setPosition(new Vector2f(218, 390));
+		Entity credits = new Entity("Credits");
+		credits.setPosition(new Vector2f(218, 390));
 
-		butt1.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
-		entityManager.addEntity(MAINMENU_STATE, butt1);
+		credits.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
+		entityManager.addEntity(MAINMENU_STATE, credits);
 
 		/*
 		 * Exit Game Button, setting position, image, events and action
 		 * 
 		 * On click need to close the game
 		 */
-
+		// Setting up entity
 		Entity exitGame = new Entity("Exit Game");
+		// setting position
 		exitGame.setPosition(new Vector2f(218, 490));
+		// setting image
 		exitGame.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
-
+		// Event- Mouse relevant
 		ANDEvent exitEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
-
+		// Adding Action - Quitting the game
 		exitEvents.addAction(new QuitAction());
+		// Adding eventComponent
 		exitGame.addComponent(exitEvents);
+		// adding entity in entityManager
 		entityManager.addEntity(MAINMENU_STATE, exitGame);
 	}
 
@@ -101,7 +109,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 	public void render(GameContainer gc, StateBasedGame sb, Graphics g) throws SlickException {
 		entityManager.renderEntities(gc, sb, g);
 		g.drawString("New Game", 190, 180);
-		g.drawString("Unused", 190, 280);
+		g.drawString("Highscore", 190, 280);
 		g.drawString("Credits", 190, 380);
 		g.drawString("Exit Game", 190, 480);
 
