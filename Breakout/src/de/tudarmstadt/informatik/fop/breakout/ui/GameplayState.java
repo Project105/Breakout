@@ -1,5 +1,8 @@
 package de.tudarmstadt.informatik.fop.breakout.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -21,14 +24,34 @@ import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 
+
+
+
+
 public class GameplayState extends BasicGameState implements GameParameters {
 	private int idState;
 	private StateBasedEntityManager entityManager;
-    boolean b;
+   
+    protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
 
 	public GameplayState(int ID) {
 		idState = ID;
 		entityManager = StateBasedEntityManager.getInstance();
+	}
+	public void makeBorderList(){
+		
+		borders.add(new BorderFactory(BorderType.LEFT));
+		borders.add(new BorderFactory(BorderType.RIGHT));
+		borders.add(new BorderFactory(BorderType.TOP));
+		
+		
+	}
+	public void BorderListToEntity(){
+		for(BorderFactory e :borders){
+			Entity border =e.createEntity();
+			entityManager.addEntity(idState, border);
+		}
+		
 	}
 
 	@Override
@@ -56,6 +79,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		escListener.addComponent(esc);
 		// adding entity in entityManager
 		entityManager.addEntity(idState, escListener);
+		
+		makeBorderList();
+		BorderListToEntity();
 
 		Stick stick = new Stick(STICK_ID);
 		// default Position
@@ -79,16 +105,13 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		
 		
 		
-		//To make borders -incomplete
-		BorderFactory border = new BorderFactory(BorderType.LEFT);
-		Entity leftBorder =border.createEntity();
-		b=leftBorder.collides(stick);//only for test purpose
+		
 		
 			
 		
 		
 		
-		entityManager.addEntity(idState, leftBorder);
+		
 		
 
 	}
@@ -96,14 +119,17 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
-		System.out.println(entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
-				.collides(entityManager.getEntity(GAMEPLAY_STATE, LEFT_BORDER_ID)));
-
+		
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		entityManager.renderEntities(gc, sbg, g);
+		g.drawString(""+entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
+				.collides(entityManager.getEntity(GAMEPLAY_STATE, LEFT_BORDER_ID)), 100, 100);
+		g.drawString(""+entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
+				.collides(entityManager.getEntity(GAMEPLAY_STATE, RIGHT_BORDER_ID)), 100, 125);
+		
 
 	}
 
