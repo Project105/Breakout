@@ -6,7 +6,7 @@ import eea.engine.entity.Entity;
 import eea.engine.interfaces.ICollidable;
 import eea.engine.interfaces.IMovement;
 
-public class Stick extends Entity implements ICollidable, IMovement {
+public class Stick extends Entity implements ICollidable {
 	
 	
 	
@@ -19,11 +19,7 @@ public class Stick extends Entity implements ICollidable, IMovement {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public Vector2f getNextPosition(Vector2f arg0, float arg1, float arg2, int arg3) {
-		// TODO Auto-generated method stub
-		return new Vector2f(arg0.getX()+arg1*arg3,arg0.getY());
-	}
+	
 
 	@Override
 	public boolean collides(float arg0, float arg1) {

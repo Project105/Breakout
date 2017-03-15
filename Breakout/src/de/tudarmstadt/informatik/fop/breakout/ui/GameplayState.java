@@ -13,6 +13,7 @@ import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
+import eea.engine.action.basicactions.MoveLeftAction;
 import eea.engine.action.basicactions.SetEntityPositionAction;
 import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
@@ -62,29 +63,19 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		Stick stick= new Stick(STICK_ID); 
 		stick.setPosition(new Vector2f(400,580));
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));	
+		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
+		leftDown.addAction(new MoveLeftAction(STICK_SPEED));
+		stick.addComponent(leftDown);
+		
 		entityManager.addEntity(GAMEPLAY_STATE, stick);
 		
-		Entity left = new Entity("left");
-		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
-		Action moveleft=new Action(){
-
-			@Override
-			public void update(GameContainer arg0, StateBasedGame arg1, int delta, Component arg3) {
-				if(entityManager.getEntity(GAMEPLAY_STATE, STICK_ID) instanceof Stick){
-					Stick change =(Stick) entityManager.getEntity(GAMEPLAY_STATE, STICK_ID);
-					
-					change.setPosition(change.getNextPosition(change.getPosition(), -STICK_SPEED, 0, delta));
-				
-				}
-			}
-			
-			
-		};
+	
 		
 		
-		leftDown.addAction(moveleft);
-		left.addComponent(leftDown);
-		entityManager.addEntity(idState, left);
+		
+		
+		
+		
 		
 		
 	}
@@ -92,6 +83,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
+		
+		
 
 	}
 
