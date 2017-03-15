@@ -14,6 +14,7 @@ import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.action.basicactions.MoveLeftAction;
+import eea.engine.action.basicactions.MoveRightAction;
 import eea.engine.action.basicactions.SetEntityPositionAction;
 import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
@@ -66,6 +67,10 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
 		leftDown.addAction(new MoveLeftAction(STICK_SPEED));
 		stick.addComponent(leftDown);
+		
+		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
+		rightDown.addAction(new MoveRightAction(STICK_SPEED));
+		stick.addComponent(rightDown);
 		
 		entityManager.addEntity(GAMEPLAY_STATE, stick);
 		
