@@ -18,8 +18,8 @@ public class Stick extends Entity implements ICollidable, IMovement {
 	@Override
 	public Vector2f getNextPosition(Vector2f arg0, float arg1, float arg2, int arg3) {
 		Vector2f vec = new Vector2f();
-		vec.set((float)(arg0.getX() + Math.sin(arg2/180*Math.PI) * arg1 * arg3), 
-		(float)(arg0.getY() + Math.cos(arg2/180*Math.PI) * arg1 * arg3));
+		// sets new x-component of the vector
+		vec.set((float)(arg0.getX() + Math.cos(arg2/180*Math.PI) * arg1 * arg3), arg0.getY());
 		return vec;
 	}
 
