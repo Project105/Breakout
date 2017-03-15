@@ -8,7 +8,8 @@ import eea.engine.interfaces.IMovement;
 
 public class Stick extends Entity implements ICollidable, IMovement {
 	
-	private String entityID = "Stick";
+	
+	
 	
 	public Stick(String entityID) {
 		super(entityID);
@@ -19,7 +20,7 @@ public class Stick extends Entity implements ICollidable, IMovement {
 	}
 
 	@Override
-	public Vector2f getNextPosition(Vector2f arg0, float arg1, float arg2, int arg3) {
+	public Vector2f getNextPosition(Vector2f oldposition, float stickSpeed, float StickOrientaion, int delta) {
 		// TODO Auto-generated method stub
 		return null;
 	}

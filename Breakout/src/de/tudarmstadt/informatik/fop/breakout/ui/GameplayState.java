@@ -10,6 +10,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
+import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
@@ -51,6 +52,16 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		escListener.addComponent(esc);
 		// adding entity in entityManager
 		entityManager.addEntity(idState, escListener);
+		
+		
+		
+		Entity stick= new Stick("stick"); 
+		stick.setPosition(new Vector2f(400,580));
+		
+	
+		stick.addComponent(new ImageRenderComponent(new Image("/images/stick.png")));
+		
+		entityManager.addEntity(GAMEPLAY_STATE, stick);
 	}
 
 	@Override
