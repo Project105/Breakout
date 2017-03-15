@@ -10,11 +10,11 @@ import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import eea.engine.entity.StateBasedEntityManager;
 
 public class GameplayState extends BasicGameState implements GameParameters {
-	private int id;
+	private int idState;
 	private  StateBasedEntityManager entityManager;
 	
 	public GameplayState(int ID){
-		id=ID;
+		idState=ID;
 		entityManager = StateBasedEntityManager.getInstance();
 	}
 
@@ -40,7 +40,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	@Override
 	public int getID() {
 		// TODO Auto-generated method stub
-		return id;
+		return idState;
 	}
 
 }
