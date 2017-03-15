@@ -13,6 +13,7 @@ import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
+import eea.engine.action.basicactions.SetEntityPositionAction;
 import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
@@ -72,13 +73,15 @@ public class GameplayState extends BasicGameState implements GameParameters {
 				if(entityManager.getEntity(GAMEPLAY_STATE, STICK_ID) instanceof Stick){
 					Stick change =(Stick) entityManager.getEntity(GAMEPLAY_STATE, STICK_ID);
 					
-					change.setPosition(new Vector2f(change.getPosition().getX()-STICK_SPEED*delta,change.getPosition().getY()));
+					change.setPosition(change.getNextPosition(change.getPosition(), -STICK_SPEED, 0, delta));
 				
 				}
 			}
 			
 			
 		};
+		
+		
 		leftDown.addAction(moveleft);
 		left.addComponent(leftDown);
 		entityManager.addEntity(idState, left);

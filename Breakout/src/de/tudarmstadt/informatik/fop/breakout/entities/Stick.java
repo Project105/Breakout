@@ -22,7 +22,7 @@ public class Stick extends Entity implements ICollidable, IMovement {
 	@Override
 	public Vector2f getNextPosition(Vector2f arg0, float arg1, float arg2, int arg3) {
 		// TODO Auto-generated method stub
-		return arg0;
+		return new Vector2f(arg0.getX()+arg1*arg3,arg0.getY());
 	}
 
 	@Override
