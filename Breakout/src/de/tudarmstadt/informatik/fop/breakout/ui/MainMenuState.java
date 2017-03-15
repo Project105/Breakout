@@ -27,7 +27,14 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 	
 	@Override
 	public void init(GameContainer sc, StateBasedGame sb) throws SlickException {
-		//Background Entity
+		
+	
+		
+		
+		
+		
+		
+		//Setting position and image for background entity
 		Entity background=new Entity("menu");
 		background.setPosition(new Vector2f(WINDOW_WIDTH/2,WINDOW_HEIGHT/2));
 		background.addComponent(new ImageRenderComponent(new Image(BACK_IMAGE)));
@@ -35,11 +42,29 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		
 		
 		//Buttons
+		/*
+		 * New Game Button, setting position, image, events and action
+		 * 
+		 * On click need to go in GameplayState
+		 */
+		
 		Entity nGame =new Entity("New Game");
 		nGame.setPosition(new Vector2f(218,190));
 		
 		nGame.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
+		
 		entityManager.addEntity(MAINMENU_STATE, nGame);
+		
+		/*
+		 * Exit Game Button, setting position, image, events and action
+		 * 
+		 * On click need to close the game
+		 */
+		
+		Entity exitGame= new Entity("Exit Game");
+		exitGame.setPosition(new Vector2f(218,290));
+		exitGame.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
+		entityManager.addEntity(MAINMENU_STATE, exitGame);
 	}
 
 	
