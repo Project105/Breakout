@@ -23,8 +23,8 @@ public class Stick extends Entity implements ICollidable {
 
 	@Override
 	public boolean collides(float arg0, float arg1) {
-		// TODO Auto-generated method stub
-		return false;
+		if(arg0==this.getPosition().getX()&&arg1==this.getPosition().getY())return true;
+		else return false;
 	}
 
 }

@@ -11,12 +11,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
-import eea.engine.action.Action;
+import de.tudarmstadt.informatik.fop.breakout.factories.BorderFactory;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.action.basicactions.MoveLeftAction;
 import eea.engine.action.basicactions.MoveRightAction;
-import eea.engine.action.basicactions.SetEntityPositionAction;
-import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
@@ -26,6 +24,7 @@ import eea.engine.event.basicevents.KeyPressedEvent;
 public class GameplayState extends BasicGameState implements GameParameters {
 	private int idState;
 	private StateBasedEntityManager entityManager;
+    boolean b;
 
 	public GameplayState(int ID) {
 		idState = ID;
@@ -43,8 +42,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		background.addComponent(new ImageRenderComponent(new Image(BACKGROUND_IMAGE)));
 		// adding entity to entityManager
 		entityManager.addEntity(idState, background);
-		
-		
+
 		/*
 		 * Escape function entity
 		 */
@@ -58,43 +56,48 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		escListener.addComponent(esc);
 		// adding entity in entityManager
 		entityManager.addEntity(idState, escListener);
+
+		Stick stick = new Stick(STICK_ID);
+		// default Position
+		stick.setPosition(new Vector2f(400, 580));
+		// adding image to entity
+		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 		
-		
-		
-		Stick stick= new Stick(STICK_ID); 
-		//default Position
-		stick.setPosition(new Vector2f(400,580));
-		//adding image to entity
-		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));	
-		
-		//left Movment of stick
+
+		// left Movement of stick
 		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
 		leftDown.addAction(new MoveLeftAction(STICK_SPEED));
 		stick.addComponent(leftDown);
-		
-		//Right Movment of stick
+
+		// Right Movement of stick
 		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
 		rightDown.addAction(new MoveRightAction(STICK_SPEED));
 		stick.addComponent(rightDown);
 		
+
 		entityManager.addEntity(idState, stick);
 		
-	
+		
+		
+		//To make borders -incomplete
+		BorderFactory border = new BorderFactory(BorderType.LEFT);
+		Entity leftBorder =border.createEntity();
+		b=leftBorder.collides(stick);//only for test purpose
+		
+			
 		
 		
 		
+		entityManager.addEntity(idState, leftBorder);
 		
-		
-		
-		
-		
+
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
-		
-		
+		System.out.println(entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
+				.collides(entityManager.getEntity(GAMEPLAY_STATE, LEFT_BORDER_ID)));
 
 	}
 
