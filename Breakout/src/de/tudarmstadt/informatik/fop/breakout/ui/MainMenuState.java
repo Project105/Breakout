@@ -10,6 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import eea.engine.action.basicactions.ChangeStateAction;
+import eea.engine.action.basicactions.QuitAction;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
@@ -92,6 +93,9 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		Entity exitGame= new Entity("Exit Game");
 		exitGame.setPosition(new Vector2f(218,490));
 		exitGame.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
+		ANDEvent exitEvents= new ANDEvent(new MouseEnteredEvent(),new MouseClickedEvent());
+		exitEvents.addAction(new QuitAction());
+		exitGame.addComponent(exitEvents);
 		entityManager.addEntity(MAINMENU_STATE, exitGame);
 	}
 
@@ -106,6 +110,8 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sb, Graphics g) throws SlickException {
 		entityManager.renderEntities(gc, sb, g);
+		g.drawString("New Game", 190, 180);
+		g.drawString("Exit Game",190,480);
 		
 	}
 
