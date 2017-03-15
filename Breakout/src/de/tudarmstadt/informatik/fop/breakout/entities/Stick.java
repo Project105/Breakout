@@ -7,21 +7,20 @@ import eea.engine.interfaces.ICollidable;
 import eea.engine.interfaces.IMovement;
 
 public class Stick extends Entity implements ICollidable, IMovement {
-	
-	private String entityID = "Stick";
-	
+
 	public Stick(String entityID) {
 		super(entityID);
 		setPassable(false);
 		setSize(null);
 		setVisible(true);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public Vector2f getNextPosition(Vector2f arg0, float arg1, float arg2, int arg3) {
-		// TODO Auto-generated method stub
-		return null;
+		Vector2f vec = new Vector2f();
+		vec.set((float)(arg0.getX() + Math.sin(arg2/180*Math.PI) * arg1 * arg3), 
+		(float)(arg0.getY() + Math.cos(arg2/180*Math.PI) * arg1 * arg3));
+		return vec;
 	}
 
 	@Override
