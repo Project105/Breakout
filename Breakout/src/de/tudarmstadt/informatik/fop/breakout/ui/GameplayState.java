@@ -26,42 +26,40 @@ import eea.engine.event.Event;
 import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 
-
-
-
 /*
  * @Author Denis Andric
  */
 public class GameplayState extends BasicGameState implements GameParameters {
 	private int idState;
 	private StateBasedEntityManager entityManager;
-   
-    protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
+
+	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
 
 	public GameplayState(int ID) {
 		idState = ID;
 		entityManager = StateBasedEntityManager.getInstance();
 	}
-	public void makeBorderList(){
-		
+
+	public void makeBorderList() {
+
 		borders.add(new BorderFactory(BorderType.LEFT));
 		borders.add(new BorderFactory(BorderType.RIGHT));
 		borders.add(new BorderFactory(BorderType.TOP));
-		
-		
 	}
-	public void BorderListToEntity(){
-		for(BorderFactory e :borders){
-			Entity border =e.createEntity();
+
+	public void BorderListToEntity() {
+		for (BorderFactory e : borders) {
+			Entity border = e.createEntity();
 			entityManager.addEntity(idState, border);
 		}
-		
+
 	}
-	protected boolean colideLeftBorder(Entity object){
+
+	protected boolean colideLeftBorder(Entity object) {
 		return !object.collides(entityManager.getEntity(GAMEPLAY_STATE, LEFT_BORDER_ID));
 	}
-	
-	protected boolean colideRightBorder(Entity object){
+
+	protected boolean colideRightBorder(Entity object) {
 		return !object.collides(entityManager.getEntity(GAMEPLAY_STATE, RIGHT_BORDER_ID));
 	}
 
@@ -90,7 +88,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		escListener.addComponent(esc);
 		// adding entity in entityManager
 		entityManager.addEntity(idState, escListener);
-		
+
 		makeBorderList();
 		BorderListToEntity();
 
@@ -99,18 +97,16 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		stick.setPosition(new Vector2f(400, 580));
 		// adding image to entity
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
-		
-		
 
 		// left Movement of stick
-		Event borderTouchLeft= new Event("leftBorderColide"){
+		Event borderTouchLeft = new Event("leftBorderColide") {
 
 			@Override
 			protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
-				
+
 				return colideLeftBorder(stick);
 			}
-			
+
 		};
 		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
 		ANDEvent moveLeftFree = new ANDEvent(leftDown, borderTouchLeft);
@@ -118,58 +114,44 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		stick.addComponent(moveLeftFree);
 
 		// Right Movement of stick
-		Event borderTouchRight= new Event("rightBorderColide"){
+		Event borderTouchRight = new Event("rightBorderColide") {
 
 			@Override
 			protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
-				
+
 				return colideRightBorder(stick);
 			}
-			
+
 		};
 		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
-		ANDEvent moveRightFree= new ANDEvent(borderTouchRight, rightDown);
+		ANDEvent moveRightFree = new ANDEvent(borderTouchRight, rightDown);
 		moveRightFree.addAction(new MoveRightAction(STICK_SPEED));
 		stick.addComponent(moveRightFree);
-		
 
 		entityManager.addEntity(idState, stick);
-		
-		
-		
-		
-		
-			
-		
-		
-		
-		
-		
 
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
-		
+
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		entityManager.renderEntities(gc, sbg, g);
-		g.drawString(""+entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
+		g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
 				.collides(entityManager.getEntity(GAMEPLAY_STATE, LEFT_BORDER_ID)), 100, 100);
-		g.drawString(""+entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
+		g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
 				.collides(entityManager.getEntity(GAMEPLAY_STATE, RIGHT_BORDER_ID)), 100, 125);
-		g.drawString(""+entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getPosition().getX(), 100, 150);
-		g.drawString(""+entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getSize().getX(), 100, 175);
-		
+		g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getPosition().getX(), 100, 150);
+		g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getSize().getX(), 100, 175);
 
 	}
 
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
 		return idState;
 	}
 

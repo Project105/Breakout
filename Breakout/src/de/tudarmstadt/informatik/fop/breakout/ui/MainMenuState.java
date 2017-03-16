@@ -7,7 +7,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import eea.engine.action.basicactions.ChangeStateInitAction;
 import eea.engine.action.basicactions.QuitAction;
@@ -34,17 +33,17 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 	@Override
 	public void init(GameContainer sc, StateBasedGame sb) throws SlickException {
 
-		// Setting position and image for background entity
+		/**
+		 =============== =============== SCREEN BACKGROUND SETUP =============== ===============
+		 **/
 		Entity background = new Entity("menu");
 		background.setPosition(new Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
 		background.addComponent(new ImageRenderComponent(new Image(BACK_IMAGE)));
 		entityManager.addEntity(idState, background);
 
-		/*
+		/**
 		 =============== =============== =============== BUTTONS  =============== =============== ===============
-		 */
-		
-		
+		 **/
 		
 		/*
 		 =============== =============== NEW GAME BUTTON  =============== ===============
@@ -70,8 +69,6 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		// adding Entity in EntityManager
 		entityManager.addEntity(idState, nGame);
 
-		
-		
 		/*
 		 =============== =============== HIGHSCORE BUTTON  =============== ===============
 		 */
@@ -86,12 +83,8 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		// adding Entity in EntityManager
 		entityManager.addEntity(idState, high);
 
-		
-		
-		
-		
 		/*
-		 * unused Button1
+		 =============== =============== CREDITS BUTTON  =============== ===============
 		 */
 		Entity credits = new Entity("Credits");
 		credits.setPosition(new Vector2f(218, 390));
@@ -99,6 +92,9 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		credits.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
 		entityManager.addEntity(idState, credits);
 
+		/*
+		 =============== =============== EXIT GAME BUTTON  =============== ===============
+		 */
 		/*
 		 * Exit Game Button, setting position, image, events and action
 		 * 
@@ -118,6 +114,12 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		exitGame.addComponent(exitEvents);
 		// adding entity in entityManager
 		entityManager.addEntity(idState, exitGame);
+		
+		/**
+		 =============== =============== IO Operations =============== ===============
+		 **/
+		//TODO add check for highscore file
+		
 	}
 
 	@Override
@@ -138,7 +140,6 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
 		return idState;
 	}
 

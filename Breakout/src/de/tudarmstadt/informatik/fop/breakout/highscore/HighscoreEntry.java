@@ -43,11 +43,11 @@ public class HighscoreEntry implements IHighscoreEntry {
 		return points;
 	}
 	
-	@Override
+	/*@Override
 	public String toString() {
 		// different values separated by ";" and different entries separated by ":"
 		return(playerName + ";" + numberOfDestroyedBlocks + ";" + elapsedTime + ";" + points + ":");
-	}
+	}*/
 	
 	/**
 	 * @param he the highscore entry to compare to
