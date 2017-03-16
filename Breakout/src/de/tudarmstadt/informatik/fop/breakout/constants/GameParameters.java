@@ -75,7 +75,7 @@ public interface GameParameters {
  * 
  * Parameters for States
 */
-
+//MainMenuState
 public static final String BACK_IMAGE = "/images/menu.png";
 public static final String ENTRY_IMAGE="/images/entry.png";
 }

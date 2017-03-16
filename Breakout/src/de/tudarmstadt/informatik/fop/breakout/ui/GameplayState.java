@@ -1,46 +1,142 @@
 package de.tudarmstadt.informatik.fop.breakout.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
+import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
+import de.tudarmstadt.informatik.fop.breakout.factories.BorderFactory;
+import eea.engine.action.basicactions.ChangeStateAction;
+import eea.engine.action.basicactions.MoveLeftAction;
+import eea.engine.action.basicactions.MoveRightAction;
+import eea.engine.component.render.ImageRenderComponent;
+import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
+import eea.engine.event.basicevents.KeyDownEvent;
+import eea.engine.event.basicevents.KeyPressedEvent;
+
+
+
+
 
 public class GameplayState extends BasicGameState implements GameParameters {
-	private int id;
-	private  StateBasedEntityManager entityManager;
-	
-	public GameplayState(int ID){
-		id=ID;
+	private int idState;
+	private StateBasedEntityManager entityManager;
+   
+    protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
+
+	public GameplayState(int ID) {
+		idState = ID;
 		entityManager = StateBasedEntityManager.getInstance();
+	}
+	public void makeBorderList(){
+		
+		borders.add(new BorderFactory(BorderType.LEFT));
+		borders.add(new BorderFactory(BorderType.RIGHT));
+		borders.add(new BorderFactory(BorderType.TOP));
+		
+		
+	}
+	public void BorderListToEntity(){
+		for(BorderFactory e :borders){
+			Entity border =e.createEntity();
+			entityManager.addEntity(idState, border);
+		}
+		
 	}
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		// TODO Auto-generated method stub
+
+		// Setting up background entity
+		Entity background = new Entity(BACKGROUND_ID);
+		// setting up position
+		background.setPosition(new Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
+		// adding image to entity
+		background.addComponent(new ImageRenderComponent(new Image(BACKGROUND_IMAGE)));
+		// adding entity to entityManager
+		entityManager.addEntity(idState, background);
+
+		/*
+		 * Escape function entity
+		 */
+		// Setting up entity
+		Entity escListener = new Entity("ESC_Listener");
+		// Event if is Escape pressed
+		KeyPressedEvent esc = new KeyPressedEvent(Input.KEY_ESCAPE);
+		// Action switch states if esc pressed
+		esc.addAction(new ChangeStateAction(MAINMENU_STATE));
+		// adding EventComponent in entity
+		escListener.addComponent(esc);
+		// adding entity in entityManager
+		entityManager.addEntity(idState, escListener);
 		
+		makeBorderList();
+		BorderListToEntity();
+
+		Stick stick = new Stick(STICK_ID);
+		// default Position
+		stick.setPosition(new Vector2f(400, 580));
+		// adding image to entity
+		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
+		
+
+		// left Movement of stick
+		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
+		leftDown.addAction(new MoveLeftAction(STICK_SPEED));
+		stick.addComponent(leftDown);
+
+		// Right Movement of stick
+		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
+		rightDown.addAction(new MoveRightAction(STICK_SPEED));
+		stick.addComponent(rightDown);
+		
+
+		entityManager.addEntity(idState, stick);
+		
+		
+		
+		
+		
+			
+		
+		
+		
+		
+		
+
 	}
+
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		// TODO Auto-generated method stub
+		entityManager.updateEntities(gc, sbg, delta);
 		
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		// TODO Auto-generated method stub
+		entityManager.renderEntities(gc, sbg, g);
+		g.drawString(""+entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
+				.collides(entityManager.getEntity(GAMEPLAY_STATE, LEFT_BORDER_ID)), 100, 100);
+		g.drawString(""+entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
+				.collides(entityManager.getEntity(GAMEPLAY_STATE, RIGHT_BORDER_ID)), 100, 125);
 		
-	}
 
-	
+	}
 
 	@Override
 	public int getID() {
 		// TODO Auto-generated method stub
-		return id;
+		return idState;
 	}
 
 }
