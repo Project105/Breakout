@@ -117,8 +117,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		
 		
 		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
-		moveLeftFree.addAction(new MoveLeftAction(STICK_SPEED));
-		stick.addComponent(moveLeftFree);
+		//moveLeftFree.addAction(new MoveLeftAction(STICK_SPEED));
+		//stick.addComponent(moveLeftFree);
 
 		// Right Movement of stick
 
@@ -153,7 +153,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		Ball ball = new Ball(BALL_ID);
 		ball.setPosition(new Vector2f(100,100));
 		ball.setRotation(90);
-		ball.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
+		ball.addComponent(new ImageRenderComponent(new Image(BALL_IMAGE)));
 		ball.addComponent(movementBall);
 		entityManager.addEntity(idState, ball);
 		
