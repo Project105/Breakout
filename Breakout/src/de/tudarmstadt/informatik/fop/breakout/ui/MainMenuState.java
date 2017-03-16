@@ -40,8 +40,16 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		background.addComponent(new ImageRenderComponent(new Image(BACK_IMAGE)));
 		entityManager.addEntity(idState, background);
 
-		// Buttons
 		/*
+		 =============== =============== =============== BUTTONS  =============== =============== ===============
+		 */
+		
+		
+		
+		/*
+		 =============== =============== NEW GAME BUTTON  =============== ===============
+		 *
+		 *
 		 * New Game Button, setting position, image, events and action
 		 * 
 		 * On click need to go in GameplayState
@@ -53,7 +61,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		// setting image
 		nGame.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
 		// Event- mouse relevant
-		
+
 		ANDEvent nEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		// Action- going into GameplayState
 		nEvents.addAction(new ChangeStateInitAction(GAMEPLAY_STATE));
@@ -61,15 +69,27 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		nGame.addComponent(nEvents);
 		// adding Entity in EntityManager
 		entityManager.addEntity(idState, nGame);
+
+		
+		
 		/*
-		 * unused Button0
+		 =============== =============== HIGHSCORE BUTTON  =============== ===============
 		 */
 		Entity high = new Entity("Highscore");
 		high.setPosition(new Vector2f(218, 290));
-
 		high.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
+		ANDEvent andEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		// Action- going into Highscore State
+		andEvents.addAction(new ChangeStateInitAction(HIGHSCORE_STATE));
+		// adding eventComponent
+		high.addComponent(andEvents);
+		// adding Entity in EntityManager
 		entityManager.addEntity(idState, high);
 
+		
+		
+		
+		
 		/*
 		 * unused Button1
 		 */

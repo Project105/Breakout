@@ -29,7 +29,9 @@ import eea.engine.event.basicevents.KeyPressedEvent;
 
 
 
-
+/*
+ * @Author Denis Andric
+ */
 public class GameplayState extends BasicGameState implements GameParameters {
 	private int idState;
 	private StateBasedEntityManager entityManager;
