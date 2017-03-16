@@ -17,6 +17,8 @@ import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchLeftBorder;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchRightBorder;
+import de.tudarmstadt.informatik.fop.breakout.events.TouchStick;
+import de.tudarmstadt.informatik.fop.breakout.events.TouchTopBorder;
 import de.tudarmstadt.informatik.fop.breakout.factories.BorderFactory;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
@@ -133,7 +135,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		Stick stick = new Stick(STICK_ID);
 		// default Position
 		stick.setPosition(new Vector2f(400, 580));
-		stick.setRotation(45);
+		
 		// adding image to entity
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 
@@ -202,10 +204,47 @@ public class GameplayState extends BasicGameState implements GameParameters {
 			
 		});
 		
-		TouchLeftBorder touchleft= new TouchLeftBorder("balltouchleft");
+		TouchLeftBorder touchLeft= new TouchLeftBorder("balltouchleft");
+		touchLeft.addAction(new Action(){
+
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+				moving.removeAction(moveLeft);
+				moving.addAction(moveRight);
+				
+			}
+			
+		});
+		
+		TouchTopBorder touchTop= new TouchTopBorder("balltouchtop");
+		touchTop.addAction(new Action(){
+
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+				moving.removeAction(moveUp);
+				moving.addAction(moveDown);
+				
+			}
+			
+		});
+		TouchStick stickCollisionEvent = new TouchStick("balltouchstick");
+		stickCollisionEvent.addAction(new Action(){
+
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+				moving.removeAction(moveDown);
+				moving.addAction(moveUp);
+				
+			}
+			
+		});
 	
 		ball.addComponent(moving);
 		ball.addComponent(touchRight);
+		ball.addComponent(touchLeft);
+		ball.addComponent(touchTop);
+		ball.addComponent(stickCollisionEvent);
+		
 		entityManager.addEntity(idState, ball);
 		
 		
