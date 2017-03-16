@@ -13,6 +13,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
+import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchLeftBorder;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchRightBorder;
@@ -20,12 +21,14 @@ import de.tudarmstadt.informatik.fop.breakout.factories.BorderFactory;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.action.basicactions.MoveLeftAction;
 import eea.engine.action.basicactions.MoveRightAction;
+import eea.engine.action.basicactions.Movement;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
+import eea.engine.event.basicevents.LoopEvent;
 
 /*
  * @Author Denis Andric
@@ -34,10 +37,25 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private int idState;
 	private StateBasedEntityManager entityManager;
 	private boolean GameWin = false;
+	private int lives=5;
+	
+	public void setLives(int lives){
+		this.lives=lives;
+	}
+	public int getLives(){
+		return lives;
+	}
+	public int addLives(int lives){
+	return	this.lives=lives;
+	}
+	
 
 	public boolean getGameWin() {
 		return GameWin;
 	}
+	
+	
+	
 	public StateBasedEntityManager getEntityManager(){
 		return entityManager;
 	}
@@ -123,6 +141,31 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		stick.addComponent(moveRightFree);
 
 		entityManager.addEntity(idState, stick);
+		//Dirk und Felix 
+		LoopEvent movementBall = new LoopEvent();
+		movementBall.addAction(new Movement(INITIAL_BALL_SPEED) {
+			
+			@Override
+			public Vector2f getNextPosition(Vector2f pos, float speed, float rotation, int delta) {
+				
+				float deplacement = speed*delta;
+				//Vector2f result = new Vector2f(pos.getX()+deplacement,pos.getY()+deplacement);
+				Vector2f result = new Vector2f((float)(pos.getX() + deplacement * Math.sin((rotation/180)*Math.PI)),
+						(float)(pos.getY() + deplacement * Math.cos((rotation/180)*Math.PI)));
+				return result;
+			}
+		});
+		
+		
+
+		
+		Ball ball = new Ball(BALL_ID);
+		ball.setPosition(new Vector2f(100,100));
+		ball.setRotation(90);
+		ball.addComponent(new ImageRenderComponent(new Image(BALL_IMAGE)));
+		ball.addComponent(movementBall);
+		entityManager.addEntity(idState, ball);
+		
 
 	}
 
