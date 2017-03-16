@@ -21,6 +21,8 @@ import eea.engine.action.basicactions.MoveRightAction;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
+import eea.engine.event.ANDEvent;
+import eea.engine.event.Event;
 import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 
@@ -53,9 +55,12 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		}
 		
 	}
-	protected boolean colideleft(Entity stick,Entity leftBorder){
-		if(stick.collides(leftBorder)) return false;
-		else return true;
+	protected boolean colideLeftBorder(Entity object){
+		return !object.collides(entityManager.getEntity(GAMEPLAY_STATE, LEFT_BORDER_ID));
+	}
+	
+	protected boolean colideRightBorder(Entity object){
+		return !object.collides(entityManager.getEntity(GAMEPLAY_STATE, RIGHT_BORDER_ID));
 	}
 
 	@Override
@@ -96,14 +101,34 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		
 
 		// left Movement of stick
+		Event borderTouchLeft= new Event("leftBorderColide"){
+
+			@Override
+			protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
+				
+				return colideLeftBorder(stick);
+			}
+			
+		};
 		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
-		leftDown.addAction(new MoveLeftAction(STICK_SPEED));
-		stick.addComponent(leftDown);
+		ANDEvent moveLeftFree = new ANDEvent(leftDown, borderTouchLeft);
+		moveLeftFree.addAction(new MoveLeftAction(STICK_SPEED));
+		stick.addComponent(moveLeftFree);
 
 		// Right Movement of stick
+		Event borderTouchRight= new Event("rightBorderColide"){
+
+			@Override
+			protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
+				
+				return colideRightBorder(stick);
+			}
+			
+		};
 		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
-		rightDown.addAction(new MoveRightAction(STICK_SPEED));
-		stick.addComponent(rightDown);
+		ANDEvent moveRightFree= new ANDEvent(borderTouchRight, rightDown);
+		moveRightFree.addAction(new MoveRightAction(STICK_SPEED));
+		stick.addComponent(moveRightFree);
 		
 
 		entityManager.addEntity(idState, stick);
@@ -134,6 +159,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 				.collides(entityManager.getEntity(GAMEPLAY_STATE, LEFT_BORDER_ID)), 100, 100);
 		g.drawString(""+entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
 				.collides(entityManager.getEntity(GAMEPLAY_STATE, RIGHT_BORDER_ID)), 100, 125);
+		g.drawString(""+entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getPosition().getX(), 100, 150);
+		g.drawString(""+entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getSize().getX(), 100, 175);
 		
 
 	}
