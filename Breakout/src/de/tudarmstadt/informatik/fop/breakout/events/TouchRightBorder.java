@@ -13,13 +13,13 @@ public class TouchRightBorder extends Event implements GameParameters {
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
-	
 	GameplayState a= new GameplayState(GAMEPLAY_STATE);
 
 	@Override
 	protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
 		// TODO Auto-generated method stub
-		return a.colideRightBorder(getOwnerEntity());
+		
+		return !a.getEntityManager().getEntity(arg1.getCurrentStateID(), RIGHT_BORDER_ID).collides(getOwnerEntity());
 	}
 
 }

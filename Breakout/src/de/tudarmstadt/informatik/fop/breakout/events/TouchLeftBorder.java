@@ -13,12 +13,12 @@ public class TouchLeftBorder extends Event implements GameParameters {
 		// TODO Auto-generated constructor stub
 	}
 
-	GameplayState game = new GameplayState(GAMEPLAY_STATE);
+	GameplayState a = new GameplayState(GAMEPLAY_STATE);
 
 	@Override
 	protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
 		
-		return game.colideLeftBorder(getOwnerEntity());
+		return !a.getEntityManager().getEntity(arg1.getCurrentStateID(), LEFT_BORDER_ID).collides(getOwnerEntity());
 	}
 
 }

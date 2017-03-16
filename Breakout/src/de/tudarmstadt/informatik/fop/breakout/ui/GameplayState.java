@@ -38,6 +38,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	public boolean getGameWin() {
 		return GameWin;
 	}
+	public StateBasedEntityManager getEntityManager(){
+		return entityManager;
+	}
 
 	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
 
@@ -45,7 +48,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		idState = ID;
 		entityManager = StateBasedEntityManager.getInstance();
 	}
-
+/*
+ * BorderFactory to List
+ */
 	public void makeBorderList() {
 
 		borders.add(new BorderFactory(BorderType.LEFT));
@@ -53,7 +58,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		borders.add(new BorderFactory(BorderType.TOP));
 
 	}
-
+/**
+ * 
+ */
 	public void BorderListToEntity() {
 		for (BorderFactory e : borders) {
 			Entity border = e.createEntity();
@@ -62,13 +69,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	}
 
-	public boolean colideLeftBorder(Entity object) {
-		return !object.collides(entityManager.getEntity(GAMEPLAY_STATE, LEFT_BORDER_ID));
-	}
-
-	public boolean colideRightBorder(Entity object) {
-		return !object.collides(entityManager.getEntity(GAMEPLAY_STATE, RIGHT_BORDER_ID));
-	}
+	
+	
+	
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
