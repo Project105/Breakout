@@ -18,10 +18,15 @@ import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchLeftBorder;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchRightBorder;
 import de.tudarmstadt.informatik.fop.breakout.factories.BorderFactory;
+import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
+import eea.engine.action.basicactions.MoveDownAction;
 import eea.engine.action.basicactions.MoveLeftAction;
 import eea.engine.action.basicactions.MoveRightAction;
+import eea.engine.action.basicactions.MoveUpAction;
 import eea.engine.action.basicactions.Movement;
+import eea.engine.action.basicactions.RemoveEventAction;
+import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
@@ -39,6 +44,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private StateBasedEntityManager entityManager;
 	private boolean GameWin = false;
 	private int lives=5;
+	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
 	
 	public void setLives(int lives){
 		this.lives=lives;
@@ -60,8 +66,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	public StateBasedEntityManager getEntityManager(){
 		return entityManager;
 	}
+	public float getStickPosition(){
+		return entityManager.getEntity(idState, STICK_ID).getPosition().getX();
+	}
 
-	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
+	
 
 	public GameplayState(int ID) {
 		idState = ID;
@@ -124,6 +133,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		Stick stick = new Stick(STICK_ID);
 		// default Position
 		stick.setPosition(new Vector2f(400, 580));
+		stick.setRotation(45);
 		// adding image to entity
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 
@@ -142,7 +152,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		stick.addComponent(moveRightFree);
 
 		entityManager.addEntity(idState, stick);
-		
+		/*
 		//Dirk und Felix 
 		LoopEvent movementBall = new LoopEvent();
 		movementBall.addAction(new Movement(INITIAL_BALL_SPEED) {
@@ -167,6 +177,37 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		ball.addComponent(new ImageRenderComponent(new Image(BALL_IMAGE)));
 		ball.addComponent(movementBall);
 		entityManager.addEntity(idState, ball);
+		*/
+		Ball ball = new Ball(BALL_ID);
+		ball.setPosition(new Vector2f(700,400));
+		ball.addComponent(new ImageRenderComponent(new Image(BALL_IMAGE)));
+		
+		LoopEvent moving =new LoopEvent();
+		Action moveRight= new MoveRightAction(INITIAL_BALL_SPEED);
+		moving.addAction(moveRight);
+		Action moveUp = new MoveUpAction(INITIAL_BALL_SPEED);
+		moving.addAction(moveUp);
+		Action moveDown = new MoveDownAction(INITIAL_BALL_SPEED);
+		Action moveLeft = new MoveLeftAction(INITIAL_BALL_SPEED);
+		
+		TouchRightBorder touchRight=new TouchRightBorder("balltouchright");
+		touchRight.addAction(new Action(){
+
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+				moving.removeAction(moveRight);
+				moving.addAction(moveLeft);
+				
+			}
+			
+		});
+		
+		TouchLeftBorder touchleft= new TouchLeftBorder("balltouchleft");
+	
+		ball.addComponent(moving);
+		ball.addComponent(touchRight);
+		entityManager.addEntity(idState, ball);
+		
 		
 
 	}

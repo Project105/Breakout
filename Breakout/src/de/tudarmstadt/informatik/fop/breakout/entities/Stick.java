@@ -16,7 +16,7 @@ public class Stick extends Entity implements ICollidable {
 		// TODO Auto-generated constructor stub
 	}
 
-	
+
 
 	@Override
 	public boolean collides(float arg0, float arg1) {

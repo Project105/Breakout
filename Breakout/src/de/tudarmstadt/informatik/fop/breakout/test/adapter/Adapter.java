@@ -66,7 +66,8 @@ public class Adapter implements GameParameters {
 
     // Initialize the game in debug mode (no GUI output)
 		breakout = new Breakout(true);
-
+		
+		
 		try {
 			app = new TestAppGameContainer(breakout);
 			app.start(0);

@@ -9,13 +9,16 @@ public class Ball extends Entity implements IMovement {
 
 	public Ball(String entityID) {
 		super(entityID);
-		
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public Vector2f getNextPosition(Vector2f position, float speed, float angle, int delta) {
+	public Vector2f getNextPosition(Vector2f arg0, float arg1, float arg2, int arg3) {
 		
 		return null;
 	}
+	
+	
+
 
 }
