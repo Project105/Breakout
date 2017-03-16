@@ -53,6 +53,10 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		}
 		
 	}
+	protected boolean colideleft(Entity stick,Entity leftBorder){
+		if(stick.collides(leftBorder)) return false;
+		else return true;
+	}
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -88,6 +92,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		stick.setPosition(new Vector2f(400, 580));
 		// adding image to entity
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
+		
 		
 
 		// left Movement of stick
