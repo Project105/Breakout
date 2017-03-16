@@ -13,11 +13,13 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
+import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import de.tudarmstadt.informatik.fop.breakout.factories.BorderFactory;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.action.basicactions.MoveLeftAction;
 import eea.engine.action.basicactions.MoveRightAction;
+import eea.engine.action.basicactions.Movement;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
@@ -25,6 +27,7 @@ import eea.engine.event.ANDEvent;
 import eea.engine.event.Event;
 import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
+import eea.engine.event.basicevents.LoopEvent;
 
 
 
@@ -101,7 +104,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		
 
 		// left Movement of stick
-		Event borderTouchLeft= new Event("leftBorderColide"){
+		Event borderTouchLeft= new Event("leftBorderTouch"){
 
 			@Override
 			protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
@@ -116,7 +119,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		stick.addComponent(moveLeftFree);
 
 		// Right Movement of stick
-		Event borderTouchRight= new Event("rightBorderColide"){
+		Event borderTouchRight= new Event("rightBorderTouch"){
 
 			@Override
 			protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
@@ -133,17 +136,30 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 		entityManager.addEntity(idState, stick);
 		
-		
-		
-		
-		
+		LoopEvent movementBall = new LoopEvent();
+		movementBall.addAction(new Movement(INITIAL_BALL_SPEED) {
 			
-		
-		
-		
+			@Override
+			public Vector2f getNextPosition(Vector2f pos, float speed, float rotation, int delta) {
+				
+				float deplacement = speed*delta;
+				//Vector2f result = new Vector2f(pos.getX()+deplacement,pos.getY()+deplacement);
+				Vector2f result = new Vector2f((float)(pos.getX() + deplacement * Math.sin((rotation/180)*Math.PI)),
+						(float)(pos.getY() + deplacement * Math.cos((rotation/180)*Math.PI)));
+				return result;
+			}
+		});
 		
 		
 
+		
+		Ball ball = new Ball(BALL_ID);
+		ball.setPosition(new Vector2f(100,100));
+		ball.setRotation(90);
+		ball.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
+		ball.addComponent(movementBall);
+		entityManager.addEntity(idState, ball);
+		
 	}
 
 	@Override
