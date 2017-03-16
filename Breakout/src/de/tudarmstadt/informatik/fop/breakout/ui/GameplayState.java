@@ -26,6 +26,7 @@ import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
+import eea.engine.event.NOTEvent;
 import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 import eea.engine.event.basicevents.LoopEvent;
@@ -129,18 +130,19 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		// left Movement of stick
 		TouchLeftBorder borderTouchLeft = new TouchLeftBorder("leftcollide");
 		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
-		ANDEvent moveLeftFree = new ANDEvent(leftDown, borderTouchLeft);
+		ANDEvent moveLeftFree = new ANDEvent(leftDown, new NOTEvent(borderTouchLeft));
 		moveLeftFree.addAction(new MoveLeftAction(STICK_SPEED));
 		stick.addComponent(moveLeftFree);
 
 		// Right Movement of stick
 		TouchRightBorder borderTouchRight = new TouchRightBorder("rightcollide");
 		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
-		ANDEvent moveRightFree = new ANDEvent(borderTouchRight, rightDown);
+		ANDEvent moveRightFree = new ANDEvent(new NOTEvent(borderTouchRight), rightDown);
 		moveRightFree.addAction(new MoveRightAction(STICK_SPEED));
 		stick.addComponent(moveRightFree);
 
 		entityManager.addEntity(idState, stick);
+		
 		//Dirk und Felix 
 		LoopEvent movementBall = new LoopEvent();
 		movementBall.addAction(new Movement(INITIAL_BALL_SPEED) {
