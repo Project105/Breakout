@@ -18,7 +18,7 @@ public class TouchLeftBorder extends Event implements GameParameters {
 	@Override
 	protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
 		
-		return !a.getEntityManager().getEntity(arg1.getCurrentStateID(), LEFT_BORDER_ID).collides(getOwnerEntity());
+		return a.getEntityManager().getEntity(arg1.getCurrentStateID(), LEFT_BORDER_ID).collides(getOwnerEntity());
 	}
 
 }

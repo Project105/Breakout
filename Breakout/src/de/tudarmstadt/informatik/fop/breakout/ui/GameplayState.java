@@ -1,7 +1,10 @@
 package de.tudarmstadt.informatik.fop.breakout.ui;
 
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.event.ChangeEvent;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -17,18 +20,25 @@ import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchLeftBorder;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchRightBorder;
+import de.tudarmstadt.informatik.fop.breakout.events.TouchTopBorder;
 import de.tudarmstadt.informatik.fop.breakout.factories.BorderFactory;
+import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
+import eea.engine.action.basicactions.DestroyEntityAction;
 import eea.engine.action.basicactions.MoveLeftAction;
 import eea.engine.action.basicactions.MoveRightAction;
 import eea.engine.action.basicactions.Movement;
+import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.Event;
+import eea.engine.event.NOTEvent;
+import eea.engine.event.OREvent;
 import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
+import eea.engine.event.basicevents.LeavingScreenEvent;
 import eea.engine.event.basicevents.LoopEvent;
 
 /*
@@ -112,51 +122,104 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		// adding image to entity
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 
-		// left Movement of stick
-
+		// Right Left Movement of stick
+/**
+		TouchLeftBorder borderTouchLeft = new TouchLeftBorder("leftcolide");
+		TouchRightBorder borderTouchRight = new TouchRightBorder("rightcolide");
 		
-		
-		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
-		//moveLeftFree.addAction(new MoveLeftAction(STICK_SPEED));
-		//stick.addComponent(moveLeftFree);
-
-		// Right Movement of stick
-
-		
-		TouchRightBorder borderTouchRight = new TouchRightBorder("rightcollide");
-      	KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
-		ANDEvent moveRightFree = new ANDEvent(borderTouchRight, rightDown);
-		moveRightFree.addAction(new MoveRightAction(STICK_SPEED));
-		stick.addComponent(moveRightFree);
-
+		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
+      	KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
+      	
+      	OREvent borderTouchLeftRight = new OREvent(borderTouchLeft,borderTouchRight);
+      	NOTEvent checkForCollisionLeftRight = new NOTEvent(borderTouchLeftRight);
+      	//NOTEVent checkForCollision 
+      	ANDEvent moveFreeLeft = new ANDEvent(checkForCollisionLeftRight, leftDown);
+		moveFreeLeft.addAction(new MoveLeftAction(STICK_SPEED));
+		stick.addComponent(moveFreeLeft);
+		ANDEvent moveFreeRight = new ANDEvent(checkForCollisionLeftRight, rightDown);
+		moveFreeRight.addAction(new MoveRightAction(STICK_SPEED));
+		stick.addComponent(moveFreeRight);		
 		entityManager.addEntity(idState, stick);
-
+**/	
+		//checks if Space has been pressed
+		KeyPressedEvent spaceDown = new KeyPressedEvent(Input.KEY_SPACE);
 		
-		LoopEvent movementBall = new LoopEvent();
-		movementBall.addAction(new Movement(INITIAL_BALL_SPEED) {
-			
+		LoopEvent moveBall = new LoopEvent();
+		//movement Action for movement of the Ball
+		moveBall.addAction(new Movement(INITIAL_BALL_SPEED){
+
 			@Override
 			public Vector2f getNextPosition(Vector2f pos, float speed, float rotation, int delta) {
-				
 				float deplacement = speed*delta;
-				//Vector2f result = new Vector2f(pos.getX()+deplacement,pos.getY()+deplacement);
 				Vector2f result = new Vector2f((float)(pos.getX() + deplacement * Math.sin((rotation/180)*Math.PI)),
 						(float)(pos.getY() + deplacement * Math.cos((rotation/180)*Math.PI)));
 				return result;
 			}
+			
+		});
+		//adds LoopEvent to the Ball => Ball starts moving
+		spaceDown.addAction(new Action(){
+
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+			arg3.getOwnerEntity().addComponent(moveBall);	
+			}
+			
 		});
 		
-		
+		//Collisiondetection for the tree Borders
+		TouchRightBorder colideRightBorder = new TouchRightBorder("colideRightBorder");
+		TouchLeftBorder colideLeftBorder = new TouchLeftBorder("colideLeftBorder");
+		TouchTopBorder colideTopBorder = new TouchTopBorder("colideTopBorder");
 
+		//Event for collision with the Left or Right Border	
+		OREvent bounceLeftRight = new OREvent(colideRightBorder, colideLeftBorder);
+		ANDEvent bounceSideBorders = new ANDEvent(bounceLeftRight , moveBall);
+		//Action changes Rotation of ball, when collision with Left or Right Border is detected
+		bounceSideBorders.addAction(new Action(){
 
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+				arg3.getOwnerEntity().setRotation(360 - arg3.getOwnerEntity().getRotation());
+				
+			}
+			
+		});
+		//Event for collision with Top Border
+		ANDEvent bounceTop = new ANDEvent(colideTopBorder, moveBall);
+		//Action changes Rotation of ball, when collision with Top Border is detected
+		bounceTop.addAction(new Action() {
+
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+				if (arg3.getOwnerEntity().getRotation()<= 180){
+				   	arg3.getOwnerEntity().setRotation(180 - arg3.getOwnerEntity().getRotation());
+				} else {
+					arg3.getOwnerEntity().setRotation(540 - arg3.getOwnerEntity().getRotation());
+				}
+				
+			}
+			
+		});
+		// Event starts when Ball leaves the Screen
+		LeavingScreenEvent outOfGame= new LeavingScreenEvent();
+		//Removes Ball from the EntityList
+		outOfGame.addAction(new DestroyEntityAction());
 		
+		//Initializes the Ball(new Ball Object, set Position and Rotation, adds the Components to the Ball)
 		Ball ball = new Ball(BALL_ID);
-		ball.setPosition(new Vector2f(100,100));
-		ball.setRotation(90);
+		ball.setPosition(new Vector2f(400,560));
+		ball.setRotation(250);
 		ball.addComponent(new ImageRenderComponent(new Image(BALL_IMAGE)));
-		ball.addComponent(movementBall);
+		ball.addComponent(spaceDown);
+		ball.addComponent(colideRightBorder);
+		ball.addComponent(colideLeftBorder);
+		ball.addComponent(colideTopBorder);
+		ball.addComponent(bounceSideBorders);
+		ball.addComponent(bounceLeftRight);
+		ball.addComponent(bounceTop);
+		ball.addComponent(outOfGame);
 		entityManager.addEntity(idState, ball);
-		
 	}
 
 	@Override
