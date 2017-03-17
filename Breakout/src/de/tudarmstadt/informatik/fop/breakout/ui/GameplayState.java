@@ -135,7 +135,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 				// adding entity to entityManager
 				entityManager.addEntity(idState, background);
 	}
-    public void setEscapeFunction(){
+    public void Escape(){
     	// Setting up entity
     			Entity escListener = new Entity("ESC_Listener");
     			// Event if is Escape pressed
@@ -166,16 +166,18 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		ballMoving=false;
 		gameStarted=false;
-		// Setting up background entity
+		setGameStarted(true);
 		setBackground();
+		BorderListToEntity();
 		/*
 		 * Escape function entity
+		 * esc -button
 		 */
-		setEscapeFunction();
+		Escape();
 
 		
 		
-		BorderListToEntity();
+		
 		PauseIt();
 
 		Stick stick = new Stick(STICK_ID);
@@ -183,24 +185,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		stick.setPosition(new Vector2f(400, 580));
 		// adding image to entity
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
-
-		// Right Left Movement of stick
-	    TouchLeftBorder borderTouchLeft = new TouchLeftBorder("leftcolide");
-		TouchRightBorder borderTouchRight = new TouchRightBorder("rightcolide");
 		
-		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
-      	KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
-      	
-      	
-      	
-      	
-      	//NOTEVent checkForCollision 
-      	ANDEvent moveFreeLeft = new ANDEvent(new NOTEvent(borderTouchLeft), leftDown);
-		moveFreeLeft.addAction(new MoveLeftAction(STICK_SPEED));
-		stick.addComponent(moveFreeLeft);
-		ANDEvent moveFreeRight = new ANDEvent(new NOTEvent(borderTouchRight), rightDown);
-		moveFreeRight.addAction(new MoveRightAction(STICK_SPEED));
-		stick.addComponent(moveFreeRight);		
+		stick.moveLeft();
+
+		stick.moveRight();
+			
 		entityManager.addEntity(idState, stick);
 
 		//checks if Space has been pressed
@@ -296,7 +285,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
-		setGameStarted(true);
+		
 		if(gameStarted)time+=delta;
 		
 		
