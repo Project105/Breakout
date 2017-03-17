@@ -13,6 +13,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import de.tudarmstadt.informatik.fop.breakout.actions.PauseAction;
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
@@ -48,8 +49,12 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private int lives=5;
 	private long time=0;
 	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
-	private boolean gameStarted = true;
-	private boolean isBallMoving = false;
+	protected boolean gameWon=false;
+	protected boolean gameLost= false;
+	protected boolean gameStarted=false;
+	protected boolean ballMoving=false;
+	
+	
 	
 	public void setLives(int lives){
 		this.lives=lives;
@@ -71,8 +76,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		return time;
 	}
 	public void setGameStarted(boolean state){
-		this.gameStarted= state;
+		gameStarted = state;
 	}
+
 	
 	
 	
@@ -112,45 +118,65 @@ public class GameplayState extends BasicGameState implements GameParameters {
  * 
  */
 	public void BorderListToEntity() {
+		makeBorderList();
 		for (BorderFactory e : borders) {
 			Entity border = e.createEntity();
 			entityManager.addEntity(idState, border);
 		}
 
 	}
-
+	public void setBackground() throws SlickException{
+		// Setting up background entity
+				Entity background = new Entity(BACKGROUND_ID);
+				// setting up position
+				background.setPosition(new Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
+				// adding image to entity
+				background.addComponent(new ImageRenderComponent(new Image(BACKGROUND_IMAGE)));
+				// adding entity to entityManager
+				entityManager.addEntity(idState, background);
+	}
+    public void setEscapeFunction(){
+    	// Setting up entity
+    			Entity escListener = new Entity("ESC_Listener");
+    			// Event if is Escape pressed
+    			KeyPressedEvent esc = new KeyPressedEvent(Input.KEY_ESCAPE);
+    			// Action switch states if esc pressed
+    			esc.addAction(new ChangeStateAction(MAINMENU_STATE));
+    			// adding EventComponent in entity
+    			escListener.addComponent(esc);
+    			// adding entity in entityManager
+    			entityManager.addEntity(idState, escListener);
+    	
+    }
+    public void PauseIt(){
+    	Entity spaceListener = new Entity("SPACE_Listener");
+    	KeyPressedEvent space = new KeyPressedEvent(Input.KEY_P);
+    	PauseAction pause = new PauseAction(); 
+    	space.addAction(pause);
+    	spaceListener.addComponent(space);
+    	entityManager.addEntity(idState, spaceListener);
+    	
+    	
+    }
 	
 	
 	
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-
+		ballMoving=false;
+		gameStarted=false;
 		// Setting up background entity
-		Entity background = new Entity(BACKGROUND_ID);
-		// setting up position
-		background.setPosition(new Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
-		// adding image to entity
-		background.addComponent(new ImageRenderComponent(new Image(BACKGROUND_IMAGE)));
-		// adding entity to entityManager
-		entityManager.addEntity(idState, background);
-
+		setBackground();
 		/*
 		 * Escape function entity
 		 */
-		// Setting up entity
-		Entity escListener = new Entity("ESC_Listener");
-		// Event if is Escape pressed
-		KeyPressedEvent esc = new KeyPressedEvent(Input.KEY_ESCAPE);
-		// Action switch states if esc pressed
-		esc.addAction(new ChangeStateAction(MAINMENU_STATE));
-		// adding EventComponent in entity
-		escListener.addComponent(esc);
-		// adding entity in entityManager
-		entityManager.addEntity(idState, escListener);
+		setEscapeFunction();
 
-		makeBorderList();
+		
+		
 		BorderListToEntity();
+		PauseIt();
 
 		Stick stick = new Stick(STICK_ID);
 		// default Position
@@ -159,21 +185,20 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 
 		// Right Left Movement of stick
-	TouchLeftBorder borderTouchLeft = new TouchLeftBorder("leftcolide");
+	    TouchLeftBorder borderTouchLeft = new TouchLeftBorder("leftcolide");
 		TouchRightBorder borderTouchRight = new TouchRightBorder("rightcolide");
 		
 		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
       	KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
       	
-      	TouchLeftBorder checkForLeftCollision= new TouchLeftBorder("touchleftborder");
-      	TouchRightBorder checkForRightCollision = new TouchRightBorder("touchRightBorder");
+      	
       	
       	
       	//NOTEVent checkForCollision 
-      	ANDEvent moveFreeLeft = new ANDEvent(new NOTEvent(checkForLeftCollision), leftDown);
+      	ANDEvent moveFreeLeft = new ANDEvent(new NOTEvent(borderTouchLeft), leftDown);
 		moveFreeLeft.addAction(new MoveLeftAction(STICK_SPEED));
 		stick.addComponent(moveFreeLeft);
-		ANDEvent moveFreeRight = new ANDEvent(new NOTEvent(checkForRightCollision), rightDown);
+		ANDEvent moveFreeRight = new ANDEvent(new NOTEvent(borderTouchRight), rightDown);
 		moveFreeRight.addAction(new MoveRightAction(STICK_SPEED));
 		stick.addComponent(moveFreeRight);		
 		entityManager.addEntity(idState, stick);
@@ -201,6 +226,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 			@Override
 			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
 			arg3.getOwnerEntity().addComponent(moveBall);
+			setGameStarted(true);
 			
 			
 			
@@ -209,15 +235,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		
 			
 		});
-		spaceDown.addAction(new Action(){
-
-			@Override
-			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-				setGameStarted(true);
-				
-			}
-			
-		});
+		
 		
 		
 		
@@ -278,6 +296,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
+		setGameStarted(true);
 		if(gameStarted)time+=delta;
 		
 		
@@ -297,6 +316,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getSize().getX(), 100, 175);
 		g.drawString((time/1000)/60+":"+(time/1000)%60+":"+time%1000, 700, 50);
 		g.drawString("Lifes left: " + lives, 600, 25);
+		g.drawString(""+gameStarted, 300, 10);
 		
 
 	}
