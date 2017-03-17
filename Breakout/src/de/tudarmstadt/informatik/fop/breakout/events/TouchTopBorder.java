@@ -7,6 +7,7 @@ import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.ui.GameplayState;
 import eea.engine.event.Event;
 
+
 public class TouchTopBorder extends Event implements GameParameters { 
 
 	GameplayState a= new GameplayState(GAMEPLAY_STATE);
@@ -21,8 +22,7 @@ public class TouchTopBorder extends Event implements GameParameters {
 		// TODO Auto-generated method stub
 		 return a.getEntityManager().getEntity(arg1.getCurrentStateID(), TOP_BORDER_ID).collides(getOwnerEntity());
 	}
+}
 	
 
 
-
-}
