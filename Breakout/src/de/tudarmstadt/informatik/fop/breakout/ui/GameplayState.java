@@ -14,6 +14,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.actions.PauseAction;
+import de.tudarmstadt.informatik.fop.breakout.actions.RotationToMove;
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
@@ -186,9 +187,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		// adding image to entity
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 		
-		stick.moveLeft();
+		stick.moveLeft();// method only for stick , it is in class
 
-		stick.moveRight();
+		stick.moveRight();//method only for stick, it is in class
 			
 		entityManager.addEntity(idState, stick);
 
@@ -197,17 +198,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		
 		LoopEvent moveBall = new LoopEvent();
 		//movement Action for movement of the Ball
-		moveBall.addAction(new Movement(INITIAL_BALL_SPEED){
-
-			@Override
-			public Vector2f getNextPosition(Vector2f pos, float speed, float rotation, int delta) {
-				float deplacement = speed*delta;
-				Vector2f result = new Vector2f((float)(pos.getX() + deplacement * Math.sin((rotation/180)*Math.PI)),
-						(float)(pos.getY() + deplacement * Math.cos((rotation/180)*Math.PI)));
-				return result;
-			}
-			
-		});
+		moveBall.addAction(new RotationToMove(INITIAL_BALL_SPEED));
 		//adds LoopEvent to the Ball => Ball starts moving
 		
 		spaceDown.addAction(new Action(){
@@ -228,7 +219,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		
 		
 		
-		//Collisiondetection for the tree Borders
+		//Collisiondetection for the three Borders
 		TouchRightBorder colideRightBorder = new TouchRightBorder("colideRightBorder");
 		TouchLeftBorder colideLeftBorder = new TouchLeftBorder("colideLeftBorder");
 		TouchTopBorder colideTopBorder = new TouchTopBorder("colideTopBorder");
@@ -269,7 +260,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		//Initializes the Ball(new Ball Object, set Position and Rotation, adds the Components to the Ball)
 		Ball ball = new Ball(BALL_ID);
 		ball.setPosition(new Vector2f(400,560));
-		ball.setRotation(250);
+		ball.setRotation(180);
 		ball.addComponent(new ImageRenderComponent(new Image(BALL_IMAGE)));
 		ball.addComponent(spaceDown);
 		ball.addComponent(colideRightBorder);
