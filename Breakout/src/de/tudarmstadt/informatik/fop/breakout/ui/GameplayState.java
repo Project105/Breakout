@@ -118,29 +118,29 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 		Stick stick = new Stick(STICK_ID);
 		// default Position
-		stick.setPosition(new Vector2f(400, 580));
+		stick.setPosition(new Vector2f(400, 540));
 		// adding image to entity
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 
 		// Right Left Movement of stick
-/**
+
 		TouchLeftBorder borderTouchLeft = new TouchLeftBorder("leftcolide");
 		TouchRightBorder borderTouchRight = new TouchRightBorder("rightcolide");
 		
 		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
       	KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
       	
-      	OREvent borderTouchLeftRight = new OREvent(borderTouchLeft,borderTouchRight);
-      	NOTEvent checkForCollisionLeftRight = new NOTEvent(borderTouchLeftRight);
-      	//NOTEVent checkForCollision 
-      	ANDEvent moveFreeLeft = new ANDEvent(checkForCollisionLeftRight, leftDown);
-		moveFreeLeft.addAction(new MoveLeftAction(STICK_SPEED));
-		stick.addComponent(moveFreeLeft);
-		ANDEvent moveFreeRight = new ANDEvent(checkForCollisionLeftRight, rightDown);
-		moveFreeRight.addAction(new MoveRightAction(STICK_SPEED));
-		stick.addComponent(moveFreeRight);		
-		entityManager.addEntity(idState, stick);
-**/	
+      	NOTEvent NoTouchLeft = new NOTEvent(borderTouchLeft);
+      	ANDEvent moveLeft = new ANDEvent(NoTouchLeft, leftDown);
+      	moveLeft.addAction(new MoveLeftAction(STICK_SPEED));
+      	stick.addComponent(moveLeft);
+      	
+      	NOTEvent NoTouchRight = new NOTEvent(borderTouchRight);
+      	ANDEvent moveRight = new ANDEvent(NoTouchRight, rightDown);
+      	moveRight.addAction(new MoveRightAction(STICK_SPEED));
+      	stick.addComponent(moveRight);
+	
+      	entityManager.addEntity(idState, stick);
 		//checks if Space has been pressed
 		KeyPressedEvent spaceDown = new KeyPressedEvent(Input.KEY_SPACE);
 		
