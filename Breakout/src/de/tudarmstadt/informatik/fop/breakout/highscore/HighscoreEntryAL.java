@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
@@ -23,8 +24,8 @@ import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
 public class HighscoreEntryAL implements Serializable {
 
 	ArrayList<HighscoreEntry> al = new ArrayList<HighscoreEntry>(10);
-	private String fileName = "highscoreFile.hsc";
-	private File highscoreFile = null;
+	private String filePath = "highscoreFile.hsc";
+	private File highscoreFile;
 
 	public HighscoreEntryAL() {
 		// initialize all elements with zero
@@ -33,8 +34,9 @@ public class HighscoreEntryAL implements Serializable {
 
 		// create highscore file
 		try {
-			highscoreFile = new File(fileName);
-			highscoreFile.createNewFile();
+			highscoreFile = new File(filePath);
+			if(!highscoreFile.exists())
+				highscoreFile.createNewFile();
 			// write dummy values to file
 			writeHighscore();
 		} catch (IOException e) {
@@ -50,28 +52,13 @@ public class HighscoreEntryAL implements Serializable {
 	 *            the new HighscoreEntry
 	 */
 	public void addHighscoreEntry(HighscoreEntry he) {
-		for (int i = 0; i < al.size(); i++)
-			// check if new element is within top 10 scores
-			if (he.compareTo(al.get(i))) {
-				// remove last element
-				al.remove(9);
-
-				// if new element is places last in the list
-				if (i == 9)
-					al.add(i, he);
-
-				// if new element is not placed last in the list
-				else {
-					// push all elements behind the new element one position
-					// back
-					for (int j = al.size() - 2; j >= i; j--) {
-						HighscoreEntry buf = al.get(j);
-						al.add(j + 1, buf);
-					}
-					// insert new element
-					al.set(i, he);
-				}
-			}
+		ArrayList<HighscoreEntry> buffer = new ArrayList<HighscoreEntry>(11);
+		buffer = al;
+		buffer.add(he);
+		Collections.sort(buffer);
+		buffer.remove(buffer.size()-1);
+		al = buffer;
+			
 	}
 
 	/**
@@ -82,7 +69,7 @@ public class HighscoreEntryAL implements Serializable {
 		ObjectOutputStream oos = null;
 
 		try {
-			fos = new FileOutputStream(fileName);
+			fos = new FileOutputStream(highscoreFile);
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		}
@@ -110,16 +97,14 @@ public class HighscoreEntryAL implements Serializable {
 	 * Checks if .hsc file exists and loads it it does not
 	 */
 	@SuppressWarnings("unchecked")
-	public void loadHighscore() {
+	public void readHighscore() {
 		FileInputStream fis = null;
 		ObjectInputStream ois = null;
 
-		File f = new File(fileName);
-
 		// read from file if file exists
-		if (f.isFile()) {
+		if (highscoreFile.isFile() && highscoreFile.exists()) {
 			try {
-				fis = new FileInputStream(fileName);
+				fis = new FileInputStream(highscoreFile);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -131,8 +116,7 @@ public class HighscoreEntryAL implements Serializable {
 			}
 
 			try {
-				if (ois.readObject() instanceof ArrayList<?>)
-					al = (ArrayList<HighscoreEntry>) ois.readObject();
+				al = (ArrayList<HighscoreEntry>) ois.readObject();
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
 			}
@@ -143,6 +127,8 @@ public class HighscoreEntryAL implements Serializable {
 				e.printStackTrace();
 			}
 		}
+		else
+			System.err.println("Highscore file does not exist!");
 
 	}
 
@@ -150,12 +136,12 @@ public class HighscoreEntryAL implements Serializable {
 		return al;
 	}
 
-	public String toString() {
+	/*public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < 10; i++)
 			sb.append(al.get(i).getPlayerName() + "  " + "Destroyed Blocks: " + al.get(i).getNumberOfDestroyedBlocks()
 					+ "  " + "Time: " + al.get(i).getElapsedTime() + "  " + "Points: " + "\n");
 		return sb.toString();
-	}
+	}*/
 
 }

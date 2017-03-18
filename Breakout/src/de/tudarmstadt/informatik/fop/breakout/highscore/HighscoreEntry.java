@@ -1,8 +1,10 @@
 package de.tudarmstadt.informatik.fop.breakout.highscore;
 
+import java.io.Serializable;
+
 import de.tudarmstadt.informatik.fop.breakout.interfaces.IHighscoreEntry;
 
-public class HighscoreEntry implements IHighscoreEntry {
+public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable<HighscoreEntry> {
 	
 	private String playerName = null;
 	private int numberOfDestroyedBlocks = 0;
@@ -49,23 +51,32 @@ public class HighscoreEntry implements IHighscoreEntry {
 		return(playerName + ";" + numberOfDestroyedBlocks + ";" + elapsedTime + ";" + points + ":");
 	}*/
 	
-	/**
-	 * @param he the highscore entry to compare to
-	 * @return true if current object is ranked higher than other object
-	 */
-	public boolean compareTo(HighscoreEntry he) {
+	@Override
+	public int compareTo(HighscoreEntry he) {
 		if(this.getNumberOfDestroyedBlocks() > he.getNumberOfDestroyedBlocks())
-			return true;
+			return -1;
 		else if (this.getNumberOfDestroyedBlocks() < he.getNumberOfDestroyedBlocks())
-			return false;
+			return 1;
 		else if(this.getNumberOfDestroyedBlocks() == he.getNumberOfDestroyedBlocks() && this.getElapsedTime() < he.getElapsedTime())
-			return true;
+			return -1;
 		else if(this.getNumberOfDestroyedBlocks() == he.getNumberOfDestroyedBlocks() && this.getElapsedTime() > he.getElapsedTime())
-			return false;
+			return 1;
 		
 		// if the highscores are totally equal, the highscore that was set first will stay in front
-		else return false;
+		else return 1;
 		
 	}
-
+	/* HighscoreEntry compare(HighscoreEntry he1, HighscoreEntry he2) {
+		if(he1.getNumberOfDestroyedBlocks() > he2.getNumberOfDestroyedBlocks())
+			return he1;
+		else if (he1.getNumberOfDestroyedBlocks() < he2.getNumberOfDestroyedBlocks())
+			return he2;
+		else if(he1.getNumberOfDestroyedBlocks() == he2.getNumberOfDestroyedBlocks() && he1.getElapsedTime() < he2.getElapsedTime())
+			return he1;
+		else if(he1.getNumberOfDestroyedBlocks() == he2.getNumberOfDestroyedBlocks() && he1.getElapsedTime() > he2.getElapsedTime())
+			return he2;
+		
+		// if the highscores are totally equal, the highscore that was set first will stay in front
+		else return he1;
+	}*/
 }
