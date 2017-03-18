@@ -7,6 +7,11 @@ import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.ui.GameplayState;
 import eea.engine.event.Event;
 
+/**
+ * 
+ * @author Denis Andric
+ *
+ */
 public class TouchLeftBorder extends Event implements GameParameters {
 	public TouchLeftBorder(String id) {
 		super(id);
@@ -17,8 +22,10 @@ public class TouchLeftBorder extends Event implements GameParameters {
 
 	@Override
 	protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
-		
-		return a.getEntityManager().getEntity(arg1.getCurrentStateID(), LEFT_BORDER_ID).collides(getOwnerEntity());
+		if (a.getEntityManager().hasEntity(arg1.getCurrentStateID(), LEFT_BORDER_ID)) {
+			return a.getEntityManager().getEntity(arg1.getCurrentStateID(), LEFT_BORDER_ID).collides(getOwnerEntity());
+		} else
+			return false;
 	}
 
 }

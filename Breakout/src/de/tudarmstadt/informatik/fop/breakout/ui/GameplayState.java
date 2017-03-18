@@ -13,6 +13,8 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import de.tudarmstadt.informatik.fop.breakout.actions.BounceSideBallAction;
+import de.tudarmstadt.informatik.fop.breakout.actions.BounceTopBallAction;
 import de.tudarmstadt.informatik.fop.breakout.actions.PauseAction;
 import de.tudarmstadt.informatik.fop.breakout.actions.RotationToMove;
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
@@ -54,6 +56,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	protected boolean gameLost= false;
 	protected boolean gameStarted=false;
 	protected boolean ballMoving=false;
+    
 	
 	
 	
@@ -150,12 +153,12 @@ public class GameplayState extends BasicGameState implements GameParameters {
     	
     }
     public void PauseIt(){
-    	Entity spaceListener = new Entity("SPACE_Listener");
+    	Entity PListener = new Entity("P_Listener");
     	KeyPressedEvent space = new KeyPressedEvent(Input.KEY_P);
     	PauseAction pause = new PauseAction(); 
     	space.addAction(pause);
-    	spaceListener.addComponent(space);
-    	entityManager.addEntity(idState, spaceListener);
+    	PListener.addComponent(space);
+    	entityManager.addEntity(idState, PListener);
     	
     	
     }
@@ -167,7 +170,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		ballMoving=false;
 		gameStarted=false;
-		setGameStarted(true);
+		
 		setBackground();
 		BorderListToEntity();
 		/*
@@ -228,30 +231,12 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		OREvent bounceLeftRight = new OREvent(colideRightBorder, colideLeftBorder);
 		ANDEvent bounceSideBorders = new ANDEvent(bounceLeftRight , moveBall);
 		//Action changes Rotation of ball, when collision with Left or Right Border is detected
-		bounceSideBorders.addAction(new Action(){
-
-			@Override
-			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-				arg3.getOwnerEntity().setRotation(360 - arg3.getOwnerEntity().getRotation());
-				}
-			
-		});
+		bounceSideBorders.addAction(new BounceSideBallAction());
 		//Event for collision with Top Border
 		ANDEvent bounceTop = new ANDEvent(colideTopBorder, moveBall);
 		//Action changes Rotation of ball, when collision with Top Border is detected
-		bounceTop.addAction(new Action() {
+		bounceTop.addAction(new BounceTopBallAction());
 
-			@Override
-			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-				if (arg3.getOwnerEntity().getRotation()<= 180){
-				   	arg3.getOwnerEntity().setRotation(180 - arg3.getOwnerEntity().getRotation());
-				} else {
-					arg3.getOwnerEntity().setRotation(540 - arg3.getOwnerEntity().getRotation());
-				}
-				
-			}
-			
-		});
 		// Event starts when Ball leaves the Screen
 		LeavingScreenEvent outOfGame= new LeavingScreenEvent();
 		//Removes Ball from the EntityList
@@ -260,24 +245,24 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		//Initializes the Ball(new Ball Object, set Position and Rotation, adds the Components to the Ball)
 		Ball ball = new Ball(BALL_ID);
 		ball.setPosition(new Vector2f(400,560));
-		ball.setRotation(180);
+		ball.setRotation(120);
 		ball.addComponent(new ImageRenderComponent(new Image(BALL_IMAGE)));
 		ball.addComponent(spaceDown);
-		ball.addComponent(colideRightBorder);
-		ball.addComponent(colideLeftBorder);
-		ball.addComponent(colideTopBorder);
 		ball.addComponent(bounceSideBorders);
-		ball.addComponent(bounceLeftRight);
 		ball.addComponent(bounceTop);
 		ball.addComponent(outOfGame);
 		entityManager.addEntity(idState, ball);
+		
+		
 	}
+	
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
 		
 		if(gameStarted)time+=delta;
+		
 		
 		
 		
@@ -297,6 +282,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		g.drawString((time/1000)/60+":"+(time/1000)%60+":"+time%1000, 700, 50);
 		g.drawString("Lifes left: " + lives, 600, 25);
 		g.drawString(""+gameStarted, 300, 10);
+		g.drawString(" "+gc.getTime(),700, 75);
 		
 
 	}

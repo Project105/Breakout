@@ -5,18 +5,18 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import eea.engine.action.Action;
 import eea.engine.component.Component;
-/**
- * 
- * @author Denis Andric
- *
- */
-public class PauseAction implements Action {
+
+public class BounceTopBallAction implements Action{
 
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-		if(!arg0.isPaused())arg0.pause();
-		else arg0.resume();
+		if (arg3.getOwnerEntity().getRotation()<= 180){
+		   	arg3.getOwnerEntity().setRotation(180 - arg3.getOwnerEntity().getRotation());
+		} else {
+			arg3.getOwnerEntity().setRotation(540 - arg3.getOwnerEntity().getRotation());
+		}
 		
-	}
+	
 
+}
 }

@@ -17,9 +17,10 @@ public class TouchRightBorder extends Event implements GameParameters {
 
 	@Override
 	protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
-		// TODO Auto-generated method stub
-		
-		return a.getEntityManager().getEntity(arg1.getCurrentStateID(), RIGHT_BORDER_ID).collides(getOwnerEntity());
+		if (a.getEntityManager().hasEntity(arg1.getCurrentStateID(), RIGHT_BORDER_ID)) {
+			return a.getEntityManager().getEntity(arg1.getCurrentStateID(), RIGHT_BORDER_ID).collides(getOwnerEntity());
+		} else
+			return false;
 	}
 
 }
