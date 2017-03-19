@@ -358,7 +358,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 			NewBall();
 	}
 	/*
-	 * Method which sees if the game is lost
+	 * Method which recognizes if the game is lost
 	 * it gets to mainmenu state
 	 */
 	public void gameLost(StateBasedGame sbg){
