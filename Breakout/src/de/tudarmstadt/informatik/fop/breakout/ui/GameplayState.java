@@ -62,17 +62,13 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		return ballMoving;
 	}
 
-	public void setLives(int lives) {
-		this.lives = lives;
-	}
+	
 
 	public int getLives() {
 		return lives;
 	}
 
-	public int addLives(int lives) {
-		return this.lives = lives;
-	}
+	
 
 	/**
 	 * 
@@ -156,8 +152,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	}
 
 	public void PauseIt() {
+		
 		Entity PListener = new Entity("P_Listener");
+		//P Input
 		KeyPressedEvent space = new KeyPressedEvent(Input.KEY_P);
+		//Pause Action - see Actions
 		PauseAction pause = new PauseAction();
 		space.addAction(pause);
 		PListener.addComponent(space);
@@ -174,13 +173,14 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		/********************************
 		 * Following Stick before Ball is started
 		 *************************/
-
-		PrivateLoopEvent followStick = new PrivateLoopEvent("followStick");// I
-																			// need
-																			// Id
+       //LoopEvent with  ID 
+		PrivateLoopEvent followStick = new PrivateLoopEvent("followStick");
+		//Action to maintain x distance of stick by 20
 		BallPositioning positioning = new BallPositioning();
 		followStick.addAction(positioning);
+		//Event witch say that ball follows or not follow the stick
 		PrivateBallEvent addEvent = new PrivateBallEvent("addEvent");
+		//action for adding Component
 		Action followOrNot = new Action() {
 
 			@Override
@@ -266,6 +266,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	}
 	public void setTimeEntity(){
 		Entity stopWatch=new Entity("STOP_WATCH_ID");
+		//Event witch starts countTime
 		Event startingTime = new Event("start"){
 
 			@Override
@@ -276,7 +277,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 			
 		};
 		
-	
+	//Action to count flowing milliseconds
 	Action countTime = new Action(){
 
 		@Override
@@ -347,10 +348,19 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		
 
 	}
+	/**
+	 * 
+	 * @throws SlickException
+	 * method to give new/old entity Ball in entity Manager in update
+	 */
 	public void getNewBall() throws SlickException{
 		if (!entityManager.hasEntity(idState, BALL_ID) && time % 1000 == 0 && lives>0)
 			NewBall();
 	}
+	/*
+	 * Method which sees if the game is lost
+	 * it gets to mainmenu state
+	 */
 	public void gameLost(StateBasedGame sbg){
 		if(lives==0){
 			gameStarted=false;
