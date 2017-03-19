@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.fop.breakout.test.adapter;
 
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
@@ -349,7 +350,10 @@ public class Adapter implements GameParameters {
 	 */
 	public void handleKeyDown(int updatetime, Integer input) {
 	  //TODO write code that handles a "key pressed" event
-	  // note: do not forget to call app.updateGame(updatetime);
+	// note: do not forget to call app.updateGame(updatetime);
+		
+		
+		
 	}
 
 	/**

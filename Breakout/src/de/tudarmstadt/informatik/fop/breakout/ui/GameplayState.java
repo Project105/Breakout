@@ -21,6 +21,7 @@ import de.tudarmstadt.informatik.fop.breakout.actions.PauseAction;
 import de.tudarmstadt.informatik.fop.breakout.actions.RotationToMove;
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
+import de.tudarmstadt.informatik.fop.breakout.entities.Player;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import de.tudarmstadt.informatik.fop.breakout.events.PrivateBallEvent;
 import de.tudarmstadt.informatik.fop.breakout.events.PrivateLoopEvent;
@@ -49,13 +50,14 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private int idState;
 	private StateBasedEntityManager entityManager;
 	private boolean GameWin = false;
-	private static int lives = 3;
+	//private static int lives = 3;
 	private static long time = 0;
 	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
 	private static boolean gameWon = false;
 	private static boolean gameLost = false;
 	private static boolean gameStarted = false;
 	private static boolean ballMoving = false;
+	protected Player player;
 	
 
 	public boolean getBallMoving() {
@@ -64,19 +66,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	
 
-	public int getLives() {
-		return lives;
-	}
+	
 
 	
 
-	/**
-	 * 
-	 * @return one live lost
-	 */
-	public int loseLive() {
-		return lives - 1;
-	}
+	
 
 	public long getTime() {
 		return time;
@@ -246,7 +240,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
 
 				 //loseLive();
-				lives -= 1;
+				player.removeLives(1);
+				//lives -= 1;
 				ballMoving = false;
 
 			}
@@ -297,8 +292,10 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		player=new Player(PLAYER_ID);
+		player.setLives(3);
 		time=0;
-		lives=3;
+		//lives=3;
 		gameWon = false;
 		gameLost = false;
 		gameStarted = false;
@@ -354,7 +351,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	 * method to give new/old entity Ball in entity Manager in update
 	 */
 	public void getNewBall() throws SlickException{
-		if (!entityManager.hasEntity(idState, BALL_ID) && time % 1000 == 0 && lives>0)
+		if (!entityManager.hasEntity(idState, BALL_ID) && time % 1000 == 0 && player.getLivesLeft()>0)
 			NewBall();
 	}
 	/*
@@ -362,7 +359,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	 * it gets to mainmenu state
 	 */
 	public void gameLost(StateBasedGame sbg){
-		if(lives==0){
+		if(player.getLivesLeft()==0){
 			gameStarted=false;
 			gameLost=true;
 			sbg.enterState(MAINMENU_STATE, new FadeOutTransition(),new FadeInTransition());
@@ -384,11 +381,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		 * 100, 175);
 		 */
 		g.drawString("Time   " + (time / 1000) / 60 + ":" + (time / 1000) % 60 + ":" + time % 1000, 500, 50);
-		g.drawString("Lives left: " + lives, 600, 25);
+		g.drawString("Lives left: " + player.getLivesLeft(), 600, 25);
 		g.drawString("Game Started  " + gameStarted, 300, 10);
 		g.drawString("Ball moving  " + ballMoving, 120, 100);
 		g.drawString("GameLost "+gameLost, 50, 50);
-		if(lives==0)g.drawString("Game Over", 500, 300);
+		if(player.getLivesLeft()==0)g.drawString("Game Over", 500, 300);
 
 	}
 
