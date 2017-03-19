@@ -11,6 +11,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import de.tudarmstadt.informatik.fop.breakout.actions.BallPositioning;
 import de.tudarmstadt.informatik.fop.breakout.actions.BounceSideBallAction;
@@ -54,7 +56,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private static boolean gameLost = false;
 	private static boolean gameStarted = false;
 	private static boolean ballMoving = false;
-	private static boolean timeStarted = false;
+	
 
 	public boolean getBallMoving() {
 		return ballMoving;
@@ -170,7 +172,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		ball.setRotation(120);
 		ball.addComponent(new ImageRenderComponent(new Image(BALL_IMAGE)));
 		/********************************
-		 * Following Stick before Game is started
+		 * Following Stick before Ball is started
 		 *************************/
 
 		PrivateLoopEvent followStick = new PrivateLoopEvent("followStick");// I
@@ -194,6 +196,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		addEvent.addAction(followOrNot);
 		ball.addComponent(addEvent);
 		/************************************ Starting *****************************/
+		//Felix and Dirk
 		// checks if Space has been pressed
 		KeyPressedEvent spaceDown = new KeyPressedEvent(Input.KEY_SPACE);
 
@@ -208,9 +211,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
 				arg3.getOwnerEntity().addComponent(moveBall);
 				ballMoving = true;
-				if (!gameStarted)
-					timeStarted = true;
-				gameStarted = true;
+				if (!gameStarted)gameStarted = true;
+				
 
 			}
 
@@ -243,8 +245,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 			@Override
 			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
 
-				// loseLive();
-				lives = lives - 1;
+				 //loseLive();
+				lives -= 1;
 				ballMoving = false;
 
 			}
@@ -268,8 +270,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 			@Override
 			protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
-				System.out.println("DzanGej");
-				return timeStarted;
+				
+				return gameStarted;
 			}
 			
 		};
@@ -279,8 +281,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 		@Override
 		public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-			time=time+arg2;
-			
+			time=time + arg2;
 			
 		}
 		
@@ -295,6 +296,12 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		time=0;
+		lives=3;
+		gameWon = false;
+		gameLost = false;
+		gameStarted = false;
+		ballMoving = false;
 
 		setBackground();
 		
@@ -304,7 +311,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		
 		PauseIt();
 		
-		setTimeEntity();
+		
 
 		Stick stick = new Stick(STICK_ID);
 		// default Position
@@ -317,22 +324,40 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 		entityManager.addEntity(idState, stick);
 		NewBall();
+		setTimeEntity();
 
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
-
+/*
 		// Time Counter in ms
-	/*	if (timeStarted)
+		if (timeStarted)
 			time += delta;*/
-		if (time % 1000 == 0 && !entityManager.hasEntity(idState, BALL_ID))
-			System.out.println("Dzan gej");
-		if (!entityManager.hasEntity(idState, BALL_ID) && time % 1000 == 0 && lives>0)
-			NewBall();
+		getNewBall();
+		gameLost(sbg);
+		
+		
+			
+			
+			
+			
+			
+		
 
 	}
+	public void getNewBall() throws SlickException{
+		if (!entityManager.hasEntity(idState, BALL_ID) && time % 1000 == 0 && lives>0)
+			NewBall();
+	}
+	public void gameLost(StateBasedGame sbg){
+		if(lives==0){
+			gameStarted=false;
+			gameLost=true;
+			sbg.enterState(MAINMENU_STATE, new FadeOutTransition(),new FadeInTransition());
+	}}
+	
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
@@ -349,9 +374,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		 * 100, 175);
 		 */
 		g.drawString("Time   " + (time / 1000) / 60 + ":" + (time / 1000) % 60 + ":" + time % 1000, 500, 50);
-		g.drawString("Lifes left: " + lives, 600, 25);
+		g.drawString("Lives left: " + lives, 600, 25);
 		g.drawString("Game Started  " + gameStarted, 300, 10);
 		g.drawString("Ball moving  " + ballMoving, 120, 100);
+		g.drawString("GameLost "+gameLost, 50, 50);
+		if(lives==0)g.drawString("Game Over", 500, 300);
 
 	}
 
