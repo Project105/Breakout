@@ -274,7 +274,6 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		stick.setPosition(new Vector2f(400, 580));
 		// adding image to entity
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
-
 		stick.moveLeft();// method only for stick , it is in class
 
 		stick.moveRight();// method only for stick, it is in class
