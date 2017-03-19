@@ -34,6 +34,7 @@ import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
+import eea.engine.event.Event;
 import eea.engine.event.OREvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 import eea.engine.event.basicevents.LeavingScreenEvent;
@@ -47,7 +48,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private StateBasedEntityManager entityManager;
 	private boolean GameWin = false;
 	private static int lives = 3;
-	private long time = 0;
+	private static long time = 0;
 	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
 	private static boolean gameWon = false;
 	private static boolean gameLost = false;
@@ -261,14 +262,49 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		entityManager.addEntity(idState, ball);
 
 	}
+	public void setTimeEntity(){
+		Entity stopWatch=new Entity("STOP_WATCH_ID");
+		Event startingTime = new Event("start"){
+
+			@Override
+			protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
+				System.out.println("DzanGej");
+				return timeStarted;
+			}
+			
+		};
+		
+	
+	Action countTime = new Action(){
+
+		@Override
+		public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+			time=time+arg2;
+			
+			
+		}
+		
+	};
+	startingTime.addAction(countTime);
+	stopWatch.addComponent(startingTime);
+	entityManager.addEntity(idState, stopWatch);
+	}
+	
+	
+
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 
 		setBackground();
+		
 		BorderListToEntity();
+		
 		Escape();
+		
 		PauseIt();
+		
+		setTimeEntity();
 
 		Stick stick = new Stick(STICK_ID);
 		// default Position
@@ -289,8 +325,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		entityManager.updateEntities(gc, sbg, delta);
 
 		// Time Counter in ms
-		if (timeStarted)
-			time += delta;
+	/*	if (timeStarted)
+			time += delta;*/
 		if (time % 1000 == 0 && !entityManager.hasEntity(idState, BALL_ID))
 			System.out.println("Dzan gej");
 		if (!entityManager.hasEntity(idState, BALL_ID) && time % 1000 == 0 && lives>0)
