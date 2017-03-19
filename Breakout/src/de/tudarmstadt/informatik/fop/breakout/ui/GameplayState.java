@@ -163,8 +163,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	}
 
 	public void NewBall() throws SlickException {
+		
 		Ball ball = new Ball(BALL_ID);
-		ball.setPosition(new Vector2f(400, 500));// 400 , 560
+		ball.setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX()+20, 560));
 		ball.setRotation(120);
 		ball.addComponent(new ImageRenderComponent(new Image(BALL_IMAGE)));
 		/********************************
@@ -320,7 +321,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
+		
 		return idState;
 	}
 
