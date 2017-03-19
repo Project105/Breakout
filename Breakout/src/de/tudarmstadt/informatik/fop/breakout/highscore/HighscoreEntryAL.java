@@ -136,12 +136,43 @@ public class HighscoreEntryAL implements Serializable {
 		return al;
 	}
 
-	/*public String toString() {
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < 10; i++)
-			sb.append(al.get(i).getPlayerName() + "  " + "Destroyed Blocks: " + al.get(i).getNumberOfDestroyedBlocks()
+			sb.append("Player: " + al.get(i).getPlayerName() + "  " + "Destroyed Blocks: " + al.get(i).getNumberOfDestroyedBlocks()
 					+ "  " + "Time: " + al.get(i).getElapsedTime() + "  " + "Points: " + "\n");
 		return sb.toString();
+	}
+	
+	public void writeDummyFile() {
+		HighscoreEntry hs1 = new HighscoreEntry("p1", -1, 55.5f, 100);
+		HighscoreEntry hs2 = new HighscoreEntry("p2", 10, 55.6f, 99);
+		HighscoreEntry hs3 = new HighscoreEntry("p3", 11, 55.5f, 100);
+		HighscoreEntry hs4 = new HighscoreEntry("p4", 12, 55.5f, 100);
+		HighscoreEntry hs5 = new HighscoreEntry("p5", 13, 55.5f, 100);
+		HighscoreEntry hs6 = new HighscoreEntry("p6", 14, 55.6f, 99);
+		HighscoreEntry hs7 = new HighscoreEntry("p7", 15, 55.5f, 100);
+		HighscoreEntry hs8 = new HighscoreEntry("p8", 16, 55.5f, 100);
+		HighscoreEntry hs9 = new HighscoreEntry("p9", 17, 55.5f, 100);
+		HighscoreEntry hs10 = new HighscoreEntry("p10", 18, 55.6f, 99);
+		addHighscoreEntry(hs1);
+		addHighscoreEntry(hs2);
+		addHighscoreEntry(hs3);
+		addHighscoreEntry(hs4);
+		addHighscoreEntry(hs5);
+		addHighscoreEntry(hs6);
+		addHighscoreEntry(hs7);
+		addHighscoreEntry(hs8);
+		addHighscoreEntry(hs9);
+		addHighscoreEntry(hs10);
+		writeHighscore();
+	}
+	
+	/*public static void main(String[] args) {
+		HighscoreEntryAL lst = new HighscoreEntryAL();
+		lst.writeDummyFile();
+		lst.readHighscore();
+		System.out.println(lst.toString());
 	}*/
 
 }
