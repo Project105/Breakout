@@ -13,9 +13,11 @@ public class Ball extends Entity implements IMovement {
 	}
 
 	@Override
-	public Vector2f getNextPosition(Vector2f arg0, float arg1, float arg2, int arg3) {
-		
-		return null;
+	public Vector2f getNextPosition(Vector2f pos, float speed, float rotation, int delta) {
+		float deplacement = speed*delta;
+		Vector2f result = new Vector2f((float)(pos.getX() + deplacement * Math.sin((rotation/180)*Math.PI)),
+				(float)(pos.getY() + deplacement * Math.cos((rotation/180)*Math.PI)));
+		return result;
 	}
 	
 	
