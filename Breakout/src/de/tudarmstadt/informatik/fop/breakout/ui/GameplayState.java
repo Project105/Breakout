@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.fop.breakout.ui;
 
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,10 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import de.tudarmstadt.informatik.fop.breakout.actions.BounceSideBallAction;
+import de.tudarmstadt.informatik.fop.breakout.actions.BounceTopBallAction;
+import de.tudarmstadt.informatik.fop.breakout.actions.PauseAction;
+import de.tudarmstadt.informatik.fop.breakout.actions.RotationToMove;
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
 import de.tudarmstadt.informatik.fop.breakout.entities.Block;
@@ -36,10 +41,13 @@ import eea.engine.event.Event;
 import eea.engine.event.NOTEvent;
 import eea.engine.event.OREvent;
 import eea.engine.event.basicevents.CollisionEvent;
+import eea.engine.event.NOTEvent;
+import eea.engine.event.OREvent;
 import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 import eea.engine.event.basicevents.LeavingScreenEvent;
 import eea.engine.event.basicevents.LoopEvent;
+import de.tudarmstadt.informatik.fop.breakout.map.MapReader;
 
 /*
  * @Author Denis Andric
@@ -48,23 +56,66 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private int idState;
 	private StateBasedEntityManager entityManager;
 	private boolean GameWin = false;
+	private int lives = 5;
+	private long time = 0;
+	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
+	private static boolean gameWon = false;
+	private static boolean gameLost = false;
+	private static boolean gameStarted = false;
+	private static boolean ballMoving = false;
+	private static boolean timeStarted = false;
+
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
+
+	public int getLives() {
+		return lives;
+	}
+
+	public int addLives(int lives) {
+		return this.lives = lives;
+	}
+
+	/**
+	 * 
+	 * @return one live lost
+	 */
+	public int loseLive() {
+		return lives - 1;
+	}
+
+	public long getTime() {
+		return time;
+	}
+
+	public void setGameStarted(boolean state) {
+		gameStarted = state;
+	}
 
 	public boolean getGameWin() {
 		return GameWin;
 	}
-	public StateBasedEntityManager getEntityManager(){
+
+	public StateBasedEntityManager getEntityManager() {
 		return entityManager;
 	}
 
-	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
+	public float getStickPosition() {
+		return entityManager.getEntity(idState, STICK_ID).getPosition().getX();
+	}
+
 
 	public GameplayState(int ID) {
 		idState = ID;
 		entityManager = StateBasedEntityManager.getInstance();
 	}
-/*
- * BorderFactory to List
- */
+
+
+	/*
+	 * BorderFactory to List
+	 */
+
 	public void makeBorderList() {
 
 		borders.add(new BorderFactory(BorderType.LEFT));
@@ -72,10 +123,13 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		borders.add(new BorderFactory(BorderType.TOP));
 
 	}
-/**
- * 
- */
+
+
+	/**
+	 * 
+	 */
 	public void BorderListToEntity() {
+		makeBorderList();
 		for (BorderFactory e : borders) {
 			Entity border = e.createEntity();
 			entityManager.addEntity(idState, border);
@@ -83,13 +137,53 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	}
 
-	
-	
-	
 
-	@Override
-	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+	/**
+	 * Loads the map from a given file and creates blocks based on that information
+	 * @throws SlickException 
+	 */
+	public void dispBlocks() throws SlickException {
+		final int borderWidth = 0;
+		int currentNrOfBlocks = 0;
+		int currentNrOfRows = 0;
+		String img = null;
+		MapReader reader = new MapReader("maps/level1.map");
+		String map = reader.readMap();
+		char[] charArr = map.toCharArray();
+		for(int i = 0; i < charArr.length; i++) {
+			//if block is first block in new line
+			if(i % 31 == 0) {
+				currentNrOfBlocks = 0;
+				currentNrOfRows++;
+			}
+			//check if there is a real block, but still increment the number of blocks anyway,
+			//so the next block will be at the correct position
+			if(charArr[i] != ',') {
+				//properties of the block must be set correctly, including row, column and lives
+				currentNrOfBlocks++;
+				if(charArr[i] != 0) {
+					//System.out.println(map);
+					Block block = new Block ("Block", (int) charArr[i]);
+					if((int) charArr[i] == 1)
+						img = BLOCK_1_IMAGE;
+					if((int) charArr[i] == 2)
+						img = BLOCK_2_IMAGE;
+					if((int) charArr[i] == 3)
+						img = BLOCK_3_IMAGE;
+					if((int) charArr[i] == 4)
+						img = BLOCK_3_IMAGE;
+					block.addComponent(new ImageRenderComponent(new Image(img)));
+					block.setPosition(new Vector2f(WINDOW_WIDTH - 2 * borderWidth + currentNrOfBlocks * block.getSize().getX() + block.getSize().getX() / 2,
+							WINDOW_HEIGHT - borderWidth + currentNrOfRows * block.getSize().getY() + block.getSize().getY() / 2));
+					entityManager.addEntity(idState, block);
+				}
+			}
+		}
+		System.out.println(map);
+	}
 
+
+	public void setBackground() throws SlickException {
 		// Setting up background entity
 		Entity background = new Entity(BACKGROUND_ID);
 		// setting up position
@@ -98,10 +192,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		background.addComponent(new ImageRenderComponent(new Image(BACKGROUND_IMAGE)));
 		// adding entity to entityManager
 		entityManager.addEntity(idState, background);
+	}
 
-		/*
-		 * Escape function entity
-		 */
+	public void Escape() {
 		// Setting up entity
 		Entity escListener = new Entity("ESC_Listener");
 		// Event if is Escape pressed
@@ -113,14 +206,48 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		// adding entity in entityManager
 		entityManager.addEntity(idState, escListener);
 
+
 		makeBorderList();
+
+	}
+
+	public void PauseIt() {
+		Entity PListener = new Entity("P_Listener");
+		KeyPressedEvent space = new KeyPressedEvent(Input.KEY_P);
+		PauseAction pause = new PauseAction();
+		space.addAction(pause);
+		PListener.addComponent(space);
+		entityManager.addEntity(idState, PListener);
+
+	}
+
+	public void StartGameAndTime(GameContainer gc, int delta) {
+		if (gc.getInput().isKeyPressed(Input.KEY_SPACE)) {
+			gameStarted = true;
+			timeStarted = true;
+
+		}
+		if (timeStarted)
+			time += delta;
+
+	}
+
+	@Override
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		ballMoving = false;
+		gameStarted = false;
+
+		setBackground();
 		BorderListToEntity();
+		Escape();
+		PauseIt();
 
 		Stick stick = new Stick(STICK_ID);
 		// default Position
 		stick.setPosition(new Vector2f(400, 580));
 		// adding image to entity
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
+
 
 		// Right Left Movement of stick
 	TouchLeftBorder borderTouchLeft = new TouchLeftBorder("leftcolide");
@@ -138,6 +265,12 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		ANDEvent moveFreeRight = new ANDEvent(checkForCollisionLeftRight, rightDown);
 		moveFreeRight.addAction(new MoveRightAction(STICK_SPEED));
 		stick.addComponent(moveFreeRight);		
+
+		stick.moveLeft();// method only for stick , it is in class
+
+		stick.moveRight();// method only for stick, it is in class
+
+
 		entityManager.addEntity(idState, stick);
 
 		//checks if Space has been pressed
@@ -240,12 +373,16 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		ball.addComponent(outOfGame);
 		ball.addComponent(blockCollision);
 		entityManager.addEntity(idState, ball);
+		dispBlocks();
+
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
 
+		StartGameAndTime(gc, delta);
+		
 	}
 
 	@Override
@@ -257,12 +394,14 @@ public class GameplayState extends BasicGameState implements GameParameters {
 				.collides(entityManager.getEntity(GAMEPLAY_STATE, RIGHT_BORDER_ID)), 100, 125);
 		g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getPosition().getX(), 100, 150);
 		g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getSize().getX(), 100, 175);
-
+		g.drawString((time / 1000) / 60 + ":" + (time / 1000) % 60 + ":" + time % 1000, 700, 50);
+		g.drawString("Lifes left: " + lives, 600, 25);
+		g.drawString("" + timeStarted, 300, 10);
+		g.drawString(" " + gc.getTime(), 700, 75);
 	}
 
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
 		return idState;
 	}
 

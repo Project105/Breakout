@@ -12,11 +12,15 @@ public class Block extends Entity implements IDestructible, ICollidable {
 	private float blockHeight;
 	private int hitsLeft;
 	
+
 	public Block(String entityID, int hitsLeft) {
 		super(entityID);
+
 		this.setPassable(false);
 		this.hitsLeft = hitsLeft;
 		
+
+
 	}
  
 	@Override
