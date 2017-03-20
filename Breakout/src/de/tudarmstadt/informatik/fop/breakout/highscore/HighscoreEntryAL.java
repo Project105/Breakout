@@ -4,17 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
-
 import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
 
 /**
@@ -23,6 +18,10 @@ import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
  */
 public class HighscoreEntryAL implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	ArrayList<HighscoreEntry> al = new ArrayList<HighscoreEntry>(10);
 	private String filePath = "highscoreFile.hsc";
 	private File highscoreFile;
@@ -145,7 +144,7 @@ public class HighscoreEntryAL implements Serializable {
 	}
 	
 	public void writeDummyFile() {
-		HighscoreEntry hs1 = new HighscoreEntry("p1", -1, 55.5f, 100);
+		HighscoreEntry hs1 = new HighscoreEntry("p1", 1, 55.5f, 100);
 		HighscoreEntry hs2 = new HighscoreEntry("p2", 10, 55.6f, 99);
 		HighscoreEntry hs3 = new HighscoreEntry("p3", 11, 55.5f, 100);
 		HighscoreEntry hs4 = new HighscoreEntry("p4", 12, 55.5f, 100);

@@ -7,10 +7,11 @@ import eea.engine.interfaces.ICollidable;
 import eea.engine.interfaces.IDestructible;
 
 public class Block extends Entity implements IDestructible, ICollidable {
-
-	public Block(String entityID) {
+	private int hitsLeft;
+	public Block(String entityID, int hitsLeft) {
 		super(entityID);
-		// TODO Auto-generated constructor stub
+		this.hitsLeft = hitsLeft;
+		this.setVisible(true);
 	}
 
 	@Override
