@@ -10,16 +10,19 @@ public class Block extends Entity implements IDestructible, ICollidable {
 
 	private float blockWidth;
 	private float blockHeight;
+	private int hitsLeft;
 	
-	public Block(String entityID, Vector2f pos) {
+	public Block(String entityID, int hitsLeft) {
 		super(entityID);
 		this.setPassable(false);
-		this.setPosition(pos);
+		this.hitsLeft = hitsLeft;
 		
 	}
-
+ 
 	@Override
 	public boolean collides(float arg0, float arg1) {
+		blockWidth = this.getSize().getX();
+		blockHeight = this.getSize().getY();
 		if((arg0 <= (this.getPosition().getX()+ blockWidth/2)) && (arg0 >= (this.getPosition().getX() - blockWidth/2)) 
 				&& (arg1 >= (this.getPosition().getX() - blockHeight/2)) &&  (arg1 <= (this.getPosition().getX() + blockHeight/2))){
 			return true; 
@@ -31,8 +34,26 @@ public class Block extends Entity implements IDestructible, ICollidable {
 
 	@Override
 	public void impactAt(Vector2f arg0) {
-
+		
 
 	}
-
+	
+	public int getHitsLeft(){
+		return hitsLeft;
+	
+	}
+	
+	public void setHitsLeft(int hitsLeft){
+	
+		this.hitsLeft = hitsLeft;
+	}
+	
+	public void addHitsLeft(int add){
+		hitsLeft += add;
+	}
+	
+	public void reduceHitsLeft(int red){
+		hitsLeft -= red;
+	}
+	
 }

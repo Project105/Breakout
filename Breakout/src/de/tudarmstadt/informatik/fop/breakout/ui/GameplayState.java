@@ -1,10 +1,7 @@
 package de.tudarmstadt.informatik.fop.breakout.ui;
 
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.event.ChangeEvent;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -17,11 +14,13 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
+import de.tudarmstadt.informatik.fop.breakout.entities.Block;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchLeftBorder;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchRightBorder;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchTopBorder;
 import de.tudarmstadt.informatik.fop.breakout.factories.BorderFactory;
+import de.tudarmstadt.informatik.fop.breakout.actions.BallBlockCollision;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.action.basicactions.DestroyEntityAction;
@@ -36,6 +35,7 @@ import eea.engine.event.ANDEvent;
 import eea.engine.event.Event;
 import eea.engine.event.NOTEvent;
 import eea.engine.event.OREvent;
+import eea.engine.event.basicevents.CollisionEvent;
 import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 import eea.engine.event.basicevents.LeavingScreenEvent;
@@ -123,8 +123,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 
 		// Right Left Movement of stick
-/**
-		TouchLeftBorder borderTouchLeft = new TouchLeftBorder("leftcolide");
+	TouchLeftBorder borderTouchLeft = new TouchLeftBorder("leftcolide");
 		TouchRightBorder borderTouchRight = new TouchRightBorder("rightcolide");
 		
 		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
@@ -140,7 +139,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		moveFreeRight.addAction(new MoveRightAction(STICK_SPEED));
 		stick.addComponent(moveFreeRight);		
 		entityManager.addEntity(idState, stick);
-**/	
+
 		//checks if Space has been pressed
 		KeyPressedEvent spaceDown = new KeyPressedEvent(Input.KEY_SPACE);
 		
@@ -181,8 +180,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 			@Override
 			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
 				arg3.getOwnerEntity().setRotation(360 - arg3.getOwnerEntity().getRotation());
-				
-			}
+				}
 			
 		});
 		//Event for collision with Top Border
@@ -206,6 +204,27 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		//Removes Ball from the EntityList
 		outOfGame.addAction(new DestroyEntityAction());
 		
+		CollisionEvent blockCollision = new CollisionEvent();
+		blockCollision.addAction(new Action(){
+
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+				if ( blockCollision.getCollidedEntity() instanceof Block){
+					BallBlockCollisionMovement(arg3.getOwnerEntity(), blockCollision.getCollidedEntity());
+					blockCollision.getCollidedEntity().reduceHitsLeft(1);
+					if(blockCollision.getCollidedEntity().getHitsleft() == 0){
+						
+					}
+					
+					
+					
+				}
+				
+			}
+			
+			
+		});
+		
 		//Initializes the Ball(new Ball Object, set Position and Rotation, adds the Components to the Ball)
 		Ball ball = new Ball(BALL_ID);
 		ball.setPosition(new Vector2f(400,560));
@@ -219,6 +238,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		ball.addComponent(bounceLeftRight);
 		ball.addComponent(bounceTop);
 		ball.addComponent(outOfGame);
+		ball.addComponent(blockCollision);
 		entityManager.addEntity(idState, ball);
 	}
 
