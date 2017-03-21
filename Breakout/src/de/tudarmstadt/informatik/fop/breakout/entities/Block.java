@@ -21,6 +21,7 @@ public class Block extends Entity implements IDestructible, ICollidable {
 		
 
 
+
 	}
  
 	@Override
@@ -59,7 +60,11 @@ public class Block extends Entity implements IDestructible, ICollidable {
 	public void reduceHitsLeft(int red){
 		hitsLeft -= red;
 	}
+
 	public Block getBlock(){
 		return  this;
 	}
 }
+
+	
+

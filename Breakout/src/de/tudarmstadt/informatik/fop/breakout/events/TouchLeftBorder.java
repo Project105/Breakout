@@ -1,3 +1,4 @@
+
 package de.tudarmstadt.informatik.fop.breakout.events;
 
 import org.newdawn.slick.GameContainer;
@@ -6,6 +7,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.ui.GameplayState;
 import eea.engine.event.Event;
+
 
 /**
  * 
@@ -29,3 +31,4 @@ public class TouchLeftBorder extends Event implements GameParameters {
 	}
 
 }
+

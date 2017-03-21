@@ -19,7 +19,11 @@ public interface GameParameters {
 	public static final int GAMEPLAY_STATE = 1;
 	public static final int HIGHSCORE_STATE = 2;
 	public static final int CREDITS_STATE = 3;
+
 	public static final int TEST_GAME_OVER_STATE = 4;
+
+
+
 	// Background
 	public static final String BACKGROUND_ID = "background";
 	public static final String BACKGROUND_IMAGE = "/images/background.png";

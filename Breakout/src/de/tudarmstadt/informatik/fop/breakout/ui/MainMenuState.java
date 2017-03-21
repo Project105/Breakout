@@ -97,7 +97,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		credits.addComponent(andEvents2);
 		// adding Entity in EntityManager
 		entityManager.addEntity(idState, credits);
-
+		
 		/*
 		 =============== =============== EXIT GAME BUTTON  =============== ===============
 		 */
@@ -121,6 +121,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		// adding entity in entityManager
 		entityManager.addEntity(idState, exitGame);
 		
+
 		/*
 		 =============== =============== TEST GAME OVER BUTTON  =============== ===============
 		 */
@@ -137,6 +138,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		entityManager.addEntity(idState, gameOver);
 				
 		
+
 		/**
 		 =============== =============== IO Operations =============== ===============
 		 **/

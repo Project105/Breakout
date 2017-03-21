@@ -1,3 +1,4 @@
+
 package de.tudarmstadt.informatik.fop.breakout.events;
 
 import org.newdawn.slick.GameContainer;
@@ -25,6 +26,4 @@ public class TouchTopBorder extends Event implements GameParameters {
 			return false;
 	}
 }
-	
-
 

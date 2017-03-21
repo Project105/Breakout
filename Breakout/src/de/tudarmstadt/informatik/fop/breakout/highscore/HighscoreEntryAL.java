@@ -13,6 +13,7 @@ import java.util.Collections;
 import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
 
 /**
+<<<<<<< HEAD
  * A class implementing a data structure for HighscoreEntry using ArrayList
  * 
  * @author Marcel Geibel

@@ -1,3 +1,5 @@
+
+
 package de.tudarmstadt.informatik.fop.breakout.actions;
 
 import org.newdawn.slick.geom.Vector2f;
@@ -20,5 +22,3 @@ public class RotationToMove extends Movement {
 	}
 	
 }
-
-

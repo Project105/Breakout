@@ -11,14 +11,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import eea.engine.action.basicactions.ChangeStateAction;
-import eea.engine.action.basicactions.ChangeStateInitAction;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
-import eea.engine.event.ANDEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
-import eea.engine.event.basicevents.MouseClickedEvent;
-import eea.engine.event.basicevents.MouseEnteredEvent;
 
 public class CreditsState extends BasicGameState implements GameParameters {
 	/* Attributes */
@@ -60,20 +56,6 @@ public class CreditsState extends BasicGameState implements GameParameters {
 		escListener.addComponent(esc);
 		// adding entity in entityManager
 		entityManager.addEntity(idState, escListener);
-		
-		/*
-		 * Main Menu Button
-		 */
-		Entity menu = new Entity("Main Menu");
-		menu.setPosition(new Vector2f(400, 450));
-		menu.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
-		ANDEvent andEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
-		// Action- going into Highscore State
-		andEvents.addAction(new ChangeStateInitAction(MAINMENU_STATE));
-		// adding eventComponent
-		menu.addComponent(andEvents);
-		// adding Entity in EntityManager
-		entityManager.addEntity(idState, menu);
 	}
 
 	@Override
@@ -82,7 +64,7 @@ public class CreditsState extends BasicGameState implements GameParameters {
 		arg2.drawString(
 				"This incredibly awesome game was created by" + "\n" + "Denis Andric, Marcel Geibel, Felix Maas and Dirk Schweickard",
 				100, 100);
-		arg2.drawString("Main Menu", 300, 440);
+
 
 	}
 

@@ -5,6 +5,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.gui.TextField;
@@ -135,6 +136,7 @@ public class GameOverState extends BasicGameState implements GameParameters {
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
 		entityManager.updateEntities(arg0, arg1, arg2);
 		playerName = textField.getText();
+
 	}
 
 	@Override

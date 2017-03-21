@@ -1,3 +1,4 @@
+
 package de.tudarmstadt.informatik.fop.breakout.actions;
 
 import org.newdawn.slick.GameContainer;
@@ -16,3 +17,4 @@ public class BounceSideBallAction implements Action {
 
 
 }
+

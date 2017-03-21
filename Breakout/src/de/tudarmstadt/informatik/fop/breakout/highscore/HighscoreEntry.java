@@ -3,7 +3,7 @@ package de.tudarmstadt.informatik.fop.breakout.highscore;
 import java.io.Serializable;
 
 import de.tudarmstadt.informatik.fop.breakout.interfaces.IHighscoreEntry;
-
+ 
 /**
  * A class implementing a HighscoreEntry for a player
  * 
@@ -89,7 +89,7 @@ public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable
 		else
 			return 1;
 
-	}
+	}}
 
 	/*
 	 * HighscoreEntry compare(HighscoreEntry he1, HighscoreEntry he2) {
@@ -104,4 +104,3 @@ public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable
 	 * // if the highscores are totally equal, the highscore that was set first
 	 * will stay in front else return he1; }
 	 */
-}

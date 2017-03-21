@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.fop.breakout.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -23,25 +24,26 @@ import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
 import de.tudarmstadt.informatik.fop.breakout.entities.Block;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
-import de.tudarmstadt.informatik.fop.breakout.events.PrivateBallEvent;
 import de.tudarmstadt.informatik.fop.breakout.events.PrivateBallMovEvent;
 import de.tudarmstadt.informatik.fop.breakout.events.PrivateBallNotMovEvent;
-import de.tudarmstadt.informatik.fop.breakout.events.PrivateLoopEvent;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchLeftBorder;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchRightBorder;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchTopBorder;
 import de.tudarmstadt.informatik.fop.breakout.factories.BorderFactory;
+import de.tudarmstadt.informatik.fop.breakout.factories.ItemFactory;
+import de.tudarmstadt.informatik.fop.breakout.map.MapReader;
+import de.tudarmstadt.informatik.fop.breakout.player.Player;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
-import eea.engine.action.basicactions.DestroyEntityAction;
+import eea.engine.action.basicactions.MoveDownAction;
 import eea.engine.action.basicactions.MoveLeftAction;
 import eea.engine.action.basicactions.MoveRightAction;
+import eea.engine.action.basicactions.Movement;
 import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
-import eea.engine.event.Event;
 import eea.engine.event.NOTEvent;
 import eea.engine.event.OREvent;
 import eea.engine.event.basicevents.CollisionEvent;
@@ -49,8 +51,6 @@ import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 import eea.engine.event.basicevents.LeavingScreenEvent;
 import eea.engine.event.basicevents.LoopEvent;
-import de.tudarmstadt.informatik.fop.breakout.map.MapReader;
-import de.tudarmstadt.informatik.fop.breakout.player.Player;
 
 /*
  * @Author Denis Andric
@@ -59,6 +59,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private int idState;
 	private StateBasedEntityManager entityManager;
 	private boolean GameWin = false;
+
 	// private static int lives = 3;
 	private static long time = 0;
 	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
@@ -74,6 +75,30 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	public boolean getBallMoving() {
 		return ballMoving;
+	}
+
+	private int lives = 5;
+	private static boolean timeStarted = false;
+
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
+
+	public int getLives() {
+		return lives;
+	}
+
+	public int addLives(int lives) {
+		return this.lives = lives;
+	}
+
+	/**
+	 * 
+	 * @return one live lost
+	 */
+	public int loseLive() {
+		return lives - 1;
+
 	}
 
 	public long getTime() {
@@ -101,9 +126,6 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		entityManager = StateBasedEntityManager.getInstance();
 	}
 
-	/*
-	 * BorderFactory to List
-	 */
 	public void makeBorderList() {
 
 		borders.add(new BorderFactory(BorderType.LEFT));
@@ -124,6 +146,140 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	}
 
+	/**
+	 * Loads the map from a given file and creates blocks based on that
+	 * information
+	 * 
+	 * @throws SlickException
+	 */
+	public void dispBlocks() throws SlickException {
+		int currentNrOfBlocks = 0;
+		int currentNrOfRows = 0;
+		String img = BLOCK_1_IMAGE;
+		MapReader reader = new MapReader("maps/level1.map");
+		String map = reader.readMap();
+		char[] charArr = map.toCharArray();
+		for (int i = 0; i < charArr.length; i++) {
+			// if block is first block in new line
+			if (i % 31 == 0) {
+				currentNrOfBlocks = 0;
+				currentNrOfRows++;
+			}
+			// check if there is a real block, but still increment the number of
+			// blocks anyway,
+			// so the next block will be at the correct position
+			if (charArr[i] != ',') {
+				// properties of the block must be set correctly, including row,
+				// column and lives
+				currentNrOfBlocks++;
+				if (charArr[i] != '0') {
+					int temp = Integer.parseInt(String.valueOf(charArr[i]));
+					Block block = new Block("Block" + i, temp);
+					System.out.println(temp);
+					if (charArr[i] == '1')
+						img = BLOCK_1_IMAGE;
+					if (charArr[i] == '2')
+						img = BLOCK_2_IMAGE;
+					if (charArr[i] == '3')
+						img = BLOCK_3_IMAGE;
+					if (charArr[i] == '4')
+						img = BLOCK_3_IMAGE;
+					block.addComponent(new ImageRenderComponent(new Image(img)));
+					block.setPosition(
+							new Vector2f(1 + currentNrOfBlocks * block.getSize().getX() - block.getSize().getX() / 2,
+									1 + currentNrOfRows * block.getSize().getY() - block.getSize().getY() / 2));
+					block.setPassable(false);
+					CollisionEvent collisionWithBall = new CollisionEvent();
+					block.addComponent(collisionWithBall);
+					collisionWithBall.addAction(new Action() {
+
+						@Override
+						public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+							if (collisionWithBall.getCollidedEntity() instanceof Ball) {
+								BallBlockCollisionMovement(arg3.getOwnerEntity(),
+										collisionWithBall.getCollidedEntity());
+								Block blockTemp = (Block) arg3.getOwnerEntity();
+
+								System.out.println(blockTemp.getHitsLeft());
+								System.out.println(blockTemp.getID());
+								blockTemp.reduceHitsLeft(1);
+
+								if (blockTemp.getHitsLeft() == 0) {
+
+									// Items
+									Random rn = new Random();
+									int itemChance = rn.nextInt(10) + 1;
+									if (itemChance <= 4) {
+										System.out.println("Ein Item ist da!");
+										ItemFactory i = new ItemFactory(itemChance,
+												arg3.getOwnerEntity().getPosition());
+										Entity item = i.createEntity();
+										LoopEvent moveItem = new LoopEvent();
+										moveItem.addAction(new MoveDownAction(0.2f));
+										item.addComponent(moveItem);
+										entityManager.addEntity(idState, item);
+									}
+									entityManager.removeEntity(idState, arg3.getOwnerEntity());
+								}
+							}
+
+						}
+					});
+
+					entityManager.addEntity(idState, block);
+				}
+			}
+		}
+	}
+	public void BallBlockCollisionMovement(Entity ownerEntity, Entity collidedEntity) {
+
+		float blockBorderRight;// X
+		float blockBorderLeft;// X
+		float blockBorderTop;// Y
+		float blockBorderBottom;// Y
+		collisionWithBlock = true;
+
+		blockBorderRight = ownerEntity.getPosition().getX() + ownerEntity.getSize().getX() / 2;
+		blockBorderLeft = ownerEntity.getPosition().getX() - ownerEntity.getSize().getX() / 2;
+		blockBorderTop = ownerEntity.getPosition().getY() - ownerEntity.getSize().getY() / 2;
+		blockBorderBottom = ownerEntity.getPosition().getY() + ownerEntity.getSize().getY() / 2;
+
+		// Bottom Border of Block
+		if ((collidedEntity.getPosition().getX() <= blockBorderRight)
+				&& (collidedEntity.getPosition().getX() >= blockBorderLeft)
+				&& (collidedEntity.getPosition().getY() > blockBorderBottom)) {
+			if ((collidedEntity.getRotation() > 90) && (collidedEntity.getRotation() <= 180)) {
+				collidedEntity.setRotation(180 - collidedEntity.getRotation());
+			} else if ((collidedEntity.getRotation() < 270) && (collidedEntity.getRotation() > 180)) {
+				collidedEntity.setRotation(540 - collidedEntity.getRotation());
+			}
+		}
+
+		// Top Border of Block
+		if ((collidedEntity.getPosition().getX() <= blockBorderRight)
+				&& (collidedEntity.getPosition().getX() >= blockBorderLeft)
+				&& (collidedEntity.getPosition().getY() < blockBorderTop)) {
+			if ((collidedEntity.getRotation() < 90) && (collidedEntity.getRotation() >= 0)) {
+				collidedEntity.setRotation(180 - collidedEntity.getRotation());
+			} else if ((collidedEntity.getRotation() < 360) && (collidedEntity.getRotation() > 270)) {
+				collidedEntity.setRotation(540 - collidedEntity.getRotation());
+			}
+		}
+
+		// Left Border of Block
+		if ((collidedEntity.getPosition().getY() >= blockBorderTop)
+				&& (collidedEntity.getPosition().getY() <= blockBorderBottom)
+				&& (collidedEntity.getPosition().getX() < blockBorderLeft)) {
+			collidedEntity.setRotation(360 - collidedEntity.getRotation());
+		}
+
+		// Right Border of Block
+		if ((collidedEntity.getPosition().getY() >= blockBorderTop)
+				&& (collidedEntity.getPosition().getY() <= blockBorderBottom)
+				&& (collidedEntity.getPosition().getX() > blockBorderRight)) {
+			collidedEntity.setRotation(360 - collidedEntity.getRotation());
+		}
+	}
 	public void setBackground() throws SlickException {
 		// Setting up background entity
 		Entity background = new Entity(BACKGROUND_ID);
@@ -174,133 +330,14 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	}
 
-	/*
-	 * public void setTimeEntity(){ Entity stopWatch=new
-	 * Entity("STOP_WATCH_ID"); //Event witch starts countTime Event
-	 * startingTime = new Event("start"){
-	 * 
-	 * @Override protected boolean performAction(GameContainer arg0,
-	 * StateBasedGame arg1, int arg2) {
-	 * 
-	 * return gameStarted; }
-	 * 
-	 * };
-	 * 
-	 * //Action to count flowing milliseconds Action countTime = new Action(){
-	 * 
-	 * @Override public void update(GameContainer arg0, StateBasedGame arg1, int
-	 * arg2, Component arg3) { time=time + arg2;
-	 * 
-	 * }
-	 * 
-	 * }; startingTime.addAction(countTime);
-	 * stopWatch.addComponent(startingTime); entityManager.addEntity(idState,
-	 * stopWatch); }
-	 */
-
-	/**
-	 * Loads the map from a given file and creates blocks based on that
-	 * information
-	 * 
-	 * @throws SlickException
-	 */
-	public void dispBlocks() throws SlickException {
-		int currentNrOfBlocks = 0;
-		int currentNrOfRows = 0;
-		String img = BLOCK_1_IMAGE;
-		MapReader reader = new MapReader("maps/level1.map");
-		String map = reader.readMap();
-		char[] charArr = map.toCharArray();
-		for (int i = 0; i < charArr.length; i++) {
-			// if block is first block in new line
-			if (i % 31 == 0) {
-				currentNrOfBlocks = 0;
-				currentNrOfRows++;
-			}
-			// check if there is a real block, but still increment the number of
-			// blocks anyway,
-			// so the next block will be at the correct position
-			if (charArr[i] != ',') {
-				// properties of the block must be set correctly, including row,
-				// column and lives
-				currentNrOfBlocks++;
-				if (charArr[i] != '0') {
-					Block block = new Block("Block", (int) charArr[i]);
-					if (charArr[i] == '1')
-						img = BLOCK_1_IMAGE;
-					if (charArr[i] == '2')
-						img = BLOCK_2_IMAGE;
-					if (charArr[i] == '3')
-						img = BLOCK_3_IMAGE;
-					if (charArr[i] == '4')
-						img = BLOCK_3_IMAGE;
-					block.addComponent(new ImageRenderComponent(new Image(img)));
-					block.setPosition(
-							new Vector2f(currentNrOfBlocks * block.getSize().getX() - block.getSize().getX() / 2,
-									currentNrOfRows * block.getSize().getY() - block.getSize().getY() / 2));
-					block.setPassable(false);
-					CollisionEvent collisionWithBall = new CollisionEvent();
-					block.addComponent(collisionWithBall);
-					collisionWithBall.addAction(new Action() {
-
-						@Override
-						public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-							if (collisionWithBall.getCollidedEntity() instanceof Ball) {
-								BallBlockCollisionMovement(arg3.getOwnerEntity(),
-										collisionWithBall.getCollidedEntity());
-								collisionWithBlock = true;
-								collisionWithBall.getCollidedEntity().getPosition();
-								/*
-								 * Block blockTemp = (Block)
-								 * arg3.getOwnerEntity();
-								 * blockTemp.reduceHitsLeft(1); if
-								 * (blockTemp.getHitsLeft() == 0) {
-								 * collisionWithBall.addAction(new
-								 * DestroyEntityAction()); }
-								 */
-							}
-
-						}
-					});
-
-					entityManager.addEntity(idState, block);
-				}
-			}
-		}
-	}
-
-	// ?
-	public void BallBlockCollisionMovement(Entity ownerEntity, Entity collidedEntity) {
-
-		float blockBorderRight;
-		float blockBorderLeft;
-		float blockBorderTop;
-		float blockBorderBottom;
-
-		blockBorderRight = ownerEntity.getPosition().getX() + ownerEntity.getSize().getX() / 2
-				+ collidedEntity.getSize().getY();
-		blockBorderLeft = ownerEntity.getPosition().getX() - ownerEntity.getSize().getX() / 2
-				- collidedEntity.getSize().getY();
-		blockBorderTop = ownerEntity.getPosition().getY() + ownerEntity.getSize().getY() / 2
-				+ collidedEntity.getSize().getX();
-		blockBorderBottom = ownerEntity.getPosition().getY() - ownerEntity.getSize().getY() / 2
-				- collidedEntity.getSize().getX();
-
-		if (((collidedEntity.getPosition().getX() <= blockBorderRight)
-				|| (collidedEntity.getPosition().getX() >= blockBorderLeft))
-				&& (collidedEntity.getPosition().getY() >= blockBorderBottom)) {
-			collidedEntity.setRotation(360 - collidedEntity.getRotation());
-		}
-		if (collidedEntity.getPosition().getY() >= blockBorderBottom) {
-			if (collidedEntity.getRotation() <= 180) {
-				collidedEntity.setRotation(180 - collidedEntity.getRotation());
-			} else {
-				collidedEntity.setRotation(540 - collidedEntity.getRotation());
-			}
-		}
-		if (collidedEntity.getPosition().getY() == blockBorderTop) {
+	public void StartGameAndTime(GameContainer gc, int delta) {
+		if (gc.getInput().isKeyPressed(Input.KEY_SPACE)) {
+			gameStarted = true;
+			timeStarted = true;
 
 		}
+		if (timeStarted)
+			time += delta;
 
 	}
 
@@ -315,30 +352,31 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		gameWon = false;
 		gameLost = false;
 		gameStarted = false;
-		ballMoving = false;
+		
+		setBackground();
 
+		makeBorderList();
+		ballMoving = false;
+		
 		setBackground();
 
 		BorderListToEntity();
-
+		
 		Escape();
 
 		PauseIt();
 
-		dispBlocks();
-		/******************** Stick ***********************/
+				/******************** Stick ***********************/
 		Stick stick = new Stick(STICK_ID);
 		// default Position
 		stick.setPosition(new Vector2f(400, 580));
 		// adding image to entity
 		stick.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
+
 		// Stick left movment
 		TouchLeftBorder borderTouchLeft = new TouchLeftBorder("leftcolide");
 		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
 		ANDEvent moveFreeLeft = new ANDEvent(new NOTEvent(borderTouchLeft), leftDown);
-		moveFreeLeft.addAction(new MoveLeftAction(STICK_SPEED));
-
-		stick.addComponent(moveFreeLeft);
 
 		// stick right movement
 
@@ -405,8 +443,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		spaceDown.addAction(change);
 
 		// Collisiondetection for the three Borders
+		TouchRightBorder colideLeftBorder = new TouchRightBorder("colideLeftBorder");
 		TouchRightBorder colideRightBorder = new TouchRightBorder("colideRightBorder");
-		TouchLeftBorder colideLeftBorder = new TouchLeftBorder("colideLeftBorder");
 		TouchTopBorder colideTopBorder = new TouchTopBorder("colideTopBorder");
 
 		// Event for collision with the Left or Right Border
@@ -417,11 +455,21 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		bounceLeftRight.addAction(new BounceSideBallAction());
 		// Event for collision with Top Border
 
+		// Event for collision with Top Border
+		ANDEvent bounceTop = new ANDEvent(colideTopBorder, moveBall);
 		// Action changes Rotation of ball, when collision with Top Border is
 		// detected
+
 		colideTopBorder.addAction(new BounceTopBallAction());
 
 		// Event starts when Ball leaves the Screen
+
+		stick.moveLeft();// method only for stick , it is in class
+
+		stick.moveRight();// method only for stick, it is in class
+
+		entityManager.addEntity(idState, stick);
+
 		LeavingScreenEvent outOfGame = new LeavingScreenEvent();
 		// Removes Ball from the EntityList
 
@@ -438,16 +486,18 @@ public class GameplayState extends BasicGameState implements GameParameters {
 				}
 
 			}
-
 		});
 
 		// Initializes the Ball(new Ball Object, set Position and Rotation, adds
 		// the Components to the Ball)
 
+		stick.addComponent(moveFreeLeft);
+
 		ball.addComponent(spaceDown);
 		ball.addComponent(bounceLeftRight);
 		ball.addComponent(colideTopBorder);
 		ball.addComponent(outOfGame);
+
 		ball.addComponent(moveBall);
 
 		/************************** Collisions **********************************/
@@ -455,12 +505,27 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		// Collision of Stick and Ball
 
 		CollisionEvent collideStick = new CollisionEvent();
-		// ANDEvent bounceStick = new ANDEvent(collideStick, moveBall);
-		stick.addComponent(collideStick);
-		collideStick.addAction(new Action() {
+		ANDEvent bounceStick = new ANDEvent(collideStick, moveBall);
+		bounceStick.addAction(new Action() {
 
 			@Override
 			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+				if (collideStick.getCollidedEntity().getID().equals("slower")) {
+					entityManager.removeEntity(idState, collideStick.getCollidedEntity());
+
+				}
+				if (collideStick.getCollidedEntity().getID().equals("faster")) {
+					entityManager.removeEntity(idState, collideStick.getCollidedEntity());
+
+				}
+				if (collideStick.getCollidedEntity().getID().equals("bigger")) {
+					entityManager.removeEntity(idState, collideStick.getCollidedEntity());
+					arg3.getOwnerEntity().setSize(new Vector2f(150, 25));
+				}
+				if (collideStick.getCollidedEntity().getID().equals("smaller")) {
+					entityManager.removeEntity(idState, collideStick.getCollidedEntity());
+					arg3.getOwnerEntity().setSize(new Vector2f(100, 25));
+				}
 
 				if (collideStick.getCollidedEntity() instanceof Ball) {
 
@@ -519,7 +584,35 @@ public class GameplayState extends BasicGameState implements GameParameters {
 				}
 			}
 		});
+		stick.addComponent(bounceStick);
+		stick.addComponent(collideStick);
+		// 2-dimensionaler elastischer Stoﬂ
 
+		ANDEvent impactOnFlightLeft = new ANDEvent(moveFreeLeft, bounceStick);
+		stick.addComponent(impactOnFlightLeft);
+		impactOnFlightLeft.addAction(new Action() {
+
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+				collideStick.getCollidedEntity().setRotation(collideStick.getCollidedEntity().getRotation() + 40);
+
+			}
+		});
+
+		ANDEvent impactOnFlightRight = new ANDEvent(moveFreeRight, bounceStick);
+		stick.addComponent(impactOnFlightRight);
+		impactOnFlightRight.addAction(new Action() {
+
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+				collideStick.getCollidedEntity().setRotation(collideStick.getCollidedEntity().getRotation() - 40);
+
+			}
+		});
+
+		entityManager.addEntity(idState, ball);
+
+		dispBlocks();
 	}
 
 	@Override
@@ -554,22 +647,13 @@ public class GameplayState extends BasicGameState implements GameParameters {
 			gameLost = true;
 			sbg.enterState(TEST_GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
 		}
+
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		entityManager.renderEntities(gc, sbg, g);
-		/*
-		 * g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
-		 * .collides(entityManager.getEntity(GAMEPLAY_STATE, LEFT_BORDER_ID)),
-		 * 100, 100); g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE,
-		 * STICK_ID) .collides(entityManager.getEntity(GAMEPLAY_STATE,
-		 * RIGHT_BORDER_ID)), 100, 125); g.drawString("" +
-		 * entityManager.getEntity(GAMEPLAY_STATE,
-		 * STICK_ID).getPosition().getX(), 100, 150); g.drawString("" +
-		 * entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getSize().getX(),
-		 * 100, 175);
-		 */
+
 		g.drawString("Time   " + (time / 1000) / 60 + ":" + (time / 1000) % 60 + ":" + time % 1000, 500, 50);
 		g.drawString("Lives left: " + player.getLives()/* lives */, 600, 25);
 		g.drawString("Game Started  " + gameStarted, 300, 10);
@@ -577,6 +661,17 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		g.drawString("GameLost " + gameLost, 50, 50);
 		if (/* player.getLivesLeft() */player.getLives() == 0)
 			g.drawString("Game Over", 500, 300);
+
+		g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
+				.collides(entityManager.getEntity(GAMEPLAY_STATE, LEFT_BORDER_ID)), 100, 100);
+		g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
+				.collides(entityManager.getEntity(GAMEPLAY_STATE, RIGHT_BORDER_ID)), 100, 125);
+		g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getPosition().getX(), 100, 150);
+		g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getSize().getX(), 100, 175);
+		g.drawString((time / 1000) / 60 + ":" + (time / 1000) % 60 + ":" + time % 1000, 700, 50);
+		g.drawString("Lifes left: " + lives, 600, 25);
+		g.drawString("" + timeStarted, 300, 10);
+		g.drawString(" " + gc.getTime(), 700, 75);
 
 	}
 
