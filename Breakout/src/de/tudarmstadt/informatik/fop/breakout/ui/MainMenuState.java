@@ -89,7 +89,6 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		Entity credits = new Entity("Credits");
 		credits.setPosition(new Vector2f(218, 390));
 		credits.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
-		
 		ANDEvent andEvents2 = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		// Action- going into Highscore State
 		andEvents2.addAction(new ChangeStateInitAction(CREDITS_STATE));
