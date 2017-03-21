@@ -14,7 +14,11 @@ import eea.engine.component.Component;
  *
  */
 public class BallPositioning implements Action,GameParameters{
+	int X;
 	GameplayState a = new GameplayState(GAMEPLAY_STATE);
+	public BallPositioning(int x){
+		X=x;
+	}
 
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {

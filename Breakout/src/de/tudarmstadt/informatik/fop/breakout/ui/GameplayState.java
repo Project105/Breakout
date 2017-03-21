@@ -24,6 +24,7 @@ import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
 import de.tudarmstadt.informatik.fop.breakout.entities.Block;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import de.tudarmstadt.informatik.fop.breakout.events.PrivateBallEvent;
+import de.tudarmstadt.informatik.fop.breakout.events.PrivateBallNotMovEvent;
 import de.tudarmstadt.informatik.fop.breakout.events.PrivateLoopEvent;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchLeftBorder;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchRightBorder;
@@ -181,28 +182,14 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		/********************************
 		 * Following Stick before Ball is started
 		 *************************/
-       //LoopEvent with  ID 
-		PrivateLoopEvent followStick = new PrivateLoopEvent("followStick");
-		//Action to maintain x distance of stick by 20
-		BallPositioning positioning = new BallPositioning();
-		followStick.addAction(positioning);
-		//Event witch say that ball follows or not follow the stick
-		PrivateBallEvent addEvent = new PrivateBallEvent("addEvent");
-		//action for adding Component
-		Action followOrNot = new Action() {
+		// i need personal event
+				// Event that starts action when ballMoving =false
+				PrivateBallNotMovEvent followStick = new PrivateBallNotMovEvent("ballNotMove");
+				// Ball is 40 + stick position x
+				BallPositioning positioning = new BallPositioning(40);
 
-			@Override
-			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-				if (followStick.getOwnerEntity() == null)
-					arg3.getOwnerEntity().addComponent(followStick);
-				else
-					ball.removeComponent(followStick);
-
-			}
-
-		};
-		addEvent.addAction(followOrNot);
-		ball.addComponent(addEvent);
+				followStick.addAction(positioning);
+				ball.addComponent(followStick);
 		/************************************ Starting *****************************/
 		//Felix and Dirk
 		// checks if Space has been pressed
