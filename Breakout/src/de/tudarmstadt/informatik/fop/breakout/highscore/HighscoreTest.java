@@ -2,12 +2,7 @@ package de.tudarmstadt.informatik.fop.breakout.highscore;
 
 import static org.junit.Assert.*;
 
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-
-import org.junit.BeforeClass;
 import org.junit.Test;
-import de.tudarmstadt.informatik.fop.breakout.highscore.*;
 
 public class HighscoreTest {
 	

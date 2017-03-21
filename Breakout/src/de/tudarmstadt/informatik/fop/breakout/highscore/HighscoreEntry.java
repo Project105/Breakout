@@ -4,25 +4,45 @@ import java.io.Serializable;
 
 import de.tudarmstadt.informatik.fop.breakout.interfaces.IHighscoreEntry;
 
+/**
+ * A class implementing a HighscoreEntry for a player
+ * 
+ * @author Marcel Geibel
+ *
+ */
 public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable<HighscoreEntry> {
-	
+
+	/**
+	 * Attributes
+	 */
+
+	private static final long serialVersionUID = 1L;
 	private String playerName = null;
 	private int numberOfDestroyedBlocks = 0;
 	private float elapsedTime = 0;
 	private double points = 0;
-	
+
+	/**
+	 * Constructor
+	 */
+
 	/**
 	 * Constructor, setting all the attributes for a highscore entry
-	 * @param name the player's name
-	 * @param blocks the number of blocks, the player destroyed
-	 * @param time the time elapsed during the game
-	 * @param points the points scored in the game
+	 * 
+	 * @param name
+	 *            the player's name
+	 * @param blocks
+	 *            the number of blocks, the player destroyed
+	 * @param time
+	 *            the time elapsed during the game
+	 * @param points
+	 *            the points scored in the game
 	 */
 	public HighscoreEntry(String name, int blocks, float time, double points) {
 		playerName = name;
 		numberOfDestroyedBlocks = blocks;
 		elapsedTime = time;
-		this.points = points;	
+		this.points = points;
 	}
 
 	@Override
@@ -44,39 +64,44 @@ public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable
 	public double getPoints() {
 		return points;
 	}
-	
-	/*@Override
-	public String toString() {
-		// different values separated by ";" and different entries separated by ":"
-		return(playerName + ";" + numberOfDestroyedBlocks + ";" + elapsedTime + ";" + points + ":");
-	}*/
-	
+
+	/*
+	 * @Override public String toString() { // different values separated by ";"
+	 * and different entries separated by ":" return(playerName + ";" +
+	 * numberOfDestroyedBlocks + ";" + elapsedTime + ";" + points + ":"); }
+	 */
+
 	@Override
 	public int compareTo(HighscoreEntry he) {
-		if(this.getNumberOfDestroyedBlocks() > he.getNumberOfDestroyedBlocks())
+		if (this.getNumberOfDestroyedBlocks() > he.getNumberOfDestroyedBlocks())
 			return -1;
 		else if (this.getNumberOfDestroyedBlocks() < he.getNumberOfDestroyedBlocks())
 			return 1;
-		else if(this.getNumberOfDestroyedBlocks() == he.getNumberOfDestroyedBlocks() && this.getElapsedTime() < he.getElapsedTime())
+		else if (this.getNumberOfDestroyedBlocks() == he.getNumberOfDestroyedBlocks()
+				&& this.getElapsedTime() < he.getElapsedTime())
 			return -1;
-		else if(this.getNumberOfDestroyedBlocks() == he.getNumberOfDestroyedBlocks() && this.getElapsedTime() > he.getElapsedTime())
+		else if (this.getNumberOfDestroyedBlocks() == he.getNumberOfDestroyedBlocks()
+				&& this.getElapsedTime() > he.getElapsedTime())
 			return 1;
-		
-		// if the highscores are totally equal, the highscore that was set first will stay in front
-		else return 1;
-		
+
+		// if the highscores are totally equal, the highscore that was set first
+		// will stay in front
+		else
+			return 1;
+
 	}
-	/* HighscoreEntry compare(HighscoreEntry he1, HighscoreEntry he2) {
-		if(he1.getNumberOfDestroyedBlocks() > he2.getNumberOfDestroyedBlocks())
-			return he1;
-		else if (he1.getNumberOfDestroyedBlocks() < he2.getNumberOfDestroyedBlocks())
-			return he2;
-		else if(he1.getNumberOfDestroyedBlocks() == he2.getNumberOfDestroyedBlocks() && he1.getElapsedTime() < he2.getElapsedTime())
-			return he1;
-		else if(he1.getNumberOfDestroyedBlocks() == he2.getNumberOfDestroyedBlocks() && he1.getElapsedTime() > he2.getElapsedTime())
-			return he2;
-		
-		// if the highscores are totally equal, the highscore that was set first will stay in front
-		else return he1;
-	}*/
+
+	/*
+	 * HighscoreEntry compare(HighscoreEntry he1, HighscoreEntry he2) {
+	 * if(he1.getNumberOfDestroyedBlocks() > he2.getNumberOfDestroyedBlocks())
+	 * return he1; else if (he1.getNumberOfDestroyedBlocks() <
+	 * he2.getNumberOfDestroyedBlocks()) return he2; else
+	 * if(he1.getNumberOfDestroyedBlocks() == he2.getNumberOfDestroyedBlocks()
+	 * && he1.getElapsedTime() < he2.getElapsedTime()) return he1; else
+	 * if(he1.getNumberOfDestroyedBlocks() == he2.getNumberOfDestroyedBlocks()
+	 * && he1.getElapsedTime() > he2.getElapsedTime()) return he2;
+	 * 
+	 * // if the highscores are totally equal, the highscore that was set first
+	 * will stay in front else return he1; }
+	 */
 }

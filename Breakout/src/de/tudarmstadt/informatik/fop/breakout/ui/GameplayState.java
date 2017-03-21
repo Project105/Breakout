@@ -535,7 +535,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		if(player.getLives()==0/*lives==0*/){
 			gameStarted=false;
 			gameLost=true;
-			sbg.enterState(MAINMENU_STATE, new FadeOutTransition(),new FadeInTransition());
+			sbg.enterState(TEST_GAME_OVER_STATE, new FadeOutTransition(),new FadeInTransition());
 	}}
 	
 
