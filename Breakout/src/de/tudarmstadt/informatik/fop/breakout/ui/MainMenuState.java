@@ -89,7 +89,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		Entity credits = new Entity("Credits");
 		credits.setPosition(new Vector2f(218, 390));
 		credits.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
-		entityManager.addEntity(idState, credits);
+		
 		ANDEvent andEvents2 = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		// Action- going into Highscore State
 		andEvents2.addAction(new ChangeStateInitAction(CREDITS_STATE));
@@ -121,6 +121,22 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		// adding entity in entityManager
 		entityManager.addEntity(idState, exitGame);
 		
+		/*
+		 =============== =============== TEST GAME OVER BUTTON  =============== ===============
+		 */
+		Entity gameOver = new Entity("Test Game Over");
+		gameOver.setPosition(new Vector2f(600, 450));
+		gameOver.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
+		
+		ANDEvent andEvents3 = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
+		// Action- going into Highscore State
+		andEvents3.addAction(new ChangeStateInitAction(TEST_GAME_OVER_STATE));
+		// adding eventComponent
+		gameOver.addComponent(andEvents3);
+		// adding Entity in EntityManager
+		entityManager.addEntity(idState, gameOver);
+				
+		
 		/**
 		 =============== =============== IO Operations =============== ===============
 		 **/
@@ -141,6 +157,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		g.drawString("Highscore", 190, 280);
 		g.drawString("Credits", 190, 380);
 		g.drawString("Exit Game", 190, 480);
+		g.drawString("Test Game Over", 600, 450);
 
 	}
 

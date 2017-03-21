@@ -27,13 +27,17 @@ import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
  */
 public class HighscoreState extends BasicGameState implements GameParameters {
 
-	/* Attributes */
+	/**
+	 * Attributes
+	 */
 
 	private int idState;
 	private StateBasedEntityManager entityManager;
 	HighscoreEntryAL scores = new HighscoreEntryAL();
 
-	/* Constructor */
+	/**
+	 * Constructor
+	 */
 
 	/**
 	 * Constructor, setting id and StateBasedEntityManager for this state
@@ -89,6 +93,8 @@ public class HighscoreState extends BasicGameState implements GameParameters {
 		/*
 		 * Loading highscore file
 		 */
+		
+		// THIS IS FOR TESTING ONLY
 		scores.writeDummyFile();
 		scores.readHighscore();
 	}

@@ -13,19 +13,25 @@ import java.util.Collections;
 import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
 
 /**
+ * A class implementing a data structure for HighscoreEntry using ArrayList
+ * 
  * @author Marcel Geibel
  *
  */
 public class HighscoreEntryAL implements Serializable {
 
 	/**
-	 * 
+	 * Attributes
 	 */
 	private static final long serialVersionUID = 1L;
 	ArrayList<HighscoreEntry> al = new ArrayList<HighscoreEntry>(10);
 	private String filePath = "highscoreFile.hsc";
 	private File highscoreFile;
 
+	/**
+	 * Constructor, creating a new ArrayList, initializing it and writing it to
+	 * a .hsc file
+	 */
 	public HighscoreEntryAL() {
 		// initialize all elements with zero
 		for (int i = 0; i < 10; i++)
@@ -34,7 +40,7 @@ public class HighscoreEntryAL implements Serializable {
 		// create highscore file
 		try {
 			highscoreFile = new File(filePath);
-			if(!highscoreFile.exists())
+			if (!highscoreFile.exists())
 				highscoreFile.createNewFile();
 			// write dummy values to file
 			writeHighscore();
@@ -44,8 +50,8 @@ public class HighscoreEntryAL implements Serializable {
 	}
 
 	/**
-	 * Checks if a new HighscoreEntry is within top 10 and inserts at the right
-	 * place it if this is true
+	 * Checks if a new HighscoreEntry is within top 10 and inserts it at the
+	 * right place it if this is true
 	 * 
 	 * @param he
 	 *            the new HighscoreEntry
@@ -55,9 +61,8 @@ public class HighscoreEntryAL implements Serializable {
 		buffer = al;
 		buffer.add(he);
 		Collections.sort(buffer);
-		buffer.remove(buffer.size()-1);
+		buffer.remove(buffer.size() - 1);
 		al = buffer;
-			
 	}
 
 	/**
@@ -93,7 +98,7 @@ public class HighscoreEntryAL implements Serializable {
 	}
 
 	/**
-	 * Checks if .hsc file exists and loads it it does not
+	 * Checks if .hsc file exists and loads it
 	 */
 	@SuppressWarnings("unchecked")
 	public void readHighscore() {
@@ -115,6 +120,8 @@ public class HighscoreEntryAL implements Serializable {
 			}
 
 			try {
+				// Warnings for this are suppressed since a check with instaceof
+				// causes weird erros
 				al = (ArrayList<HighscoreEntry>) ois.readObject();
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
@@ -125,26 +132,36 @@ public class HighscoreEntryAL implements Serializable {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-		else
+		} else
 			System.err.println("Highscore file does not exist!");
 
 	}
 
+	/**
+	 * Returns the ArrayList that contains the HighscoreEntry objects
+	 * 
+	 * @return the ArrayList used to store the HighscoreEntry objects in
+	 */
 	public ArrayList<HighscoreEntry> getAL() {
 		return al;
 	}
 
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < 10; i++)
-			sb.append("Player: " + al.get(i).getPlayerName() + "  " + "Destroyed Blocks: " + al.get(i).getNumberOfDestroyedBlocks()
-					+ "  " + "Time: " + al.get(i).getElapsedTime() + "  " + "Points: " + "\n");
+			sb.append("Player: " + al.get(i).getPlayerName() + "  " + "Destroyed Blocks: "
+					+ al.get(i).getNumberOfDestroyedBlocks() + "  " + "Time: " + al.get(i).getElapsedTime() + "  "
+					+ "Points: " + "\n");
 		return sb.toString();
 	}
-	
+
+	/**
+	 * FOR TESTING ONLY 
+	 * writes dummy data to a highscore file
+	 */
 	public void writeDummyFile() {
-		HighscoreEntry hs1 = new HighscoreEntry("p1", 1, 55.5f, 100);
+		HighscoreEntry hs1 = new HighscoreEntry("p1", 9, 55.5f, 100);
 		HighscoreEntry hs2 = new HighscoreEntry("p2", 10, 55.6f, 99);
 		HighscoreEntry hs3 = new HighscoreEntry("p3", 11, 55.5f, 100);
 		HighscoreEntry hs4 = new HighscoreEntry("p4", 12, 55.5f, 100);
@@ -166,12 +183,4 @@ public class HighscoreEntryAL implements Serializable {
 		addHighscoreEntry(hs10);
 		writeHighscore();
 	}
-	
-	/*public static void main(String[] args) {
-		HighscoreEntryAL lst = new HighscoreEntryAL();
-		lst.writeDummyFile();
-		lst.readHighscore();
-		System.out.println(lst.toString());
-	}*/
-
 }
