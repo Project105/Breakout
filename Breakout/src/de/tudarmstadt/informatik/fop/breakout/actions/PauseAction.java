@@ -1,14 +1,11 @@
 package de.tudarmstadt.informatik.fop.breakout.actions;
 
-import java.awt.Image;
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import eea.engine.action.Action;
 import eea.engine.component.Component;
-import eea.engine.component.render.ImageRenderComponent;
 /**
  * 
  * @author Denis Andric

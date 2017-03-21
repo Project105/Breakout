@@ -21,7 +21,7 @@ import de.tudarmstadt.informatik.fop.breakout.actions.PauseAction;
 import de.tudarmstadt.informatik.fop.breakout.actions.RotationToMove;
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
-import de.tudarmstadt.informatik.fop.breakout.entities.Player;
+import de.tudarmstadt.informatik.fop.breakout.entities.Block;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import de.tudarmstadt.informatik.fop.breakout.events.PrivateBallEvent;
 import de.tudarmstadt.informatik.fop.breakout.events.PrivateLoopEvent;
@@ -39,9 +39,11 @@ import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
 import eea.engine.event.Event;
 import eea.engine.event.OREvent;
+import eea.engine.event.basicevents.CollisionEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 import eea.engine.event.basicevents.LeavingScreenEvent;
 import eea.engine.event.basicevents.LoopEvent;
+import de.tudarmstadt.informatik.fop.breakout.map.MapReader;
 
 /*
  * @Author Denis Andric
@@ -57,6 +59,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private static boolean gameLost = false;
 	private static boolean gameStarted = false;
 	private static boolean ballMoving = false;
+	private static boolean collisionWithBlock = false;
 	
 	//protected Player player;
 	
@@ -294,6 +297,101 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	entityManager.addEntity(idState, stopWatch);
 	}
 	
+	/**
+	 * Loads the map from a given file and creates blocks based on that
+	 * information
+	 * 
+	 * @throws SlickException
+	 */
+	public void dispBlocks() throws SlickException {
+		int currentNrOfBlocks = 0;
+		int currentNrOfRows = 0;
+		String img = BLOCK_1_IMAGE;
+		MapReader reader = new MapReader("maps/level1.map");
+		String map = reader.readMap();
+		char[] charArr = map.toCharArray();
+		for (int i = 0; i < charArr.length; i++) {
+			// if block is first block in new line
+			if (i % 31 == 0) {
+				currentNrOfBlocks = 0;
+				currentNrOfRows++;
+			}
+			// check if there is a real block, but still increment the number of
+			// blocks anyway,
+			// so the next block will be at the correct position
+			if (charArr[i] != ',') {
+				// properties of the block must be set correctly, including row,
+				// column and lives
+				currentNrOfBlocks++;
+				if (charArr[i] != '0') {
+					Block block = new Block("Block", (int) charArr[i]);
+					if (charArr[i] == '1')
+						img = BLOCK_1_IMAGE;
+					if (charArr[i] == '2')
+						img = BLOCK_2_IMAGE;
+					if (charArr[i] == '3')
+						img = BLOCK_3_IMAGE;
+					if (charArr[i] == '4')
+						img = BLOCK_3_IMAGE;
+					block.addComponent(new ImageRenderComponent(new Image(img)));
+					block.setPosition(
+							new Vector2f(currentNrOfBlocks * block.getSize().getX() - block.getSize().getX() / 2,
+									currentNrOfRows * block.getSize().getY() - block.getSize().getY() / 2));
+					block.setPassable(false);
+					CollisionEvent collisionWithBall = new CollisionEvent();
+					block.addComponent(collisionWithBall);
+					collisionWithBall.addAction(new Action() {
+
+						@Override
+						public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+							if (collisionWithBall.getCollidedEntity() instanceof Ball) {
+								BallBlockCollisionMovement(arg3.getOwnerEntity(), collisionWithBall.getCollidedEntity());
+								collisionWithBlock = true;
+								collisionWithBall.getCollidedEntity().getPosition();
+						/*		Block blockTemp = (Block) arg3.getOwnerEntity();
+								blockTemp.reduceHitsLeft(1);
+								if (blockTemp.getHitsLeft() == 0) {
+									collisionWithBall.addAction(new DestroyEntityAction());
+								} */
+							}
+
+						}
+					});
+
+					entityManager.addEntity(idState, block);
+				}
+			}
+		}
+	}
+	
+	public void BallBlockCollisionMovement(Entity ownerEntity, Entity collidedEntity) {
+
+		float blockBorderRight;
+		float blockBorderLeft;
+		float blockBorderTop;
+		float blockBorderBottom;
+
+		blockBorderRight = ownerEntity.getPosition().getX() + ownerEntity.getSize().getX() / 2 + collidedEntity.getSize().getY();
+		blockBorderLeft = ownerEntity.getPosition().getX() - ownerEntity.getSize().getX() / 2 - collidedEntity.getSize().getY() ;
+		blockBorderTop = ownerEntity.getPosition().getY() + ownerEntity.getSize().getY() / 2 + collidedEntity.getSize().getX();
+		blockBorderBottom = ownerEntity.getPosition().getY() - ownerEntity.getSize().getY() / 2 - collidedEntity.getSize().getX();
+
+		if (((collidedEntity.getPosition().getX() <= blockBorderRight)	|| (collidedEntity.getPosition().getX() >= blockBorderLeft)) && (collidedEntity.getPosition().getY() >= blockBorderBottom)) {
+			collidedEntity.setRotation(360 - collidedEntity.getRotation());
+		} 
+		if (collidedEntity.getPosition().getY() >= blockBorderBottom) {
+			if (collidedEntity.getRotation() <= 180) {
+				collidedEntity.setRotation(180 - collidedEntity.getRotation());
+			} else {
+				collidedEntity.setRotation(540 - collidedEntity.getRotation());
+			}
+		}
+		if (collidedEntity.getPosition().getY() == blockBorderTop) {
+
+		}
+
+	}
+	
 	
 
 
@@ -315,6 +413,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		Escape();
 		
 		PauseIt();
+		
+		dispBlocks();
 		
 		
 
