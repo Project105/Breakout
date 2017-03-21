@@ -35,19 +35,6 @@ public class Stick extends Entity implements ICollidable,GameParameters {
 	}
 	
 	
-	public void moveLeft(){
-		TouchLeftBorder borderTouchLeft = new TouchLeftBorder("leftcolide");
-		KeyDownEvent leftDown = new KeyDownEvent(Input.KEY_LEFT);
-		ANDEvent moveFreeLeft = new ANDEvent(new NOTEvent(borderTouchLeft), leftDown);
-		moveFreeLeft.addAction(new MoveLeftAction(STICK_SPEED));
-		addComponent(moveFreeLeft);
-	}
-	public void moveRight(){
-        TouchRightBorder borderTouchRight = new TouchRightBorder("rightcolide");
-		KeyDownEvent rightDown = new KeyDownEvent(Input.KEY_RIGHT);
-		ANDEvent moveFreeRight = new ANDEvent(new NOTEvent(borderTouchRight), rightDown);
-		moveFreeRight.addAction(new MoveRightAction(STICK_SPEED));
-		addComponent(moveFreeRight);	
-	}
+	
 
 }
