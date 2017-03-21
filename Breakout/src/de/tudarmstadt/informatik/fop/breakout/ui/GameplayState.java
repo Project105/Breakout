@@ -50,7 +50,7 @@ import de.tudarmstadt.informatik.fop.breakout.player.Player;
  * @Author Denis Andric
  */
 public class GameplayState extends BasicGameState implements GameParameters {
-	private int idState;
+	private int  idState;
 	private StateBasedEntityManager entityManager;
 	private boolean GameWin = false;
 	//private static int lives = 3;
