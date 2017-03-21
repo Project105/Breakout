@@ -146,13 +146,19 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	}
 
-	public void PauseIt() {
+	public void PauseIt() throws SlickException {
 		
-		Entity PListener = new Entity("P_Listener");
+		Entity PListener = new Entity(PAUSE_ID);
 		//P Input
+		PListener.setPosition(new Vector2f(400,300));
+		PListener.addComponent(new ImageRenderComponent(new Image(PAUSE_IMAGE)));
+		PListener.setVisible(false);
 		KeyPressedEvent space = new KeyPressedEvent(Input.KEY_P);
 		//Pause Action - see Actions
 		PauseAction pause = new PauseAction();
+		
+
+			
 		space.addAction(pause);
 		PListener.addComponent(space);
 		entityManager.addEntity(idState, PListener);
