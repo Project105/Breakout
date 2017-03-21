@@ -26,7 +26,7 @@ public class Adapter implements GameParameters {
 	TestAppGameContainer app;
 
   //TODO you should declare the additional attributes you may require here.
-	Ball ball;
+	Ball ball=null;
 
 	/**
 	 * Use this constructor to initialize everything you need.

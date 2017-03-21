@@ -44,6 +44,7 @@ import eea.engine.event.basicevents.KeyPressedEvent;
 import eea.engine.event.basicevents.LeavingScreenEvent;
 import eea.engine.event.basicevents.LoopEvent;
 import de.tudarmstadt.informatik.fop.breakout.map.MapReader;
+import de.tudarmstadt.informatik.fop.breakout.player.Player;
 
 /*
  * @Author Denis Andric
@@ -52,7 +53,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private int idState;
 	private StateBasedEntityManager entityManager;
 	private boolean GameWin = false;
-	private static int lives = 3;
+	//private static int lives = 3;
 	private static long time = 0;
 	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
 	private static boolean gameWon = false;
@@ -60,6 +61,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private static boolean gameStarted = false;
 	private static boolean ballMoving = false;
 	private static boolean collisionWithBlock = false;
+	Player player = null;
 	
 	//protected Player player;
 	
@@ -174,6 +176,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		ball.setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX()+20, 560));
 		ball.setRotation(120);
 		ball.addComponent(new ImageRenderComponent(new Image(BALL_IMAGE)));
+		ball.setScale(0.7f);
+		ball.setBallSpeed(INITIAL_BALL_SPEED);
 		/********************************
 		 * Following Stick before Ball is started
 		 *************************/
@@ -206,7 +210,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 		LoopEvent moveBall = new LoopEvent();
 		// movement Action for movement of the Ball
-		moveBall.addAction(new RotationToMove(INITIAL_BALL_SPEED));
+		moveBall.addAction(new RotationToMove(ball.getBallSpeed()));
 		// adds LoopEvent to the Ball => Ball starts moving
 
 		spaceDown.addAction(new Action() {
@@ -251,7 +255,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 				 //loseLive();
 				//player.removeLives(1);
-				lives -= 1;
+				player.subtrLife();
 				ballMoving = false;
 
 			}
@@ -269,6 +273,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		entityManager.addEntity(idState, ball);
 
 	}
+	/*
 	public void setTimeEntity(){
 		Entity stopWatch=new Entity("STOP_WATCH_ID");
 		//Event witch starts countTime
@@ -295,7 +300,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	startingTime.addAction(countTime);
 	stopWatch.addComponent(startingTime);
 	entityManager.addEntity(idState, stopWatch);
-	}
+	}*/
 	
 	/**
 	 * Loads the map from a given file and creates blocks based on that
@@ -397,10 +402,12 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		//player=new Player(PLAYER_ID);
-		//player.setLives(3);
+		player=new Player(PLAYER_ID);
+		player.setLives(3);
+		player.setScore(0);
+		//player.setTime(0);
+		//lives=3;
 		time=0;
-		lives=3;
 		gameWon = false;
 		gameLost = false;
 		gameStarted = false;
@@ -427,104 +434,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 		stick.moveRight();// method only for stick, it is in class
 		entityManager.addEntity(idState, stick);
-		Ball ball = new Ball(BALL_ID);
-		ball.setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX()+20, 560));
-		ball.setRotation(120);
-		ball.addComponent(new ImageRenderComponent(new Image(BALL_IMAGE)));
-		/********************************
-		 * Following Stick before Ball is started
-		 *************************/
-       //LoopEvent with  ID 
-		PrivateLoopEvent followStick = new PrivateLoopEvent("followStick");
-		//Action to maintain x distance of stick by 20
-		BallPositioning positioning = new BallPositioning();
-		followStick.addAction(positioning);
-		//Event witch say that ball follows or not follow the stick
-		PrivateBallEvent addEvent = new PrivateBallEvent("addEvent");
-		//action for adding Component
-		Action followOrNot = new Action() {
-
-			@Override
-			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-				if (followStick.getOwnerEntity() == null)
-					arg3.getOwnerEntity().addComponent(followStick);
-				else
-					ball.removeComponent(followStick);
-
-			}
-
-		};
-		addEvent.addAction(followOrNot);
-		ball.addComponent(addEvent);
-		/************************************ Starting *****************************/
-		//Felix and Dirk
-		// checks if Space has been pressed
-		KeyPressedEvent spaceDown = new KeyPressedEvent(Input.KEY_SPACE);
-
-		LoopEvent moveBall = new LoopEvent();
-		// movement Action for movement of the Ball
-		moveBall.addAction(new RotationToMove(INITIAL_BALL_SPEED));
-		// adds LoopEvent to the Ball => Ball starts moving
-
-		spaceDown.addAction(new Action() {
-
-			@Override
-			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-				arg3.getOwnerEntity().addComponent(moveBall);
-				ballMoving = true;
-				if (!gameStarted)gameStarted = true;
-				
-
-			}
-
-		});
-
-		// Collisiondetection for the three Borders
-		TouchRightBorder colideRightBorder = new TouchRightBorder("colideRightBorder");
-		TouchLeftBorder colideLeftBorder = new TouchLeftBorder("colideLeftBorder");
-		TouchTopBorder colideTopBorder = new TouchTopBorder("colideTopBorder");
-
-		// Event for collision with the Left or Right Border
-		OREvent bounceLeftRight = new OREvent(colideRightBorder, colideLeftBorder);
-		ANDEvent bounceSideBorders = new ANDEvent(bounceLeftRight, moveBall);
-		// Action changes Rotation of ball, when collision with Left or Right
-		// Border is detected
-		bounceSideBorders.addAction(new BounceSideBallAction());
-		// Event for collision with Top Border
-		ANDEvent bounceTop = new ANDEvent(colideTopBorder, moveBall);
-		// Action changes Rotation of ball, when collision with Top Border is
-		// detected
-		bounceTop.addAction(new BounceTopBallAction());
-
-		// Event starts when Ball leaves the Screen
-		LeavingScreenEvent outOfGame = new LeavingScreenEvent();
-		// Removes Ball from the EntityList
-		DestroyEntityAction destroy = new DestroyEntityAction();
-		outOfGame.addAction(destroy);
-		outOfGame.addAction(new Action() {
-
-			@Override
-			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-
-				 //loseLive();
-				//player.removeLives(1);
-				lives -= 1;
-				ballMoving = false;
-
-			}
-
-		});
-
-		// Initializes the Ball(new Ball Object, set Position and Rotation, adds
-		// the Components to the Ball)
-
-		ball.addComponent(spaceDown);
-		ball.addComponent(bounceSideBorders);
-		ball.addComponent(bounceTop);
-		ball.addComponent(outOfGame);
-
-		entityManager.addEntity(idState, ball);
-
+		
+		
+		NewBall();
 		
 		
 		
@@ -536,9 +448,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		// Collision of Stick and Ball
 		
 				CollisionEvent collideStick = new CollisionEvent();
-				ANDEvent bounceStick = new ANDEvent(collideStick, moveBall);
-				stick.addComponent(bounceStick);
-				bounceStick.addAction(new Action() {
+				//ANDEvent bounceStick = new ANDEvent(collideStick, moveBall);
+				stick.addComponent(collideStick);
+				collideStick.addAction(new Action() {
 
 					@Override
 					public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
@@ -583,17 +495,17 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 		
 		//NewBall();
-		setTimeEntity();
+		//setTimeEntity();
 
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
-/*
+
 		// Time Counter in ms
-		if (timeStarted)
-			time += delta;*/
+		if (gameStarted)
+			time += delta;
 		getNewBall();
 		gameLost(sbg);
 		
@@ -612,7 +524,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	 * method to give new/old entity Ball in entity Manager in update
 	 */
 	public void getNewBall() throws SlickException{
-		if (!entityManager.hasEntity(idState, BALL_ID) && time % 1000 == 0 && /*player.getLivesLeft()*/ lives>0)
+		if (!entityManager.hasEntity(idState, BALL_ID) && time % 500 == 0 && player.getLives()/* lives*/>0)
 			NewBall();
 	}
 	/*
@@ -620,7 +532,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	 * it gets to mainmenu state
 	 */
 	public void gameLost(StateBasedGame sbg){
-		if(/*player.getLivesLeft()*/lives==0){
+		if(player.getLives()==0/*lives==0*/){
 			gameStarted=false;
 			gameLost=true;
 			sbg.enterState(MAINMENU_STATE, new FadeOutTransition(),new FadeInTransition());
@@ -642,11 +554,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		 * 100, 175);
 		 */
 		g.drawString("Time   " + (time / 1000) / 60 + ":" + (time / 1000) % 60 + ":" + time % 1000, 500, 50);
-		g.drawString("Lives left: " + /*player.getLivesLeft()*/lives, 600, 25);
+		g.drawString("Lives left: "+ player.getLives()/*lives*/, 600, 25);
 		g.drawString("Game Started  " + gameStarted, 300, 10);
 		g.drawString("Ball moving  " + ballMoving, 120, 100);
 		g.drawString("GameLost "+gameLost, 50, 50);
-		if(/*player.getLivesLeft()*/lives==0)g.drawString("Game Over", 500, 300);
+		if(/*player.getLivesLeft()*/player.getLives()==0)g.drawString("Game Over", 500, 300);
 
 	}
 
