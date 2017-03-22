@@ -68,6 +68,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	// private static int lives = 3;
 	private static long time = 0;
 	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
+	protected static List<Block> al = new ArrayList<Block>();
 	private static boolean gameWon = false;
 	private static boolean gameLost = false;
 	private static boolean gameStarted = false;
@@ -75,8 +76,12 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private static boolean collisionWithBlock = false;
 	private Player player = null;
 	private Ball ball = null;
-
-	// protected Player player;
+    private static int destroyedBlocks=0;
+    
+	public int BlocksOnScreen(){
+		return al.size();
+	}
+	
 
 	public long getTime() {
 		return time;
@@ -87,8 +92,12 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	}
 
 	public boolean getGameWin() {
-		return GameWin;
+		return gameWon;
 	}
+	public boolean getGameLost(){
+		return gameLost;
+	}
+	
 
 	public StateBasedEntityManager getEntityManager() {
 		return entityManager;
@@ -197,7 +206,7 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 	public void initBlocks() throws SlickException {
 		MapReader reader = new MapReader("maps/level1.map");
 		reader.readMap();
-		ArrayList<Block> al = reader.toArrayList();
+	    al = reader.toArrayList();
 		for (int i = 0; i < al.size(); i++) {
 			al.get(i).setPassable(false);
 			BallBlockCollision collisionWithBall = new BallBlockCollision("colBallBlock");
@@ -230,6 +239,8 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 							item.addComponent(moveItem);
 							entityManager.addEntity(idState, item);
 						}
+						destroyedBlocks+=1;
+						al.remove(blockTemp);
 						entityManager.removeEntity(idState, arg3.getOwnerEntity());
 					}
 
@@ -508,6 +519,7 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 			System.out.println(ball.getPosition().getY());
 		}*/
 		gameLost(sbg);
+		gameWon(sbg);
 
 	}
 
@@ -522,9 +534,16 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 	 * Method which recognizes if the game is lost it gets to mainmenu state
 	 */
 	public void gameLost(StateBasedGame sbg) {
-		if (player.getLives() == 0/* lives==0 */) {
+		if (player.getLives() == 0) {
 			gameStarted = false;
 			gameLost = true;
+			sbg.enterState(TEST_GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
+		}
+	}
+	public void gameWon(StateBasedGame sbg){
+		if(BlocksOnScreen()==0){
+			gameStarted=false;
+			gameWon=true;
 			sbg.enterState(TEST_GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
 		}
 	}
@@ -549,9 +568,13 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 		g.drawString("Ball moving  " + ballMoving, 120, 100);
 		g.drawString("GameLost " + gameLost, 50, 50);
 		if (/* player.getLivesLeft() */player.getLives() == 0)
-			g.drawString("Game Over", 500, 300);
+			g.drawString("Game Lost", 500, 300);
+		if(BlocksOnScreen()==0){
+			g.drawString("Game Won!!", 500, 300);
+		}
 		g.drawString("Positionball "+entityManager.getEntity(idState, BALL_ID).getPosition().getY(),100, 500);
-
+        g.drawString(" "+destroyedBlocks, 500, 500);
+        g.drawString(" "+BlocksOnScreen(), 500, 550);
 	}
 
 	@Override
