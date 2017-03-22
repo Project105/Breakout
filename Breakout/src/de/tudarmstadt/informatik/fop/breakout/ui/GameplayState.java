@@ -26,10 +26,8 @@ import de.tudarmstadt.informatik.fop.breakout.entities.Block;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import de.tudarmstadt.informatik.fop.breakout.events.BallBlockCollision;
 import de.tudarmstadt.informatik.fop.breakout.events.BallStickCollision;
-import de.tudarmstadt.informatik.fop.breakout.events.PrivateBallEvent;
 import de.tudarmstadt.informatik.fop.breakout.events.PrivateBallMovEvent;
 import de.tudarmstadt.informatik.fop.breakout.events.PrivateBallNotMovEvent;
-import de.tudarmstadt.informatik.fop.breakout.events.PrivateLoopEvent;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchLeftBorder;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchRightBorder;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchTopBorder;
@@ -39,7 +37,6 @@ import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
 import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntryAL;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
-import eea.engine.action.basicactions.DestroyEntityAction;
 import eea.engine.action.basicactions.MoveDownAction;
 import eea.engine.action.basicactions.MoveLeftAction;
 import eea.engine.action.basicactions.MoveRightAction;
@@ -48,10 +45,8 @@ import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
-import eea.engine.event.Event;
 import eea.engine.event.NOTEvent;
 import eea.engine.event.OREvent;
-import eea.engine.event.basicevents.CollisionEvent;
 import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 import eea.engine.event.basicevents.LeavingScreenEvent;
@@ -62,26 +57,28 @@ import de.tudarmstadt.informatik.fop.breakout.map.MapReader;
  * @Author Denis Andric
  */
 public class GameplayState extends BasicGameState implements GameParameters {
+	/**
+	 * Attributes
+	 */
 	private int idState;
 	private StateBasedEntityManager entityManager;
 	private boolean GameWin = false;
-	// private static int lives = 3;
-	private static long time = 0;
-	protected List<BorderFactory> borders = new ArrayList<BorderFactory>();
-	protected static List<Block> al = new ArrayList<Block>();
+	private Ball ball = null;
+	private List<BorderFactory> borders = new ArrayList<BorderFactory>();
+	private static List<Block> al = new ArrayList<Block>();
 	private static boolean gameWon = false;
 	private static boolean gameLost = false;
 	private static boolean gameStarted = false;
 	private static boolean ballMoving = false;
 	private static boolean collisionWithBlock = false;
-	private static int lives=0;
-	private Ball ball = null;
-    private static int destroyedBlocks=0;
-    
-	public int BlocksOnScreen(){
+	private static int lives = 0;
+	private static int destroyedBlocks = 0;
+	private static int points = 0;
+	private static long time = 0;
+
+	public int BlocksOnScreen() {
 		return al.size();
 	}
-	
 
 	public long getTime() {
 		return time;
@@ -94,10 +91,10 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	public boolean getGameWin() {
 		return gameWon;
 	}
-	public boolean getGameLost(){
+
+	public boolean getGameLost() {
 		return gameLost;
 	}
-	
 
 	public StateBasedEntityManager getEntityManager() {
 		return entityManager;
@@ -176,37 +173,27 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		entityManager.addEntity(idState, PListener);
 
 	}
-/*
-	public void NewBall() {
-		entityManager.getEntity(idState, BALL_ID).setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX() + 20, 550));
-		// rotation = orientation
-		entityManager.getEntity(idState, BALL_ID).setVisible(true);
-		entityManager.getEntity(idState, BALL_ID).setRotation(180);
-		
-		
-		
 
-	}*/
-public void changeImage(int hitsleft, Block block) throws SlickException{
-	if(hitsleft == 3){
-		block.removeComponent(new ImageRenderComponent(new Image("/images/block_4.png")));
-		block.addComponent(new ImageRenderComponent(new Image("/images/block_3.png")));
+	public void changeImage(int hitsleft, Block block) throws SlickException {
+		if (hitsleft == 3) {
+			block.removeComponent(new ImageRenderComponent(new Image("/images/block_4.png")));
+			block.addComponent(new ImageRenderComponent(new Image("/images/block_3.png")));
+		}
+		if (hitsleft == 2) {
+			block.removeComponent(new ImageRenderComponent(new Image("/images/block_3.png")));
+			block.addComponent(new ImageRenderComponent(new Image("/images/block_2.png")));
+		}
+		if (hitsleft == 1) {
+			block.removeComponent(new ImageRenderComponent(new Image("/images/block_2.png")));
+			block.addComponent(new ImageRenderComponent(new Image("/images/block_1.png")));
+		}
+
 	}
-	if(hitsleft == 2){
-		block.removeComponent(new ImageRenderComponent(new Image("/images/block_3.png")));
-		block.addComponent(new ImageRenderComponent(new Image("/images/block_2.png")));
-	}
-	if(hitsleft == 1){
-		block.removeComponent(new ImageRenderComponent(new Image("/images/block_2.png")));
-		block.addComponent(new ImageRenderComponent(new Image("/images/block_1.png")));
-	}
-		
-}
 
 	public void initBlocks() throws SlickException {
 		MapReader reader = new MapReader("maps/level1.map");
 		reader.readMap();
-	    al = reader.toArrayList();
+		al = reader.toArrayList();
 		for (int i = 0; i < al.size(); i++) {
 			al.get(i).setPassable(false);
 			BallBlockCollision collisionWithBall = new BallBlockCollision("colBallBlock");
@@ -216,16 +203,17 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 				@Override
 				public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
 					System.out.println("collision");
-					BallBlockCollisionMovement(arg3.getOwnerEntity() );
+					BallBlockCollisionMovement(arg3.getOwnerEntity());
 					Block blockTemp = (Block) arg3.getOwnerEntity();
 					blockTemp.reduceHitsLeft(1);
+					points += 5;
 					try {
 						changeImage(blockTemp.getHitsLeft(), blockTemp);
 					} catch (SlickException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				
+
 					if (blockTemp.getHitsLeft() == 0) {
 						// Items
 						Random rn = new Random();
@@ -239,7 +227,8 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 							item.addComponent(moveItem);
 							entityManager.addEntity(idState, item);
 						}
-						destroyedBlocks+=1;
+						destroyedBlocks += 1;
+						points += 10;
 						al.remove(blockTemp);
 						entityManager.removeEntity(idState, arg3.getOwnerEntity());
 					}
@@ -248,8 +237,7 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 			});
 			entityManager.addEntity(idState, al.get(i));
 		}
-		
-				
+
 	}
 
 	public void BallBlockCollisionMovement(Entity ownerEntity) {
@@ -267,8 +255,7 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 		blockBorderBottom = ownerEntity.getPosition().getY() + ownerEntity.getSize().getY() / 2;
 
 		// Bottom Border of Block
-		if ((ball.getPosition().getX() <= blockBorderRight)
-				&& (ball.getPosition().getX() >= blockBorderLeft)
+		if ((ball.getPosition().getX() <= blockBorderRight) && (ball.getPosition().getX() >= blockBorderLeft)
 				&& (ball.getPosition().getY() >= blockBorderBottom)) {
 			if ((ball.getRotation() > 90) && (ball.getRotation() <= 180)) {
 				ball.setRotation(180 - ball.getRotation());
@@ -278,8 +265,7 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 		}
 
 		// Top Border of Block
-		if ((ball.getPosition().getX() <= blockBorderRight)
-				&& (ball.getPosition().getX() >= blockBorderLeft)
+		if ((ball.getPosition().getX() <= blockBorderRight) && (ball.getPosition().getX() >= blockBorderLeft)
 				&& (ball.getPosition().getY() <= blockBorderTop)) {
 			if ((ball.getRotation() < 90) && (ball.getRotation() >= 0)) {
 				ball.setRotation(180 - ball.getRotation());
@@ -289,15 +275,13 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 		}
 
 		// Left Border of Block
-		if ((ball.getPosition().getY() >= blockBorderTop)
-				&& (ball.getPosition().getY() <= blockBorderBottom)
+		if ((ball.getPosition().getY() >= blockBorderTop) && (ball.getPosition().getY() <= blockBorderBottom)
 				&& (ball.getPosition().getX() <= blockBorderLeft)) {
 			ball.setRotation(360 - ball.getRotation());
 		}
 
 		// Right Border of Block
-		if ((ball.getPosition().getY() >= blockBorderTop)
-				&& (ball.getPosition().getY() <= blockBorderBottom)
+		if ((ball.getPosition().getY() >= blockBorderTop) && (ball.getPosition().getY() <= blockBorderBottom)
 				&& (ball.getPosition().getX() >= blockBorderRight)) {
 			ball.setRotation(360 - ball.getRotation());
 		}
@@ -305,8 +289,8 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		
-		lives=3;
+
+		lives = 3;
 		time = 0;
 		gameWon = false;
 		gameLost = false;
@@ -426,13 +410,15 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
 
 				if (ballMoving) {
-					
+
 					System.out.println("hier  " + time);
-					lives-=1;
+					lives -= 1;
 					ballMoving = false;
-					if(lives>0){entityManager.getEntity(idState, BALL_ID).setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX() + 20, 550));
-					// rotation = orientation
-					entityManager.getEntity(idState, BALL_ID).setRotation(180);
+					if (lives > 0) {
+						entityManager.getEntity(idState, BALL_ID).setPosition(new Vector2f(
+								entityManager.getEntity(idState, STICK_ID).getPosition().getX() + 20, 550));
+						// rotation = orientation
+						entityManager.getEntity(idState, BALL_ID).setRotation(180);
 					}
 				}
 
@@ -505,16 +491,10 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
-        
+
 		// Time Counter in ms
 		if (gameStarted)
 			time += delta;
-	/*	if (gameStarted && entityManager.getEntity(idState, BALL_ID).getPosition().getY()>600   && time % 500 == 0
-				&& player.getLives()> 0) {
-			System.out.println("hierupdate" + time);
-			NewBall();
-			System.out.println(ball.getPosition().getY());
-		}*/
 		gameLost(sbg);
 		gameWon(sbg);
 
@@ -522,13 +502,15 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 
 	/**
 	 * Checks if a game is lost and enters GameOverState
-	 * @param sbg the StateBasedGame
+	 * 
+	 * @param sbg
+	 *            the StateBasedGame
 	 */
 	public void gameLost(StateBasedGame sbg) {
 		if (lives == 0) {
 			gameStarted = false;
 			gameLost = true;
-			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, destroyedBlocks/time*10);
+			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, destroyedBlocks / time * 10);
 			HighscoreEntryAL newAL = new HighscoreEntryAL();
 			newAL.readHighscore();
 			newAL.addHighscoreEntry(newHS);
@@ -536,11 +518,12 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 			sbg.enterState(TEST_GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
 		}
 	}
-	public void gameWon(StateBasedGame sbg){
-		if(BlocksOnScreen()==0){
-			gameStarted=false;
-			gameWon=true;
-			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, destroyedBlocks/time*10);
+
+	public void gameWon(StateBasedGame sbg) {
+		if (BlocksOnScreen() == 0) {
+			gameStarted = false;
+			gameWon = true;
+			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, destroyedBlocks / time * 10);
 			HighscoreEntryAL newAL = new HighscoreEntryAL();
 			newAL.readHighscore();
 			newAL.addHighscoreEntry(newHS);
@@ -552,19 +535,14 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		entityManager.renderEntities(gc, sbg, g);
-		g.drawString("Time   " + (time / 1000) / 60 + ":" + (time / 1000) % 60 + ":" + time % 1000, 500, 50);
-		g.drawString("Lives left: " +  lives , 600, 25);
-		g.drawString("Game Started  " + gameStarted, 300, 10);
-		g.drawString("Ball moving  " + ballMoving, 120, 100);
-		g.drawString("GameLost " + gameLost, 50, 50);
+		g.drawString("Time:   " + (time / 1000) / 60 + ":" + (time / 1000) % 60 + ":" + time % 1000, 650, 280);
+		g.drawString("Lives: " + lives, 650, 300);
+		g.drawString("Points: " + points, 650, 320);
 		if (lives == 0)
 			g.drawString("Game Lost", 500, 300);
-		if(BlocksOnScreen()==0){
+		if (BlocksOnScreen() == 0) {
 			g.drawString("Game Won!!", 500, 300);
 		}
-		g.drawString("Positionball "+entityManager.getEntity(idState, BALL_ID).getPosition().getY(),100, 500);
-        g.drawString(" "+destroyedBlocks, 500, 500);
-        g.drawString(" "+BlocksOnScreen(), 500, 550);
 	}
 
 	@Override

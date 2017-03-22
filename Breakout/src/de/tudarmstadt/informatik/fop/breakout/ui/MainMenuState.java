@@ -34,7 +34,8 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 	public void init(GameContainer sc, StateBasedGame sb) throws SlickException {
 
 		/**
-		 =============== =============== SCREEN BACKGROUND SETUP =============== ===============
+		 * =============== =============== SCREEN BACKGROUND SETUP
+		 * =============== ===============
 		 **/
 		Entity background = new Entity("menu");
 		background.setPosition(new Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
@@ -42,11 +43,13 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		entityManager.addEntity(idState, background);
 
 		/**
-		 =============== =============== =============== BUTTONS  =============== =============== ===============
+		 * =============== =============== =============== BUTTONS
+		 * =============== =============== ===============
 		 **/
-		
+
 		/*
-		 =============== =============== NEW GAME BUTTON  =============== ===============
+		 * =============== =============== NEW GAME BUTTON ===============
+		 * ===============
 		 *
 		 *
 		 * New Game Button, setting position, image, events and action
@@ -70,7 +73,8 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		entityManager.addEntity(idState, nGame);
 
 		/*
-		 =============== =============== HIGHSCORE BUTTON  =============== ===============
+		 * =============== =============== HIGHSCORE BUTTON ===============
+		 * ===============
 		 */
 		Entity high = new Entity("Highscore");
 		high.setPosition(new Vector2f(218, 290));
@@ -84,12 +88,13 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		entityManager.addEntity(idState, high);
 
 		/*
-		 =============== =============== CREDITS BUTTON  =============== ===============
+		 * =============== =============== CREDITS BUTTON ===============
+		 * ===============
 		 */
 		Entity credits = new Entity("Credits");
 		credits.setPosition(new Vector2f(218, 390));
 		credits.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
-		
+
 		ANDEvent andEvents2 = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		// Action- going into Highscore State
 		andEvents2.addAction(new ChangeStateInitAction(CREDITS_STATE));
@@ -99,7 +104,8 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		entityManager.addEntity(idState, credits);
 
 		/*
-		 =============== =============== EXIT GAME BUTTON  =============== ===============
+		 * =============== =============== EXIT GAME BUTTON ===============
+		 * ===============
 		 */
 		/*
 		 * Exit Game Button, setting position, image, events and action
@@ -120,28 +126,6 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		exitGame.addComponent(exitEvents);
 		// adding entity in entityManager
 		entityManager.addEntity(idState, exitGame);
-		
-		/*
-		 =============== =============== TEST GAME OVER BUTTON  =============== ===============
-		 */
-		Entity gameOver = new Entity("Test Game Over");
-		gameOver.setPosition(new Vector2f(600, 450));
-		gameOver.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
-		
-		ANDEvent andEvents3 = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
-		// Action- going into Highscore State
-		andEvents3.addAction(new ChangeStateInitAction(TEST_GAME_OVER_STATE));
-		// adding eventComponent
-		gameOver.addComponent(andEvents3);
-		// adding Entity in EntityManager
-		entityManager.addEntity(idState, gameOver);
-				
-		
-		/**
-		 =============== =============== IO Operations =============== ===============
-		 **/
-		//TODO add check for highscore file
-		
 	}
 
 	@Override
@@ -157,8 +141,6 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		g.drawString("Highscore", 190, 280);
 		g.drawString("Credits", 190, 380);
 		g.drawString("Exit Game", 190, 480);
-		g.drawString("Test Game Over", 600, 450);
-
 	}
 
 	@Override
