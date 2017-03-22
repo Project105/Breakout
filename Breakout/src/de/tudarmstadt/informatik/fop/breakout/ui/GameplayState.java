@@ -528,13 +528,11 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 		if (lives == 0) {
 			gameStarted = false;
 			gameLost = true;
-			//ADDED FUNCTIONALITY BY MARCEL
 			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, destroyedBlocks/time*10);
 			HighscoreEntryAL newAL = new HighscoreEntryAL();
 			newAL.readHighscore();
 			newAL.addHighscoreEntry(newHS);
 			newAL.writeHighscore();
-			//END OF ADDED FUNCTIONALITY BY MARCEL
 			sbg.enterState(TEST_GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
 		}
 	}
@@ -542,6 +540,11 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 		if(BlocksOnScreen()==0){
 			gameStarted=false;
 			gameWon=true;
+			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, destroyedBlocks/time*10);
+			HighscoreEntryAL newAL = new HighscoreEntryAL();
+			newAL.readHighscore();
+			newAL.addHighscoreEntry(newHS);
+			newAL.writeHighscore();
 			sbg.enterState(TEST_GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
 		}
 	}
@@ -549,17 +552,6 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		entityManager.renderEntities(gc, sbg, g);
-		/*
-		 * g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE, STICK_ID)
-		 * .collides(entityManager.getEntity(GAMEPLAY_STATE, LEFT_BORDER_ID)),
-		 * 100, 100); g.drawString("" + entityManager.getEntity(GAMEPLAY_STATE,
-		 * STICK_ID) .collides(entityManager.getEntity(GAMEPLAY_STATE,
-		 * RIGHT_BORDER_ID)), 100, 125); g.drawString("" +
-		 * entityManager.getEntity(GAMEPLAY_STATE,
-		 * STICK_ID).getPosition().getX(), 100, 150); g.drawString("" +
-		 * entityManager.getEntity(GAMEPLAY_STATE, STICK_ID).getSize().getX(),
-		 * 100, 175);
-		 */
 		g.drawString("Time   " + (time / 1000) / 60 + ":" + (time / 1000) % 60 + ":" + time % 1000, 500, 50);
 		g.drawString("Lives left: " +  lives , 600, 25);
 		g.drawString("Game Started  " + gameStarted, 300, 10);
@@ -577,12 +569,10 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 
 	@Override
 	public int getID() {
-
 		return idState;
 	}
 
 	public boolean getBallMoving() {
-		// TODO Auto-generated method stub
 		return ballMoving;
 	}
 
