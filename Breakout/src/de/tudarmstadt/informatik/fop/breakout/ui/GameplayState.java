@@ -171,11 +171,25 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	public void NewBall() {
 		ball.setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX() + 20, 560));
 		// rotation = orientation
-		ball.setRotation(120);
+		ball.setRotation(180);
 		entityManager.addEntity(idState, ball);
 
 	}
-	
+public void changeImage(int hitsleft, Block block) throws SlickException{
+	if(hitsleft == 3){
+		block.removeComponent(new ImageRenderComponent(new Image("/images/block_4.png")));
+		block.addComponent(new ImageRenderComponent(new Image("/images/block_3.png")));
+	}
+	if(hitsleft == 2){
+		block.removeComponent(new ImageRenderComponent(new Image("/images/block_3.png")));
+		block.addComponent(new ImageRenderComponent(new Image("/images/block_2.png")));
+	}
+	if(hitsleft == 1){
+		block.removeComponent(new ImageRenderComponent(new Image("/images/block_2.png")));
+		block.addComponent(new ImageRenderComponent(new Image("/images/block_1.png")));
+	}
+		
+}
 
 	public void initBlocks() throws SlickException {
 		MapReader reader = new MapReader("maps/level1.map");
@@ -192,10 +206,14 @@ public class GameplayState extends BasicGameState implements GameParameters {
 					System.out.println("collision");
 					BallBlockCollisionMovement(arg3.getOwnerEntity() );
 					Block blockTemp = (Block) arg3.getOwnerEntity();
-					System.out.println(blockTemp.getID());
-					System.out.println(blockTemp.getHitsLeft());
 					blockTemp.reduceHitsLeft(1);
-					System.out.println(blockTemp.getHitsLeft());
+					try {
+						changeImage(blockTemp.getHitsLeft(), blockTemp);
+					} catch (SlickException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
 					if (blockTemp.getHitsLeft() == 0) {
 						// Items
 						Random rn = new Random();
