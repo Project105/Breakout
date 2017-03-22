@@ -12,7 +12,7 @@ public interface GameParameters {
 	// Window Settings
 	public static final int WINDOW_WIDTH = 802;
 	public static final int WINDOW_HEIGHT = 602;
-	public static final int FRAME_RATE = 120;
+	public static final int FRAME_RATE = 60;
 
 	// Game States
 	public static final int MAINMENU_STATE = 0;
