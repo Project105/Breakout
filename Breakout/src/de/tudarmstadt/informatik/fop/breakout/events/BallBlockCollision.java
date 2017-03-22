@@ -7,19 +7,21 @@ import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.ui.GameplayState;
 import eea.engine.event.Event;
 
-public class PrivateBallMovEvent extends Event implements GameParameters {
-	
-	GameplayState a = new GameplayState(GAMEPLAY_STATE);
+public class BallBlockCollision extends Event implements GameParameters{
 
-
-	public PrivateBallMovEvent(String id) {
+	public BallBlockCollision(String id) {
 		super(id);
-		// TODO Auto-generated constructor stub
+		
 	}
 
+GameplayState a= new GameplayState(GAMEPLAY_STATE);
+	
 	@Override
 	protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
-		return a.getBallMoving();
+		
+			return getOwnerEntity().collides(a.getEntityManager().getEntity(arg1.getCurrentStateID(), BALL_ID));
+
+	}
+
 
 }
-	}

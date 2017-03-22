@@ -157,8 +157,21 @@ public class HighscoreEntryAL implements Serializable {
 	}
 
 	/**
-	 * FOR TESTING ONLY 
-	 * writes dummy data to a highscore file
+	 * Adds a player's name to a new highscore, since it is first created
+	 * without a player name
+	 * 
+	 * @param name
+	 *            the name of the player
+	 */
+	public void addPlayerNameNewHighscore(String name) {
+		readHighscore();
+		for (int i = 0; i < al.size(); i++)
+			if (al.get(i).getPlayerName().equals("DummyName"))
+				al.get(i).setPlayerName(name);
+	}
+
+	/**
+	 * FOR TESTING ONLY writes dummy data to a highscore file
 	 */
 	public void writeDummyFile() {
 		HighscoreEntry hs1 = new HighscoreEntry("p1", 9, 55.5f, 100);

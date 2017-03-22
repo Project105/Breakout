@@ -19,8 +19,8 @@ public class PrivateBallEvent extends Event implements GameParameters {
 	@Override
 	protected boolean performAction(GameContainer arg0, StateBasedGame arg1, int arg2) {
 		
-		if(!a.getBallMoving() && a.getEntityManager().getEntity(GAMEPLAY_STATE, BALL_ID).getEvent("followStick")==null)return true;
-		else if(a.getBallMoving() && a.getEntityManager().getEntity(GAMEPLAY_STATE, BALL_ID).getEvent("followStick")!=null)return true;
+		if(!a.getBallMoving() && (a.getEntityManager().getEntity(GAMEPLAY_STATE, BALL_ID).getEvent("followStick")==null) )return true;
+		else if(a.getBallMoving() && (a.getEntityManager().getEntity(GAMEPLAY_STATE, BALL_ID).getEvent("followStick")!=null))return true;
 		else return false;
 	}
 	

@@ -10,9 +10,9 @@ package de.tudarmstadt.informatik.fop.breakout.constants;
 public interface GameParameters {
 
 	// Window Settings
-	public static final int WINDOW_WIDTH = 800;
-	public static final int WINDOW_HEIGHT = 600;
-	public static final int FRAME_RATE = 60;
+	public static final int WINDOW_WIDTH = 802;
+	public static final int WINDOW_HEIGHT = 602;
+	public static final int FRAME_RATE = 120;
 
 	// Game States
 	public static final int MAINMENU_STATE = 0;
@@ -39,6 +39,7 @@ public interface GameParameters {
 	public static final String BLOCK_1_IMAGE = "/images/block_1.png";
 	public static final String BLOCK_2_IMAGE = "/images/block_2.png";
 	public static final String BLOCK_3_IMAGE = "/images/block_3.png";
+	public static final String BLOCK_4_IMAGE = "/images/block_4.png";
 
 	// Timer
 	public static final String STOP_WATCH_ID = "stopWatch";
