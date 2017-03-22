@@ -167,14 +167,17 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		entityManager.addEntity(idState, PListener);
 
 	}
-
+/*
 	public void NewBall() {
-		ball.setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX() + 20, 560));
+		entityManager.getEntity(idState, BALL_ID).setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX() + 20, 550));
 		// rotation = orientation
-		ball.setRotation(180);
-		entityManager.addEntity(idState, ball);
+		entityManager.getEntity(idState, BALL_ID).setVisible(true);
+		entityManager.getEntity(idState, BALL_ID).setRotation(180);
+		
+		
+		
 
-	}
+	}*/
 public void changeImage(int hitsleft, Block block) throws SlickException{
 	if(hitsleft == 3){
 		block.removeComponent(new ImageRenderComponent(new Image("/images/block_4.png")));
@@ -342,7 +345,7 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 
 		ball = new Ball(BALL_ID);
 		// default position on stick
-		ball.setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX() + 20, 560));
+		ball.setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX() + 20, 550));
 		// rotation = orientation
 		ball.setRotation(180);
 		// image of the ball
@@ -415,10 +418,14 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
 
 				if (ballMoving) {
-					entityManager.removeEntity(idState, ball);
+					
 					System.out.println("hier  " + time);
 					player.subtrLife();
 					ballMoving = false;
+					if(player.getLives()>0){entityManager.getEntity(idState, BALL_ID).setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX() + 20, 550));
+					// rotation = orientation
+					entityManager.getEntity(idState, BALL_ID).setRotation(180);
+					}
 				}
 
 			}
@@ -490,15 +497,16 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
-
+        
 		// Time Counter in ms
 		if (gameStarted)
 			time += delta;
-		if (gameStarted && !entityManager.hasEntity(idState, BALL_ID) && time % 500 == 0
-				&& player.getLives()/* lives */ > 0) {
+	/*	if (gameStarted && entityManager.getEntity(idState, BALL_ID).getPosition().getY()>600   && time % 500 == 0
+				&& player.getLives()> 0) {
 			System.out.println("hierupdate" + time);
 			NewBall();
-		}
+			System.out.println(ball.getPosition().getY());
+		}*/
 		gameLost(sbg);
 
 	}
@@ -542,6 +550,7 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 		g.drawString("GameLost " + gameLost, 50, 50);
 		if (/* player.getLivesLeft() */player.getLives() == 0)
 			g.drawString("Game Over", 500, 300);
+		g.drawString("Positionball "+entityManager.getEntity(idState, BALL_ID).getPosition().getY(),100, 500);
 
 	}
 
