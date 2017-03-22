@@ -296,6 +296,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		gameLost = false;
 		gameStarted = false;
 		ballMoving = false;
+		destroyedBlocks = 0;
 
 		setBackground();
 
