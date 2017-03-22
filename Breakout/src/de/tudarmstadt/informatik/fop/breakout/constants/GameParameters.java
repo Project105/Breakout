@@ -10,15 +10,16 @@ package de.tudarmstadt.informatik.fop.breakout.constants;
 public interface GameParameters {
 
 	// Window Settings
-	public static final int WINDOW_WIDTH = 800;
-	public static final int WINDOW_HEIGHT = 600;
+	public static final int WINDOW_WIDTH = 802;
+	public static final int WINDOW_HEIGHT = 602;
 	public static final int FRAME_RATE = 60;
 
 	// Game States
 	public static final int MAINMENU_STATE = 0;
 	public static final int GAMEPLAY_STATE = 1;
 	public static final int HIGHSCORE_STATE = 2;
-
+	public static final int CREDITS_STATE = 3;
+	public static final int TEST_GAME_OVER_STATE = 4;
 	// Background
 	public static final String BACKGROUND_ID = "background";
 	public static final String BACKGROUND_IMAGE = "/images/background.png";
@@ -38,6 +39,7 @@ public interface GameParameters {
 	public static final String BLOCK_1_IMAGE = "/images/block_1.png";
 	public static final String BLOCK_2_IMAGE = "/images/block_2.png";
 	public static final String BLOCK_3_IMAGE = "/images/block_3.png";
+	public static final String BLOCK_4_IMAGE = "/images/block_4.png";
 
 	// Timer
 	public static final String STOP_WATCH_ID = "stopWatch";
@@ -69,4 +71,13 @@ public interface GameParameters {
 
 	// Highscore
 	public static final String HIGHSCORE_FILE = "highscores/highscore.hsc";
+
+/*
+ * @Author Denis Andric
+ * 
+ * Parameters for States
+*/
+//MainMenuState
+public static final String BACK_IMAGE = "/images/menu.png";
+public static final String ENTRY_IMAGE="/images/entry.png";
 }

@@ -1,10 +1,12 @@
 package de.tudarmstadt.informatik.fop.breakout.test.adapter;
 
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
+import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
 import de.tudarmstadt.informatik.fop.breakout.interfaces.IHitable;
 import de.tudarmstadt.informatik.fop.breakout.ui.Breakout;
 import eea.engine.entity.Entity;
@@ -24,6 +26,7 @@ public class Adapter implements GameParameters {
 	TestAppGameContainer app;
 
   //TODO you should declare the additional attributes you may require here.
+	Ball ball=null;
 
 	/**
 	 * Use this constructor to initialize everything you need.
@@ -66,7 +69,8 @@ public class Adapter implements GameParameters {
 
     // Initialize the game in debug mode (no GUI output)
 		breakout = new Breakout(true);
-
+		
+		
 		try {
 			app = new TestAppGameContainer(breakout);
 			app.start(0);
@@ -119,8 +123,8 @@ public class Adapter implements GameParameters {
 	 * @return an entity representing a ball with the ID passed in as ballID
 	 */
 	public Entity createBallInstance(String ballID) {
-	  //TODO write code that returns a ball instance with ID 'ballID'
-	  return null;
+	  ball = new Ball(ballID);
+	  return ball;
 	}
 
 	/**
@@ -147,6 +151,7 @@ public class Adapter implements GameParameters {
 	 */
 	public void setRotation(int i) {
 	  //TODO write code sets the ball rotation to the value passed in
+		ball.setRotation(i);
 	}
 
   /**
@@ -157,7 +162,7 @@ public class Adapter implements GameParameters {
    */
 	public float getRotation() {
     //TODO write code retrieves the ball's rotation
-	  return 0.0f; // this is only a dummy value to prevent compilation problems!
+	  return ball.getRotation(); // this is only a dummy value to prevent compilation problems!
 	}
 
 	/**
@@ -167,6 +172,7 @@ public class Adapter implements GameParameters {
 	 */
 	public void setPosition(Vector2f vector2f) {
 	  //TODO provide code that sets the position of the ball to the coordinates passed in
+		ball.setPosition(vector2f);
 	}
 
   /**
@@ -177,7 +183,7 @@ public class Adapter implements GameParameters {
    */
 	public Vector2f getSize() {
 	  //TODO write code that retrieves the size of the ball
-	  return new Vector2f(25, 25);
+	  return ball.getSize();
 	}
 
 	/**
@@ -344,7 +350,10 @@ public class Adapter implements GameParameters {
 	 */
 	public void handleKeyDown(int updatetime, Integer input) {
 	  //TODO write code that handles a "key pressed" event
-	  // note: do not forget to call app.updateGame(updatetime);
+	// note: do not forget to call app.updateGame(updatetime);
+		
+		
+		
 	}
 
 	/**
