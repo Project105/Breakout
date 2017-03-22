@@ -110,7 +110,7 @@ public class GameOverState extends BasicGameState implements GameParameters {
 		 * Adding new highscore
 		 * Will automatically ignore non top10 score
 		 */
-		newHighscore = new HighscoreEntry(playerName, playerBlocks, playerTime, playerPoints);
+		newHighscore = new HighscoreEntry(playerBlocks, playerTime, playerPoints);
 		newHighscoreAL.addHighscoreEntry(newHighscore);
 		newHighscoreAL.writeHighscore();
 		// Here the player object must be created using playerName,

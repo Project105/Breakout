@@ -35,7 +35,7 @@ public class HighscoreEntryAL implements Serializable {
 	public HighscoreEntryAL() {
 		// initialize all elements with zero
 		for (int i = 0; i < 10; i++)
-			al.add(i, new HighscoreEntry("empty", 0, 0f, 0));
+			al.add(i, new HighscoreEntry(0, 0f, 0));
 
 		// create highscore file
 		try {
@@ -174,16 +174,26 @@ public class HighscoreEntryAL implements Serializable {
 	 * FOR TESTING ONLY writes dummy data to a highscore file
 	 */
 	public void writeDummyFile() {
-		HighscoreEntry hs1 = new HighscoreEntry("p1", 9, 55.5f, 100);
-		HighscoreEntry hs2 = new HighscoreEntry("p2", 10, 55.6f, 99);
-		HighscoreEntry hs3 = new HighscoreEntry("p3", 11, 55.5f, 100);
-		HighscoreEntry hs4 = new HighscoreEntry("p4", 12, 55.5f, 100);
-		HighscoreEntry hs5 = new HighscoreEntry("p5", 13, 55.5f, 100);
-		HighscoreEntry hs6 = new HighscoreEntry("p6", 14, 55.6f, 99);
-		HighscoreEntry hs7 = new HighscoreEntry("p7", 15, 55.5f, 100);
-		HighscoreEntry hs8 = new HighscoreEntry("p8", 16, 55.5f, 100);
-		HighscoreEntry hs9 = new HighscoreEntry("p9", 17, 55.5f, 100);
-		HighscoreEntry hs10 = new HighscoreEntry("p10", 18, 55.6f, 99);
+		HighscoreEntry hs1 = new HighscoreEntry(9, 55.5f, 100);
+		HighscoreEntry hs2 = new HighscoreEntry(10, 55.6f, 99);
+		HighscoreEntry hs3 = new HighscoreEntry(11, 55.5f, 100);
+		HighscoreEntry hs4 = new HighscoreEntry(12, 55.5f, 100);
+		HighscoreEntry hs5 = new HighscoreEntry(13, 55.5f, 100);
+		HighscoreEntry hs6 = new HighscoreEntry(14, 55.6f, 99);
+		HighscoreEntry hs7 = new HighscoreEntry(15, 55.5f, 100);
+		HighscoreEntry hs8 = new HighscoreEntry(16, 55.5f, 100);
+		HighscoreEntry hs9 = new HighscoreEntry(17, 55.5f, 100);
+		HighscoreEntry hs10 = new HighscoreEntry(18, 55.6f, 99);
+		hs1.setPlayerName("Player1");
+		hs2.setPlayerName("Player2");
+		hs3.setPlayerName("Player3");
+		hs4.setPlayerName("Player4");
+		hs5.setPlayerName("Player5");
+		hs6.setPlayerName("Player6");
+		hs7.setPlayerName("Player7");
+		hs8.setPlayerName("Player8");
+		hs9.setPlayerName("Player9");
+		hs10.setPlayerName("Player10");
 		addHighscoreEntry(hs1);
 		addHighscoreEntry(hs2);
 		addHighscoreEntry(hs3);

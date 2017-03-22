@@ -36,6 +36,7 @@ import de.tudarmstadt.informatik.fop.breakout.events.TouchTopBorder;
 import de.tudarmstadt.informatik.fop.breakout.factories.BorderFactory;
 import de.tudarmstadt.informatik.fop.breakout.factories.ItemFactory;
 import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
+import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntryAL;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.action.basicactions.DestroyEntityAction;
@@ -524,19 +525,20 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 	}
 
 	/**
-	 * 
-	 * @throws SlickException
-	 *             method to give new/old entity Ball in entity Manager in
-	 *             update
-	 */
-
-	/*
-	 * Method which recognizes if the game is lost it gets to mainmenu state
+	 * Checks if a game is lost and enters GameOverState
+	 * @param sbg the StateBasedGame
 	 */
 	public void gameLost(StateBasedGame sbg) {
-		if (player.getLives() == 0) {
+		if (player.getLives() == 0/* lives==0 */) {
 			gameStarted = false;
 			gameLost = true;
+			//ADDED FUNCTIONALITY BY MARCEL
+			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, destroyedBlocks/time*10);
+			HighscoreEntryAL newAL = new HighscoreEntryAL();
+			newAL.readHighscore();
+			newAL.addHighscoreEntry(newHS);
+			newAL.writeHighscore();
+			//END OF ADDED FUNCTIONALITY BY MARCEL
 			sbg.enterState(TEST_GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
 		}
 	}

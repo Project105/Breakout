@@ -38,7 +38,7 @@ public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable
 	 * @param points
 	 *            the points scored in the game
 	 */
-	public HighscoreEntry(String name, int blocks, float time, double points) {
+	public HighscoreEntry(int blocks, float time, double points) {
 		// sets the name to "DummyName" so the highscore can be found in the
 		// list easily and the name can be changed later, if the entry
 		// corresponds to a top 10 highscore
