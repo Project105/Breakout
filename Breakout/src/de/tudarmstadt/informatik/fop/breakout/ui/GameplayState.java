@@ -57,7 +57,6 @@ import eea.engine.event.basicevents.KeyPressedEvent;
 import eea.engine.event.basicevents.LeavingScreenEvent;
 import eea.engine.event.basicevents.LoopEvent;
 import de.tudarmstadt.informatik.fop.breakout.map.MapReader;
-import de.tudarmstadt.informatik.fop.breakout.player.Player;
 
 /*
  * @Author Denis Andric
@@ -75,7 +74,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private static boolean gameStarted = false;
 	private static boolean ballMoving = false;
 	private static boolean collisionWithBlock = false;
-	private Player player = null;
+	private static int lives=0;
 	private Ball ball = null;
     private static int destroyedBlocks=0;
     
@@ -306,11 +305,8 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		player = new Player(PLAYER_ID);
-		player.setLives(3);
-		player.setScore(0);
-		// player.setTime(0);
-		// lives=3;
+		
+		lives=3;
 		time = 0;
 		gameWon = false;
 		gameLost = false;
@@ -432,9 +428,9 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 				if (ballMoving) {
 					
 					System.out.println("hier  " + time);
-					player.subtrLife();
+					lives-=1;
 					ballMoving = false;
-					if(player.getLives()>0){entityManager.getEntity(idState, BALL_ID).setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX() + 20, 550));
+					if(lives>0){entityManager.getEntity(idState, BALL_ID).setPosition(new Vector2f(entityManager.getEntity(idState, STICK_ID).getPosition().getX() + 20, 550));
 					// rotation = orientation
 					entityManager.getEntity(idState, BALL_ID).setRotation(180);
 					}
@@ -529,7 +525,7 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 	 * @param sbg the StateBasedGame
 	 */
 	public void gameLost(StateBasedGame sbg) {
-		if (player.getLives() == 0/* lives==0 */) {
+		if (lives == 0) {
 			gameStarted = false;
 			gameLost = true;
 			//ADDED FUNCTIONALITY BY MARCEL
@@ -565,11 +561,11 @@ public void changeImage(int hitsleft, Block block) throws SlickException{
 		 * 100, 175);
 		 */
 		g.drawString("Time   " + (time / 1000) / 60 + ":" + (time / 1000) % 60 + ":" + time % 1000, 500, 50);
-		g.drawString("Lives left: " + player.getLives()/* lives */, 600, 25);
+		g.drawString("Lives left: " +  lives , 600, 25);
 		g.drawString("Game Started  " + gameStarted, 300, 10);
 		g.drawString("Ball moving  " + ballMoving, 120, 100);
 		g.drawString("GameLost " + gameLost, 50, 50);
-		if (/* player.getLivesLeft() */player.getLives() == 0)
+		if (lives == 0)
 			g.drawString("Game Lost", 500, 300);
 		if(BlocksOnScreen()==0){
 			g.drawString("Game Won!!", 500, 300);
