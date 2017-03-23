@@ -12,7 +12,7 @@ public interface GameParameters {
 	// Window Settings
 	public static final int WINDOW_WIDTH = 802;
 	public static final int WINDOW_HEIGHT = 602;
-	public static final int FRAME_RATE = 60;
+	public static final int FRAME_RATE = 120;
 
 	// Game States
 	public static final int MAINMENU_STATE = 0;
@@ -80,4 +80,5 @@ public interface GameParameters {
 //MainMenuState
 public static final String BACK_IMAGE = "/images/menu.png";
 public static final String ENTRY_IMAGE="/images/entry.png";
+public static final boolean musicSwitch = true;
 }

@@ -52,6 +52,7 @@ public class HighscoreState extends BasicGameState implements GameParameters {
 
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		
 		/*
 		 * Screen background entity
 		 */

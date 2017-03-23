@@ -7,6 +7,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+
+import de.tudarmstadt.informatik.fop.breakout.actions.PlayMusicAction;
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import eea.engine.action.basicactions.ChangeStateInitAction;
 import eea.engine.action.basicactions.QuitAction;
@@ -14,6 +16,7 @@ import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
+import eea.engine.event.basicevents.LoopEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
 
@@ -32,7 +35,25 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 
 	@Override
 	public void init(GameContainer sc, StateBasedGame sb) throws SlickException {
-
+         /**
+          * Music Entity
+          */
+		sc.setMusicOn(musicSwitch);
+		Entity musicPlay = new Entity("music");	
+		LoopEvent playMusic= new LoopEvent(); 
+				
+		playMusic.addAction(new PlayMusicAction("/music/game.WAV"));
+				
+	         
+				
+	   musicPlay.addComponent(playMusic);
+	   entityManager.addEntity(idState, musicPlay);
+		
+		
+		
+		
+		
+		
 		/**
 		 * =============== =============== SCREEN BACKGROUND SETUP
 		 * =============== ===============

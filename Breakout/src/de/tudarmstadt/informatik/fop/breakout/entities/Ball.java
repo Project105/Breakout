@@ -18,11 +18,11 @@ public class Ball extends Entity implements GameParameters {
 		speed=curr;
 		
 	}
-	public void increaseSpeed(int inc){
+	public void increaseSpeed(float inc){
 		speed+=inc;
 	}
-	public void decreaseSpeed(int dec){
-		speed-=dec;
+	public void decreaseSpeed(float f){
+		speed-=f;
 	}
 	
 	public Ball getBall(){
