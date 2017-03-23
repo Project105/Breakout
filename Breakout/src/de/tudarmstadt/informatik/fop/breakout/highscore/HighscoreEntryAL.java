@@ -40,10 +40,12 @@ public class HighscoreEntryAL implements Serializable {
 		// create highscore file
 		try {
 			highscoreFile = new File(filePath);
-			if (!highscoreFile.exists())
+			if (!highscoreFile.exists()) {
 				highscoreFile.createNewFile();
-			// write dummy values to file
-			writeHighscore();
+				writeHighscore();
+			}
+			else
+				readHighscore();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -80,17 +82,7 @@ public class HighscoreEntryAL implements Serializable {
 
 		try {
 			oos = new ObjectOutputStream(fos);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
 			oos.writeObject(al);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
 			oos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -152,7 +144,7 @@ public class HighscoreEntryAL implements Serializable {
 		for (int i = 0; i < 10; i++)
 			sb.append("Player: " + al.get(i).getPlayerName() + "  " + "Destroyed Blocks: "
 					+ al.get(i).getNumberOfDestroyedBlocks() + "  " + "Time: " + al.get(i).getElapsedTime() + "  "
-					+ "Points: " + "\n");
+					+ "Points: " + (int) al.get(i).getPoints() + "\n");
 		return sb.toString();
 	}
 
@@ -169,41 +161,25 @@ public class HighscoreEntryAL implements Serializable {
 			if (al.get(i).getPlayerName().equals("DummyName"))
 				al.get(i).setPlayerName(name);
 	}
-
+	
 	/**
-	 * FOR TESTING ONLY writes dummy data to a highscore file
+	 * re-initializes the ArrayList with zero values
 	 */
-	public void writeDummyFile() {
-		HighscoreEntry hs1 = new HighscoreEntry(9, 55.5f, 100);
-		HighscoreEntry hs2 = new HighscoreEntry(10, 55.6f, 99);
-		HighscoreEntry hs3 = new HighscoreEntry(11, 55.5f, 100);
-		HighscoreEntry hs4 = new HighscoreEntry(12, 55.5f, 100);
-		HighscoreEntry hs5 = new HighscoreEntry(13, 55.5f, 100);
-		HighscoreEntry hs6 = new HighscoreEntry(14, 55.6f, 99);
-		HighscoreEntry hs7 = new HighscoreEntry(15, 55.5f, 100);
-		HighscoreEntry hs8 = new HighscoreEntry(16, 55.5f, 100);
-		HighscoreEntry hs9 = new HighscoreEntry(17, 55.5f, 100);
-		HighscoreEntry hs10 = new HighscoreEntry(18, 55.6f, 99);
-		hs1.setPlayerName("Player1");
-		hs2.setPlayerName("Player2");
-		hs3.setPlayerName("Player3");
-		hs4.setPlayerName("Player4");
-		hs5.setPlayerName("Player5");
-		hs6.setPlayerName("Player6");
-		hs7.setPlayerName("Player7");
-		hs8.setPlayerName("Player8");
-		hs9.setPlayerName("Player9");
-		hs10.setPlayerName("Player10");
-		addHighscoreEntry(hs1);
-		addHighscoreEntry(hs2);
-		addHighscoreEntry(hs3);
-		addHighscoreEntry(hs4);
-		addHighscoreEntry(hs5);
-		addHighscoreEntry(hs6);
-		addHighscoreEntry(hs7);
-		addHighscoreEntry(hs8);
-		addHighscoreEntry(hs9);
-		addHighscoreEntry(hs10);
-		writeHighscore();
+	public void reset() {
+		for(int i = 0; i < al.size(); i++)
+			al.set(i, new HighscoreEntry(0, 0f, 0));
 	}
+	
+	/**
+	 * Returns the HighscoreEntry at a given index
+	 * @param index the index of the element
+	 * @return the HighscoreEntry at the index
+	 */
+	public HighscoreEntry get(int index) {
+		if((index > al.size() - 1) || index < 0)
+			return null;
+		else 
+			return al.get(index);
+	}
+
 }

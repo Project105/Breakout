@@ -47,7 +47,12 @@ public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable
 		elapsedTime = time;
 		this.points = points;
 	}
-
+	public HighscoreEntry(int blocks, float time, double points, String name) {
+		numberOfDestroyedBlocks = blocks;
+		elapsedTime = time;
+		this.points = points;
+		playerName = name;
+	}
 	@Override
 	public String getPlayerName() {
 		return playerName;
@@ -67,12 +72,6 @@ public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable
 	public double getPoints() {
 		return points;
 	}
-
-	/*
-	 * @Override public String toString() { // different values separated by ";"
-	 * and different entries separated by ":" return(playerName + ";" +
-	 * numberOfDestroyedBlocks + ";" + elapsedTime + ";" + points + ":"); }
-	 */
 
 	@Override
 	public int compareTo(HighscoreEntry he) {
@@ -94,22 +93,13 @@ public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable
 
 	}
 
+	/**
+	 * Sets the player's name
+	 * @param name the player's name
+	 */
 	public void setPlayerName(String name) {
 		playerName = name;
 
 	}
 
-	/*
-	 * HighscoreEntry compare(HighscoreEntry he1, HighscoreEntry he2) {
-	 * if(he1.getNumberOfDestroyedBlocks() > he2.getNumberOfDestroyedBlocks())
-	 * return he1; else if (he1.getNumberOfDestroyedBlocks() <
-	 * he2.getNumberOfDestroyedBlocks()) return he2; else
-	 * if(he1.getNumberOfDestroyedBlocks() == he2.getNumberOfDestroyedBlocks()
-	 * && he1.getElapsedTime() < he2.getElapsedTime()) return he1; else
-	 * if(he1.getNumberOfDestroyedBlocks() == he2.getNumberOfDestroyedBlocks()
-	 * && he1.getElapsedTime() > he2.getElapsedTime()) return he2;
-	 * 
-	 * // if the highscores are totally equal, the highscore that was set first
-	 * will stay in front else return he1; }
-	 */
 }

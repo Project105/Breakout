@@ -7,6 +7,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Ball;
+import de.tudarmstadt.informatik.fop.breakout.entities.Block;
+import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import de.tudarmstadt.informatik.fop.breakout.interfaces.IHitable;
 import de.tudarmstadt.informatik.fop.breakout.ui.Breakout;
 import eea.engine.entity.Entity;
@@ -26,8 +28,8 @@ public class Adapter implements GameParameters {
 	TestAppGameContainer app;
 
   //TODO you should declare the additional attributes you may require here.
-	Ball ball=null;
-
+	
+	StateBasedEntityManager entityManager;
 	/**
 	 * Use this constructor to initialize everything you need.
 	 */
@@ -50,7 +52,7 @@ public class Adapter implements GameParameters {
 	 * Diese Methode initialisiert das Spiel im Debug-Modus, d.h. es wird ein
 	 * AppGameContainer gestartet, der keine Fenster erzeugt und aktualisiert.
 	 * 
-	 * Sie mÃ¼ssen diese Methode erweitern
+	 * Sie müssen diese Methode erweitern
 	 */
 	public void initializeGame() {
 
@@ -72,11 +74,15 @@ public class Adapter implements GameParameters {
 		
 		
 		try {
+			breakout.initStatesList(app);
 			app = new TestAppGameContainer(breakout);
+			app.setDisplayMode(WINDOW_WIDTH, WINDOW_HEIGHT, true);
 			app.start(0);
+			
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	/**
@@ -93,8 +99,11 @@ public class Adapter implements GameParameters {
 
 	public void changeToGameplayState() {
 		this.getStateBasedGame().enterState(GAMEPLAY_STATE);
+		entityManager = StateBasedEntityManager.getInstance();
 		try {
 			app.updateGame(1);
+			
+			;
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -107,6 +116,22 @@ public class Adapter implements GameParameters {
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	
+	/* Hilfsmethoden*/
+	
+	public Ball getBall(){
+		return (Ball) entityManager.getEntity(GAMEPLAY_STATE, BALL_ID);
+		
+	}
+	public Block getBlock(){
+		return (Block) entityManager.getEntity(GAMEPLAY_STATE, "Block1");
+		
+	}
+	public Stick getStick(){
+		return (Stick) entityManager.getEntity(GAMEPLAY_STATE, STICK_ID);
 	}
 
 	/* ***************************************************
@@ -123,7 +148,7 @@ public class Adapter implements GameParameters {
 	 * @return an entity representing a ball with the ID passed in as ballID
 	 */
 	public Entity createBallInstance(String ballID) {
-	  ball = new Ball(ballID);
+	Ball ball = new Ball(ballID);
 	  return ball;
 	}
 
@@ -140,7 +165,8 @@ public class Adapter implements GameParameters {
 	public IHitable createBlockInstance(String blockID, int hitsUntilDestroyed) {
 	  //TODO write code that returns a block instance with ID 'blockID'
 	  // and that requires hitsUntilDestroyed "hits" until it vanishes
-	  return null;
+		Block block = new Block(blockID, hitsUntilDestroyed);
+		  return  block;
 	}
 
 	/**
@@ -151,7 +177,7 @@ public class Adapter implements GameParameters {
 	 */
 	public void setRotation(int i) {
 	  //TODO write code sets the ball rotation to the value passed in
-		ball.setRotation(i);
+		getBall().setRotation(i);
 	}
 
   /**
@@ -162,7 +188,7 @@ public class Adapter implements GameParameters {
    */
 	public float getRotation() {
     //TODO write code retrieves the ball's rotation
-	  return ball.getRotation(); // this is only a dummy value to prevent compilation problems!
+	  return getBall().getRotation(); // this is only a dummy value to prevent compilation problems!
 	}
 
 	/**
@@ -172,9 +198,8 @@ public class Adapter implements GameParameters {
 	 */
 	public void setPosition(Vector2f vector2f) {
 	  //TODO provide code that sets the position of the ball to the coordinates passed in
-		ball.setPosition(vector2f);
+		getBall().setPosition(vector2f);
 	}
-
   /**
    * returns a definition of the ball's size. Typically, the size of the ball will
    * be constant, but programmers may introduce bonus items that shrink or enlarge the ball.
@@ -183,7 +208,7 @@ public class Adapter implements GameParameters {
    */
 	public Vector2f getSize() {
 	  //TODO write code that retrieves the size of the ball
-	  return ball.getSize();
+	  return getBall().getSize();
 	}
 
 	/**
@@ -193,7 +218,7 @@ public class Adapter implements GameParameters {
 	 */
 	public float getSpeed() {
     //TODO write code to retrieve the ball speed
-	  return 1.0f;
+	  return getBall().getBallSpeed();
 	}
 
 	/**
@@ -203,6 +228,7 @@ public class Adapter implements GameParameters {
 	 */
 	public void setSpeed(float speed) {
     //TODO write code to set the ball speed
+		getBall().setBallSpeed(speed);
 	}
 
 	/**
@@ -221,7 +247,7 @@ public class Adapter implements GameParameters {
 	 */
 	public boolean collides(Entity otherEntity) {
 	  //TODO write code to test if the ball collides with 'otherEntity'
-	  return false;
+	  return  getBall().collides(otherEntity);
 	}
 
 	/* ***************************************************
@@ -282,6 +308,7 @@ public class Adapter implements GameParameters {
 	 */
 	public void setHitsLeft(int hitsLeft, String blockID) {
 	  //TODO write code to set the number of required hits for 'blockID' to hitsLeft
+	getBlock().setHitsLeft(hitsLeft);
 	}
 
 	/**
@@ -293,7 +320,8 @@ public class Adapter implements GameParameters {
 	 */
 	public int getHitsLeft(String blockID) {
 	  //TODO write code to return how many hits 'blockID' needs to vanish
-	  return 1;
+		
+	  return getBlock().getHitsLeft();
 	}
 
 	/**
@@ -306,6 +334,8 @@ public class Adapter implements GameParameters {
 	 */
 	public void addHitsLeft(int hitsLeft, String blockID) {
     //TODO write code to add the given number to the block's "hit capacity"
+
+		getBlock().addHitsLeft(hitsLeft);
 	}
 
 	/**
@@ -317,7 +347,8 @@ public class Adapter implements GameParameters {
 	 */
 	public boolean hasHitsLeft(String blockID) {
     //TODO write code to return if the given block still has hits left
-	  return false;
+		
+	  return getBlock().hasHitsLeft();
 	}
 
 	/* ***************************************************
@@ -332,7 +363,7 @@ public class Adapter implements GameParameters {
 	 */
 	public Vector2f getStickPosition() {
 	  //TODO write code to return the position of the stick
-	  return new Vector2f(0, 200); // these are arbitrary values(!)
+	  return getStick().getPosition();
 	}
 
 	/* ***************************************************
@@ -347,10 +378,12 @@ public class Adapter implements GameParameters {
 	 *            : Zeitdauer bis update-Aufruf
 	 * @param input
 	 *            : z.B. Input.KEY_K, Input.KEY_L
+	 * @throws SlickException 
 	 */
-	public void handleKeyDown(int updatetime, Integer input) {
+	public void handleKeyDown(int updatetime, Integer input) throws SlickException {
 	  //TODO write code that handles a "key pressed" event
 	// note: do not forget to call app.updateGame(updatetime);
+		
 		
 		
 		
@@ -362,6 +395,7 @@ public class Adapter implements GameParameters {
 	public void handleKeyDownRightArrow() {
 	  //TODO write code for handling a "right arrow" key press
 	  // hint: you may use the above method.
+		
 	}
 
 	/**
@@ -370,5 +404,6 @@ public class Adapter implements GameParameters {
 	public void handleKeyDownLeftArrow() {
     //TODO write code for handling a "left arrow" key press
     // hint: you may use the above method.
+		
 	}
 }

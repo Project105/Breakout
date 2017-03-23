@@ -19,7 +19,7 @@ public interface GameParameters {
 	public static final int GAMEPLAY_STATE = 1;
 	public static final int HIGHSCORE_STATE = 2;
 	public static final int CREDITS_STATE = 3;
-	public static final int TEST_GAME_OVER_STATE = 4;
+	public static final int GAME_OVER_STATE = 4;
 	// Background
 	public static final String BACKGROUND_ID = "background";
 	public static final String BACKGROUND_IMAGE = "/images/background.png";
@@ -46,7 +46,7 @@ public interface GameParameters {
 
 	// Ball
 	public static final String BALL_ID = "ball";
-	public static final float INITIAL_BALL_SPEED = 0.3f;
+	public static final float INITIAL_BALL_SPEED = 0.5f;
 	public static final float SPEEDUP_VALUE = 0.0001f;
 	public static final String BALL_IMAGE = "/images/ball.png";
 

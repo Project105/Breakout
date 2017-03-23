@@ -65,7 +65,7 @@ public class CreditsState extends BasicGameState implements GameParameters {
 		 * Main Menu Button
 		 */
 		Entity menu = new Entity("Main Menu");
-		menu.setPosition(new Vector2f(400, 450));
+		menu.setPosition(new Vector2f(218, 450));
 		menu.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
 		ANDEvent andEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		// Action- going into Highscore State
@@ -81,8 +81,8 @@ public class CreditsState extends BasicGameState implements GameParameters {
 		entityManager.renderEntities(arg0, arg1, arg2);
 		arg2.drawString(
 				"This incredibly awesome game was created by" + "\n" + "Denis Andric, Marcel Geibel, Felix Maas and Dirk Schweickard",
-				100, 100);
-		arg2.drawString("Main Menu", 300, 440);
+				40, 100);
+		arg2.drawString("Main Menu", 190, 440);
 
 	}
 

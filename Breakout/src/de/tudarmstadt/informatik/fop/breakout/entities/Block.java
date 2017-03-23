@@ -2,11 +2,12 @@ package de.tudarmstadt.informatik.fop.breakout.entities;
 
 import org.newdawn.slick.geom.Vector2f;
 
+import de.tudarmstadt.informatik.fop.breakout.interfaces.IHitable;
 import eea.engine.entity.Entity;
 import eea.engine.interfaces.ICollidable;
 import eea.engine.interfaces.IDestructible;
 
-public class Block extends Entity implements IDestructible, ICollidable {
+public class Block extends Entity implements IDestructible, ICollidable, IHitable {
 
 	private float blockWidth;
 	private float blockHeight;
@@ -56,6 +57,13 @@ public class Block extends Entity implements IDestructible, ICollidable {
 
 	public Block getBlock() {
 		return this;
+	}
+
+	@Override
+	public boolean hasHitsLeft() {
+		if(this.getHitsLeft()>0)
+		return true;
+		else return false;
 	}
 	
 }

@@ -14,7 +14,10 @@ import org.newdawn.slick.state.StateBasedGame;
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
 import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntryAL;
+import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
+import eea.engine.action.basicactions.ChangeStateInitAction;
+import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
@@ -40,37 +43,19 @@ public class GameOverState extends BasicGameState implements GameParameters {
 	int playerBlocks;
 	float playerTime;
 	int playerPoints;
-	HighscoreEntry newHighscore;
 	HighscoreEntryAL newHighscoreAL;
 	boolean isTopTen = false;
+	int indexOfPlayer = -1;
 
 	/**
 	 * Constructor, for setting the attributes of the class and pulling a
 	 * highscore file to compare the player's score to
 	 * 
-	 * @param ID
-	 *            the ID of the BasicGameState
-	 * @param blocks
-	 *            the nr of blocks the player destroyed
-	 * @param time
-	 *            the time elapsed in the game
-	 * @param points
-	 *            the nr of points the player scored
+	 * @param ID the ID of the game state
 	 */
-	public GameOverState(int ID, int blocks, float time, int points) {
+	public GameOverState(int ID) {
 		idState = ID;
-		entityManager = StateBasedEntityManager.getInstance();
-		playerBlocks = blocks;
-		playerTime = time;
-		playerPoints = points;
-		// pull highscore file
-		newHighscoreAL = new HighscoreEntryAL();
-		newHighscoreAL.readHighscore();
-		// if (playerPoints > newHighscoreAL.getAL().get(9).getPoints()) THIS IS
-		// CORRECT
-		// THE FOLLOWING IS FOR TESTING ONLY
-		if (playerBlocks > newHighscoreAL.getAL().get(9).getNumberOfDestroyedBlocks())
-			isTopTen = true;
+		entityManager = StateBasedEntityManager.getInstance();	
 	}
 
 	@Override
@@ -98,43 +83,68 @@ public class GameOverState extends BasicGameState implements GameParameters {
 		escListener.addComponent(esc);
 		// adding entity in entityManager
 		entityManager.addEntity(idState, escListener);
+		
+		/*
+		 * Enter function entity
+		 */
+		Entity enterListener = new Entity("ENTER_Listener");
+		// Event if is Enter pressed
+		KeyPressedEvent enter = new KeyPressedEvent(Input.KEY_ENTER);
+		enter.addAction(new Action() {
 
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+				if(indexOfPlayer != -1) {
+					playerName = textField.getText();
+					newHighscoreAL.get(indexOfPlayer).setPlayerName(playerName);
+					newHighscoreAL.writeHighscore();
+				}
+			}
+			
+		});
+		enter.addAction(new ChangeStateInitAction(HIGHSCORE_STATE));
+		// adding EventComponent in entity
+		enterListener.addComponent(enter);
+		// adding entity in entityManager
+		entityManager.addEntity(idState, enterListener);
+		
 		/*
 		 * Text field
 		 */
 		font = new UnicodeFont(new java.awt.Font("Arial", java.awt.Font.ITALIC, 26));
 		textField = new TextField(arg0, arg0.getDefaultFont(), 260, 300, 300, 50);
 		
-
-		/*
-		 * Adding new highscore
-		 * Will automatically ignore non top10 score
-		 */
-		newHighscore = new HighscoreEntry(playerBlocks, playerTime, playerPoints);
-		newHighscoreAL.addHighscoreEntry(newHighscore);
-		newHighscoreAL.writeHighscore();
-		// Here the player object must be created using playerName,
-		// playerBlocks, playerTime, playerPoints
 	}
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
 		entityManager.renderEntities(arg0, arg1, arg2);
 		if (isTopTen) {
-			//FOR TESTING ONLY
-			arg2.drawString(playerName, 300, 230);
-
 			arg2.drawString("Please enter your name:", 300, 200);
 			textField.render(arg0, arg2);
-			
+
 		} else
 			arg2.drawString("Too bad, no new top 10 score for you!", 240, 200);
+		
 	}
 
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
 		entityManager.updateEntities(arg0, arg1, arg2);
-		playerName = textField.getText();
+		textField.setFocus(true);
+		/*
+		 * Pulling file
+		 */
+		// pull highscore file
+		newHighscoreAL = new HighscoreEntryAL();
+		newHighscoreAL.readHighscore();
+		//checks if the new highscore is part of the top 10
+		for(int i = 0; i < newHighscoreAL.getAL().size(); i++) {
+			if (newHighscoreAL.get(i).getPlayerName().equals("NEWENTRY")) {
+				isTopTen = true;
+				indexOfPlayer = i;
+			}
+		}
 	}
 
 	@Override

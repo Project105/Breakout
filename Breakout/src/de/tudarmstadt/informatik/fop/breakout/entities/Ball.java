@@ -4,7 +4,7 @@ import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import eea.engine.entity.Entity;
 
 public class Ball extends Entity implements GameParameters {
-	private float speed=0;
+	private static float speed;
 
 
 	public Ball(String entityID) {
@@ -25,7 +25,10 @@ public class Ball extends Entity implements GameParameters {
 		speed-=dec;
 	}
 	
-
+	public Ball getBall(){
+		return this;
+		
+	}
 	
 }
 

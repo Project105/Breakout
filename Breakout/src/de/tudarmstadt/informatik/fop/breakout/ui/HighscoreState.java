@@ -80,7 +80,7 @@ public class HighscoreState extends BasicGameState implements GameParameters {
 		 * Main Menu Button
 		 */
 		Entity menu = new Entity("Main Menu");
-		menu.setPosition(new Vector2f(400, 450));
+		menu.setPosition(new Vector2f(218, 450));
 		menu.addComponent(new ImageRenderComponent(new Image(ENTRY_IMAGE)));
 		ANDEvent andEvents = new ANDEvent(new MouseEnteredEvent(), new MouseClickedEvent());
 		// Action- going into Highscore State
@@ -89,27 +89,22 @@ public class HighscoreState extends BasicGameState implements GameParameters {
 		menu.addComponent(andEvents);
 		// adding Entity in EntityManager
 		entityManager.addEntity(idState, menu);
-		
-		/*
-		 * Loading highscore file
-		 */
-		
-		// THIS IS FOR TESTING ONLY
-		scores.writeDummyFile();
 		scores.readHighscore();
 	}
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
 		entityManager.renderEntities(arg0, arg1, arg2);
-		arg2.drawString(scores.toString(), 100, 100);
-		arg2.drawString("Main Menu", 300, 440);
+		arg2.drawString(scores.toString(), 40, 100);
+		arg2.drawString("Main Menu", 190, 440);
 
 	}
 
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
 		entityManager.updateEntities(arg0, arg1, arg2);
+		scores.readHighscore();
+
 
 	}
 

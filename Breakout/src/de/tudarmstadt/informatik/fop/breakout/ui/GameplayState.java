@@ -26,6 +26,7 @@ import de.tudarmstadt.informatik.fop.breakout.entities.Block;
 import de.tudarmstadt.informatik.fop.breakout.entities.Stick;
 import de.tudarmstadt.informatik.fop.breakout.events.BallBlockCollision;
 import de.tudarmstadt.informatik.fop.breakout.events.BallStickCollision;
+import de.tudarmstadt.informatik.fop.breakout.events.ItemStickCollision;
 import de.tudarmstadt.informatik.fop.breakout.events.PrivateBallMovEvent;
 import de.tudarmstadt.informatik.fop.breakout.events.PrivateBallNotMovEvent;
 import de.tudarmstadt.informatik.fop.breakout.events.TouchLeftBorder;
@@ -37,6 +38,7 @@ import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
 import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntryAL;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
+import eea.engine.action.basicactions.DestroyEntityAction;
 import eea.engine.action.basicactions.MoveDownAction;
 import eea.engine.action.basicactions.MoveLeftAction;
 import eea.engine.action.basicactions.MoveRightAction;
@@ -75,6 +77,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private static int destroyedBlocks = 0;
 	private static int points = 0;
 	private static long time = 0;
+	private HighscoreEntryAL newAL = new HighscoreEntryAL();
 
 	public int BlocksOnScreen() {
 		return al.size();
@@ -174,6 +177,112 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	}
 
+	public void createItems(Vector2f pos) {
+		Random in = new Random();
+		int artOfItem = in.nextInt(4) + 1;
+		ItemFactory i = new ItemFactory(artOfItem, pos);
+		Entity item = i.createEntity();
+		LoopEvent moveItem = new LoopEvent();
+		moveItem.addAction(new MoveDownAction(0.2f));
+		item.addComponent(moveItem);
+		ItemStickCollision colItemStick = new ItemStickCollision("colItemStick");
+		colItemStick.addAction(new Action() {
+
+			@Override
+			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
+				Ball tempBall =  (Ball) entityManager.getEntity(idState, BALL_ID);
+				switch (arg3.getOwnerEntity().getID()) {
+
+				case "slower":
+					 
+				break;
+
+				case "faster":
+					
+					break;
+
+				case "smaller":
+					if (entityManager.getEntity(idState, STICK_ID).getSize().getX() == 130) {
+						try {
+							entityManager.getEntity(idState, STICK_ID)
+									.removeComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
+						} catch (SlickException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						try {
+							entityManager.getEntity(idState, STICK_ID)
+									.addComponent(new ImageRenderComponent(new Image("/images/stick_small.png")));
+						} catch (SlickException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					} else 	if (entityManager.getEntity(idState, STICK_ID).getSize().getX() == 195) {
+						try {
+							entityManager.getEntity(idState, STICK_ID)
+									.removeComponent(new ImageRenderComponent(new Image("/images/stick_big.png")));
+						} catch (SlickException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						try {
+							entityManager.getEntity(idState, STICK_ID)
+									.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
+						} catch (SlickException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					break;
+
+				case "bigger":
+					if (entityManager.getEntity(idState, STICK_ID).getSize().getX() == 65) {
+						try {
+							entityManager.getEntity(idState, STICK_ID)
+									.removeComponent(new ImageRenderComponent(new Image("/images/stick_small.png")));
+						} catch (SlickException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						try {
+							entityManager.getEntity(idState, STICK_ID)
+									.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
+						} catch (SlickException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}else if (entityManager.getEntity(idState, STICK_ID).getSize().getX() == 130) {
+
+						try {
+							entityManager.getEntity(idState, STICK_ID)
+									.removeComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
+						} catch (SlickException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+						try {
+							entityManager.getEntity(idState, STICK_ID)
+									.addComponent(new ImageRenderComponent(new Image("/images/stick_big.png")));
+						} catch (SlickException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					break;
+				default:
+					return;
+			}
+					entityManager.removeEntity(idState, arg3.getOwnerEntity());	
+			}
+
+		});
+		item.addComponent(colItemStick);
+		LeavingScreenEvent itemNotCatched = new LeavingScreenEvent();
+		itemNotCatched.addAction(new DestroyEntityAction());
+		entityManager.addEntity(idState, item);
+	}
+
 	public void changeImage(int hitsleft, Block block) throws SlickException {
 		if (hitsleft == 3) {
 			block.removeComponent(new ImageRenderComponent(new Image("/images/block_4.png")));
@@ -218,14 +327,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 						// Items
 						Random rn = new Random();
 						int itemChance = rn.nextInt(10) + 1;
-						if (itemChance <= 4) {
-							System.out.println("Ein Item ist da!");
-							ItemFactory i = new ItemFactory(itemChance, arg3.getOwnerEntity().getPosition());
-							Entity item = i.createEntity();
-							LoopEvent moveItem = new LoopEvent();
-							moveItem.addAction(new MoveDownAction(0.2f));
-							item.addComponent(moveItem);
-							entityManager.addEntity(idState, item);
+						if (itemChance <= 8) {
+							createItems(arg3.getOwnerEntity().getPosition());
 						}
 						destroyedBlocks += 1;
 						points += 10;
@@ -297,6 +400,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		gameStarted = false;
 		ballMoving = false;
 		destroyedBlocks = 0;
+		points = 0;
 
 		setBackground();
 
@@ -349,6 +453,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		ball.setPassable(false);
 		// putting ball in entity manager
 		entityManager.addEntity(idState, ball);
+		
+		
 
 		/********************************
 		 * Following Stick before Ball is started ballMoving = false
@@ -487,12 +593,13 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		};
 		colBallStick.addAction(ballStickMovement);
 		stick.addComponent(colBallStick);
+	
+		
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		entityManager.updateEntities(gc, sbg, delta);
-
 		// Time Counter in ms
 		if (gameStarted)
 			time += delta;
@@ -500,7 +607,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		gameWon(sbg);
 
 	}
-
+	
 	/**
 	 * Checks if a game is lost and enters GameOverState
 	 * 
@@ -511,12 +618,10 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		if (lives == 0) {
 			gameStarted = false;
 			gameLost = true;
-			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, destroyedBlocks / time * 10);
-			HighscoreEntryAL newAL = new HighscoreEntryAL();
-			newAL.readHighscore();
+			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, points, "NEWENTRY");
 			newAL.addHighscoreEntry(newHS);
 			newAL.writeHighscore();
-			sbg.enterState(TEST_GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
+			sbg.enterState(GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
 		}
 	}
 
@@ -524,14 +629,13 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		if (BlocksOnScreen() == 0) {
 			gameStarted = false;
 			gameWon = true;
-			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, destroyedBlocks / time * 10);
-			HighscoreEntryAL newAL = new HighscoreEntryAL();
-			newAL.readHighscore();
+			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, points, "NEWENTRY");
 			newAL.addHighscoreEntry(newHS);
 			newAL.writeHighscore();
-			sbg.enterState(TEST_GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
+			sbg.enterState(GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
 		}
 	}
+
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
@@ -544,6 +648,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		if (BlocksOnScreen() == 0) {
 			g.drawString("Game Won!!", 500, 300);
 		}
+	
 	}
 
 	@Override
