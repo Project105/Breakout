@@ -500,8 +500,6 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 		Escape();
 
-		PauseIt();
-
 		initBlocks();
 
 		/******************** Stick ***********************/
@@ -613,6 +611,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		colBallStick.addAction(new PlaySoundAction("/sounds/hitStick.wav"));
 		stick.addComponent(colBallStick);
 
+		//======================== Pause ========================
+		PauseIt();
 	}
 
 	@Override
@@ -663,12 +663,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		g.drawString("Lives: " + lives, 300, 10);
 		g.drawString("Points: " + points, 400, 10);
 		g.drawString("Destroyed Blocks: " + destroyedBlocks, 530, 10);
-		if (lives == 0)
-			g.drawString("Game Lost", 500, 300);
-		if (BlocksOnScreen() == 0) {
-			g.drawString("Game Won!!", 500, 300);
-		}
-
+		
 	}
 
 	@Override
