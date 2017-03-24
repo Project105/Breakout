@@ -71,6 +71,6 @@ public class Breakout extends StateBasedGame implements GameParameters {
 		  StateBasedEntityManager.getInstance().addState(HIGHSCORE_STATE);
 		  StateBasedEntityManager.getInstance().addState(CREDITS_STATE);
 		  StateBasedEntityManager.getInstance().addState(GAME_OVER_STATE);
-    
+
 	}
 }

@@ -20,6 +20,8 @@ public interface GameParameters {
 	public static final int HIGHSCORE_STATE = 2;
 	public static final int CREDITS_STATE = 3;
 	public static final int GAME_OVER_STATE = 4;
+	public static final int MAP_STATE = 5;
+	
 	// Background
 	public static final String BACKGROUND_ID = "background";
 	public static final String BACKGROUND_IMAGE = "/images/background.png";
@@ -35,7 +37,8 @@ public interface GameParameters {
 	public static final String RIGHT_BORDER_ID = "rightBorder";
 
 	// Blocks
-	public static final String MAP_FILE = "maps/level1.map";
+	public static final String MAP_FILE_1 = "maps/level1.map";
+	public static final String MAP_FILE_2 = "maps/level2.map";
 	public static final String BLOCK_1_IMAGE = "/images/block_1.png";
 	public static final String BLOCK_2_IMAGE = "/images/block_2.png";
 	public static final String BLOCK_3_IMAGE = "/images/block_3.png";
@@ -71,6 +74,7 @@ public interface GameParameters {
 
 	// Highscore
 	public static final String HIGHSCORE_FILE = "highscores/highscore.hsc";
+	
 
 /*
  * @Author Denis Andric

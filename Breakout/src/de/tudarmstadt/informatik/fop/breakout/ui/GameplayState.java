@@ -60,7 +60,7 @@ import eea.engine.event.basicevents.KeyPressedEvent;
 import eea.engine.event.basicevents.LeavingScreenEvent;
 import eea.engine.event.basicevents.LoopEvent;
 
-/*
+/**
  * @Author Denis Andric
  */
 public class GameplayState extends BasicGameState implements GameParameters {
@@ -85,55 +85,54 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private HighscoreEntryAL newAL = new HighscoreEntryAL();
 	private static float speed = INITIAL_BALL_SPEED;
 	private Music music;
-	
-	public void setSpeed(float newSpeed){
-		speed=newSpeed;
+
+	public void setSpeed(float newSpeed) {
+		speed = newSpeed;
 	}
-	public void incSpeed(float inc){
-		speed+=inc;
+
+	public void incSpeed(float inc) {
+		speed += inc;
 	}
-	public void decSpeed(float dec){
-		speed-=dec;
+
+	public void decSpeed(float dec) {
+		speed -= dec;
 	}
-	public float getSpeed(){
+
+	public float getSpeed() {
 		return speed;
 	}
 
-	//new
-		public void addLives(int live){
-			lives+=live;
-		}
-		
-		//new
-		public int getPoints(){
-			return points;
-		}
-		//new
-		public void addPoints(int score){
-			points+=score;
-		}
-		//new
-		public void incDestroyedBlocks(){
-			destroyedBlocks+=1;
-		}
-		//new
-		public void setBallMoving(boolean state){
-			ballMoving = state;
-		}
-	    //new
-		public int getLives(){
-			return lives;
-		}
-		//new
-		public void subtrLife(){
-			lives-=1;
-		}
-		public boolean getGameStarted(){
-			return gameStarted;
-		}
-	
-	
-	
+	public void addLives(int live) {
+		lives += live;
+	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public void addPoints(int score) {
+		points += score;
+	}
+
+	public void incDestroyedBlocks() {
+		destroyedBlocks += 1;
+	}
+
+	public void setBallMoving(boolean state) {
+		ballMoving = state;
+	}
+
+	public int getLives() {
+		return lives;
+	}
+
+	public void subtrLife() {
+		lives -= 1;
+	}
+
+	public boolean getGameStarted() {
+		return gameStarted;
+	}
 
 	public int BlocksOnScreen() {
 		return al.size();
@@ -168,7 +167,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		entityManager = StateBasedEntityManager.getInstance();
 	}
 
-	/*
+	/**
 	 * BorderFactory to List
 	 */
 	public void makeBorderList() {
@@ -180,7 +179,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	}
 
 	/**
-	 * 
+	 * Adds each border from the list to entitymanager
 	 */
 	public void BorderListToEntity() {
 		makeBorderList();
@@ -191,6 +190,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	}
 
+	/**
+	 * Sets the background image
+	 * 
+	 * @throws SlickException
+	 */
 	public void setBackground() throws SlickException {
 		// Setting up background entity
 		Entity background = new Entity(BACKGROUND_ID);
@@ -202,6 +206,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		entityManager.addEntity(idState, background);
 	}
 
+	/**
+	 * Allows the use of escape key for leaving a state
+	 */
 	public void Escape() {
 		// Setting up entity
 		Entity escListener = new Entity("ESC_Listener");
@@ -216,8 +223,12 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	}
 
+	/**
+	 * Triggers a pause mode when pressing p
+	 * 
+	 * @throws SlickException
+	 */
 	public void PauseIt() throws SlickException {
-
 		Entity PListener = new Entity(PAUSE_ID);
 		// P Input
 		PListener.setPosition(new Vector2f(400, 300));
@@ -226,13 +237,18 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		KeyPressedEvent space = new KeyPressedEvent(Input.KEY_P);
 		// Pause Action - see Actions
 		PauseAction pause = new PauseAction();
-
 		space.addAction(pause);
 		PListener.addComponent(space);
 		entityManager.addEntity(idState, PListener);
 
 	}
 
+	/**
+	 * Creates random items at a certain position
+	 * 
+	 * @param pos
+	 *            the position of the item
+	 */
 	public void createItems(Vector2f pos) {
 		Random in = new Random();
 		int artOfItem = in.nextInt(4) + 1;
@@ -247,27 +263,27 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 			@Override
 			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-				
+
 				switch (arg3.getOwnerEntity().getID()) {
 
 				case "slower":
-					if(speed>0.1){
-					PrivateBallMovEvent a =new PrivateBallMovEvent("BallMov");
-					entityManager.getEntity(idState, BALL_ID).removeComponent("BallMov");
-					decSpeed(0.05f);
-					a.addAction(new RotationToMove(speed));
-					entityManager.getEntity(idState, BALL_ID).addComponent(a);
+					if (speed > 0.1) {
+						PrivateBallMovEvent a = new PrivateBallMovEvent("BallMov");
+						entityManager.getEntity(idState, BALL_ID).removeComponent("BallMov");
+						decSpeed(0.05f);
+						a.addAction(new RotationToMove(speed));
+						entityManager.getEntity(idState, BALL_ID).addComponent(a);
 					}
-					 
-				break;
+
+					break;
 
 				case "faster":
-					if(speed<0.7){
-					PrivateBallMovEvent b =new PrivateBallMovEvent("BallMov");
-					entityManager.getEntity(idState, BALL_ID).removeComponent("BallMov");
-					incSpeed(0.05f);
-					b.addAction(new RotationToMove(speed));
-					entityManager.getEntity(idState, BALL_ID).addComponent(b);
+					if (speed < 0.7) {
+						PrivateBallMovEvent b = new PrivateBallMovEvent("BallMov");
+						entityManager.getEntity(idState, BALL_ID).removeComponent("BallMov");
+						incSpeed(0.05f);
+						b.addAction(new RotationToMove(speed));
+						entityManager.getEntity(idState, BALL_ID).addComponent(b);
 					}
 					break;
 
@@ -277,29 +293,25 @@ public class GameplayState extends BasicGameState implements GameParameters {
 							entityManager.getEntity(idState, STICK_ID)
 									.removeComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 						} catch (SlickException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						try {
 							entityManager.getEntity(idState, STICK_ID)
 									.addComponent(new ImageRenderComponent(new Image("/images/stick_small.png")));
 						} catch (SlickException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					} else 	if (entityManager.getEntity(idState, STICK_ID).getSize().getX() == 195) {
+					} else if (entityManager.getEntity(idState, STICK_ID).getSize().getX() == 195) {
 						try {
 							entityManager.getEntity(idState, STICK_ID)
 									.removeComponent(new ImageRenderComponent(new Image("/images/stick_big.png")));
 						} catch (SlickException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						try {
 							entityManager.getEntity(idState, STICK_ID)
 									.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 						} catch (SlickException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -311,23 +323,20 @@ public class GameplayState extends BasicGameState implements GameParameters {
 							entityManager.getEntity(idState, STICK_ID)
 									.removeComponent(new ImageRenderComponent(new Image("/images/stick_small.png")));
 						} catch (SlickException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						try {
 							entityManager.getEntity(idState, STICK_ID)
 									.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 						} catch (SlickException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					}else if (entityManager.getEntity(idState, STICK_ID).getSize().getX() == 130) {
+					} else if (entityManager.getEntity(idState, STICK_ID).getSize().getX() == 130) {
 
 						try {
 							entityManager.getEntity(idState, STICK_ID)
 									.removeComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 						} catch (SlickException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 
@@ -335,15 +344,14 @@ public class GameplayState extends BasicGameState implements GameParameters {
 							entityManager.getEntity(idState, STICK_ID)
 									.addComponent(new ImageRenderComponent(new Image("/images/stick_big.png")));
 						} catch (SlickException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 					break;
 				default:
 					return;
-			}
-					entityManager.removeEntity(idState, arg3.getOwnerEntity());	
+				}
+				entityManager.removeEntity(idState, arg3.getOwnerEntity());
 			}
 
 		});
@@ -353,6 +361,12 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		entityManager.addEntity(idState, item);
 	}
 
+	/**
+	 * Changes the image of a block, corresponding to its hits left
+	 * @param hitsleft the amount of hits left for a block
+	 * @param block the instance of block
+	 * @throws SlickException
+	 */
 	public void changeImage(int hitsleft, Block block) throws SlickException {
 		if (hitsleft == 3) {
 			block.removeComponent(new ImageRenderComponent(new Image("/images/block_4.png")));
@@ -369,8 +383,15 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	}
 
+	/**
+	 * Initializes blocks at the correct position reading from a map file
+	 * @throws SlickException
+	 */
 	public void initBlocks() throws SlickException {
-		MapReader reader = new MapReader("maps/level1.map");
+		//initializes random map
+		Random rand = new Random();
+		int mapNr = rand.nextInt(4) + 1;
+		MapReader reader = new MapReader("maps/level" + mapNr + ".map");
 		reader.readMap();
 		al = reader.toArrayList();
 		for (int i = 0; i < al.size(); i++) {
@@ -463,8 +484,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		
-		
+
 		lives = 3;
 		time = 0;
 		gameWon = false;
@@ -484,9 +504,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		PauseIt();
 
 		initBlocks();
-		
-		
-		
+
 		/******************** Stick ***********************/
 		Stick stick = new Stick(STICK_ID);
 		// default Position
@@ -529,8 +547,6 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		ball.setPassable(false);
 		// putting ball in entity manager
 		entityManager.addEntity(idState, ball);
-		
-		
 
 		/********************************
 		 * Following Stick before Ball is started ballMoving = false
@@ -551,12 +567,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 		PrivateBallMovEvent moveBall = new PrivateBallMovEvent("BallMov");
 		// movement Action for movement of the Ball
-		
+
 		moveBall.addAction(new RotationToMove(speed));
 		// adds LoopEvent to the Ball => Ball starts moving
 		GameSwitchOn change = new GameSwitchOn();
 
-			
 		spaceDown.addAction(change);
 
 		// Collisiondetection for the three Borders
@@ -594,12 +609,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 		// Collision of Stick and Ball
 		BallStickCollision colBallStick = new BallStickCollision("colBallStick");
-		BallStickMovement ballStickMovement = new BallStickMovement(); 
+		BallStickMovement ballStickMovement = new BallStickMovement();
 		colBallStick.addAction(ballStickMovement);
 		colBallStick.addAction(new PlaySoundAction("/sounds/hitStick.wav"));
 		stick.addComponent(colBallStick);
-	
-		
+
 	}
 
 	@Override
@@ -610,9 +624,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 			time += delta;
 		gameLost(sbg);
 		gameWon(sbg);
-        
+
 	}
-	
+
 	/**
 	 * Checks if a game is lost and enters GameOverState
 	 * 
@@ -623,27 +637,25 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		if (lives == 0) {
 			gameStarted = false;
 			gameLost = true;
-			
+
 			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, points, "NEWENTRY");
 			newAL.addHighscoreEntry(newHS);
 			newAL.writeHighscore();
 			sbg.enterState(GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
 		}
 	}
-	
 
 	public void gameWon(StateBasedGame sbg) {
 		if (BlocksOnScreen() == 0) {
 			gameStarted = false;
 			gameWon = true;
-			
+
 			HighscoreEntry newHS = new HighscoreEntry(destroyedBlocks, time, points, "NEWENTRY");
 			newAL.addHighscoreEntry(newHS);
 			newAL.writeHighscore();
 			sbg.enterState(GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
 		}
 	}
-
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
@@ -656,8 +668,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		if (BlocksOnScreen() == 0) {
 			g.drawString("Game Won!!", 500, 300);
 		}
-		
-	
+
 	}
 
 	@Override

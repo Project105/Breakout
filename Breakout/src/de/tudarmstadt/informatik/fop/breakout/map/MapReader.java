@@ -61,13 +61,15 @@ public class MapReader implements GameParameters {
 		try {
 			file = new File(filePath);
 			inputReader = new BufferedReader(new FileReader(filePath));
-			while (inputReader.readLine() != null)
+			for(int i = 0; i < 10; i++) {
 				mapSB.append(inputReader.readLine());
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		mapString = mapSB.toString();
 	}
 
@@ -83,6 +85,7 @@ public class MapReader implements GameParameters {
 		int currentNrOfBlocks = 0;
 		int currentNrOfRows = 0;
 		char[] chars = mapString.toCharArray();
+		
 		for (int i = 0; i < chars.length; i++) {
 			// if this is the first element in a new row
 			// will work for rows of 16 blocks only
