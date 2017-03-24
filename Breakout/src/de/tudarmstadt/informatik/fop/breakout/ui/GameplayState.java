@@ -8,7 +8,6 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
@@ -69,7 +68,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	 */
 	private int idState;
 	private StateBasedEntityManager entityManager;
-	private boolean GameWin = false;
+
 	private Ball ball = null;
 	private List<BorderFactory> borders = new ArrayList<BorderFactory>();
 	private static List<Block> al = new ArrayList<Block>();
@@ -77,14 +76,13 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private static boolean gameLost = false;
 	private static boolean gameStarted = false;
 	private static boolean ballMoving = false;
-	private static boolean collisionWithBlock = false;
+
 	private static int lives = 0;
 	private static int destroyedBlocks = 0;
 	private static int points = 0;
 	private static long time = 0;
 	private HighscoreEntryAL newAL = new HighscoreEntryAL();
 	private static float speed = INITIAL_BALL_SPEED;
-	private Music music;
 
 	public void setSpeed(float newSpeed) {
 		speed = newSpeed;
@@ -363,8 +361,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	/**
 	 * Changes the image of a block, corresponding to its hits left
-	 * @param hitsleft the amount of hits left for a block
-	 * @param block the instance of block
+	 * 
+	 * @param hitsleft
+	 *            the amount of hits left for a block
+	 * @param block
+	 *            the instance of block
 	 * @throws SlickException
 	 */
 	public void changeImage(int hitsleft, Block block) throws SlickException {
@@ -385,10 +386,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	/**
 	 * Initializes blocks at the correct position reading from a map file
+	 * 
 	 * @throws SlickException
 	 */
 	public void initBlocks() throws SlickException {
-		//initializes random map
+		// initializes random map
 		Random rand = new Random();
 		int mapNr = rand.nextInt(4) + 1;
 		MapReader reader = new MapReader("maps/level" + mapNr + ".map");
@@ -441,8 +443,6 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		float blockBorderLeft;// X
 		float blockBorderTop;// Y
 		float blockBorderBottom;// Y
-
-		collisionWithBlock = true;
 
 		blockBorderRight = ownerEntity.getPosition().getX() + ownerEntity.getSize().getX() / 2;
 		blockBorderLeft = ownerEntity.getPosition().getX() - ownerEntity.getSize().getX() / 2;

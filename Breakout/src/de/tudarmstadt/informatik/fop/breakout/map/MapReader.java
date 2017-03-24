@@ -87,7 +87,7 @@ public class MapReader implements GameParameters {
 		int currentNrOfBlocks = 0;
 		int currentNrOfRows = 0;
 		char[] chars = mapString.toCharArray();
-		
+
 		for (int i = 0; i < chars.length; i++) {
 			// if this is the first element in a new row
 			// will work for rows of 16 blocks only
