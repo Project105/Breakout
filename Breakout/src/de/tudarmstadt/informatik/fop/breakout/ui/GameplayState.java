@@ -413,7 +413,6 @@ public class GameplayState extends BasicGameState implements GameParameters {
 					try {
 						changeImage(blockTemp.getHitsLeft(), blockTemp);
 					} catch (SlickException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
@@ -660,9 +659,10 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		entityManager.renderEntities(gc, sbg, g);
-		g.drawString("Time:   " + (time / 1000) / 60 + ":" + (time / 1000) % 60 + ":" + time % 1000, 650, 280);
-		g.drawString("Lives: " + lives, 650, 300);
-		g.drawString("Points: " + points, 650, 320);
+		g.drawString("Time:   " + (time / 1000) / 60 + ":" + (time / 1000) % 60 + ":" + time % 1000, 100, 10);
+		g.drawString("Lives: " + lives, 300, 10);
+		g.drawString("Points: " + points, 400, 10);
+		g.drawString("Destroyed Blocks: " + destroyedBlocks, 530, 10);
 		if (lives == 0)
 			g.drawString("Game Lost", 500, 300);
 		if (BlocksOnScreen() == 0) {
