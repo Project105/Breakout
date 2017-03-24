@@ -13,7 +13,7 @@ import eea.engine.component.Component;
  * 
  * @author Denis Andric
  * 
- *         Ball stays on stick before ball is started
+ *         Ball stays on stick before game is started
  *
  */
 public class BallPositioning implements Action, GameParameters {

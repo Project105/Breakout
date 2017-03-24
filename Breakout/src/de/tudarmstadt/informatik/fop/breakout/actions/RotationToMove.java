@@ -3,7 +3,13 @@ package de.tudarmstadt.informatik.fop.breakout.actions;
 import org.newdawn.slick.geom.Vector2f;
 
 import eea.engine.action.basicactions.Movement;
-
+/**
+ *  
+ * @author Felix Maas
+ * 
+ * action that simulates the ball movement
+ *
+ */
 public class RotationToMove extends Movement {
   
 	public RotationToMove(float currentSpeed) {

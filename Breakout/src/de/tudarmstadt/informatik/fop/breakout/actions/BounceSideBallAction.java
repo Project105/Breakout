@@ -8,7 +8,7 @@ import eea.engine.component.Component;
 
 /**
  * 
- * @author Dirk Schweickard
+ * @author Dirk Schweickard,  Felix Maas
  * 
  *         Action which changes the rotation of the Ball when colliding with the
  *         Left or Right Border

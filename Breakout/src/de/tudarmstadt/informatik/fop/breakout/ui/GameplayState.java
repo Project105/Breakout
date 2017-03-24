@@ -60,7 +60,7 @@ import eea.engine.event.basicevents.LeavingScreenEvent;
 import eea.engine.event.basicevents.LoopEvent;
 
 /**
- * @Author Denis Andric
+ * @Author Denis Andric,  Felix Maas, Dirk Schweickard
  */
 public class GameplayState extends BasicGameState implements GameParameters {
 	/**
@@ -83,6 +83,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	private static long time = 0;
 	private HighscoreEntryAL newAL = new HighscoreEntryAL();
 	private static float speed = INITIAL_BALL_SPEED;
+	
+	
 
 	public void setSpeed(float newSpeed) {
 		speed = newSpeed;
@@ -244,7 +246,6 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	/**
 	 * Creates random items at a certain position
 	 * 
-	 * @author Dirk Schweickard
 	 * @param pos
 	 *            the position of the item
 	 */
@@ -441,7 +442,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	}
 
 	/**
-	 * @author Dirk Schweickard
+	 * @author Dirk Schweickard, Felix Maas
 	 * @param ownerEntity
 	 *            gets the Block with whom the Ball collided
 	 * 
@@ -568,7 +569,11 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		ball.addComponent(followStick);
 
 		/************************************ Starting *****************************/
-		// Felix and Dirk
+		/**
+		 * 
+		 * @author Dirk Schweickard, Felix Maas
+		 * 
+		 */
 		// checks if Space has been pressed
 		KeyPressedEvent spaceDown = new KeyPressedEvent(Input.KEY_SPACE);
 
@@ -653,7 +658,12 @@ public class GameplayState extends BasicGameState implements GameParameters {
 			sbg.enterState(GAME_OVER_STATE, new FadeOutTransition(), new FadeInTransition());
 		}
 	}
-
+/**
+ * 
+ * determines whether a game is won
+ * 
+ * @param sbg
+ */
 	public void gameWon(StateBasedGame sbg) {
 		if (BlocksOnScreen() == 0) {
 			gameStarted = false;
