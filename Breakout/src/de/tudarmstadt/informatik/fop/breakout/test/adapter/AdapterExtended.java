@@ -61,8 +61,11 @@ public class AdapterExtended extends Adapter {
 	 */
 	public List<? extends IHighscoreEntry> getHighscores() {
 		al.readHighscore();
-		// MUST BE IMPLEMENTED
-		return new LinkedList<IHighscoreEntry>();
+		LinkedList<HighscoreEntry> lst = new LinkedList<HighscoreEntry>();
+		for(int i = 0; i < al.getAL().size(); i++)
+			lst.add(al.get(i));
+			
+		return lst;
 	}
 
 	/**
