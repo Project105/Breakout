@@ -17,8 +17,11 @@ import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import de.tudarmstadt.informatik.fop.breakout.actions.BallPositioning;
+import de.tudarmstadt.informatik.fop.breakout.actions.BallStickMovement;
 import de.tudarmstadt.informatik.fop.breakout.actions.BounceSideBallAction;
 import de.tudarmstadt.informatik.fop.breakout.actions.BounceTopBallAction;
+import de.tudarmstadt.informatik.fop.breakout.actions.GameSwitchOff;
+import de.tudarmstadt.informatik.fop.breakout.actions.GameSwitchOn;
 import de.tudarmstadt.informatik.fop.breakout.actions.PauseAction;
 import de.tudarmstadt.informatik.fop.breakout.actions.PlayMusicAction;
 import de.tudarmstadt.informatik.fop.breakout.actions.PlaySoundAction;
@@ -94,7 +97,42 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	public void decSpeed(float dec){
 		speed-=dec;
 	}
+	public float getSpeed(){
+		return speed;
+	}
 
+	//new
+		public void addLives(int live){
+			lives+=live;
+		}
+		
+		//new
+		public int getPoints(){
+			return points;
+		}
+		//new
+		public void addPoints(int score){
+			points+=score;
+		}
+		//new
+		public void incDestroyedBlocks(){
+			destroyedBlocks+=1;
+		}
+		//new
+		public void setBallMoving(boolean state){
+			ballMoving = state;
+		}
+	    //new
+		public int getLives(){
+			return lives;
+		}
+		//new
+		public void subtrLife(){
+			lives-=1;
+		}
+		public boolean getGameStarted(){
+			return gameStarted;
+		}
 	
 	
 	
@@ -518,17 +556,9 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		
 		moveBall.addAction(new RotationToMove(speed));
 		// adds LoopEvent to the Ball => Ball starts moving
-		Action change = new Action() {
+		GameSwitchOn change = new GameSwitchOn();
 
-			@Override
-			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-				if (!gameStarted)
-					gameStarted = true;
-				ballMoving = true;
-
-			}
-
-		};
+			
 		spaceDown.addAction(change);
 
 		// Collisiondetection for the three Borders
@@ -552,55 +582,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		LeavingScreenEvent outOfGame = new LeavingScreenEvent();
 		// Removes Ball from the EntityList
 
-		outOfGame.addAction(new Action() {
-
-			@Override
-			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-
-				if (ballMoving) {
-
-					
-					lives -= 1;
-					ballMoving = false;
-					if (lives > 0) {
-						entityManager.getEntity(idState, BALL_ID).setPosition(new Vector2f(
-								entityManager.getEntity(idState, STICK_ID).getPosition().getX() + 20, 550));
-						// rotation = orientation
-						entityManager.getEntity(idState, BALL_ID).setRotation(180);
-						//Speed Back
-						PrivateBallMovEvent b =new PrivateBallMovEvent("BallMov");
-						entityManager.getEntity(idState, BALL_ID).removeComponent("BallMov");
-						setSpeed(INITIAL_BALL_SPEED);
-						b.addAction(new RotationToMove(speed));
-						entityManager.getEntity(idState, BALL_ID).addComponent(b);
-						//Size Back
-						if(entityManager.getEntity(idState, STICK_ID).getSize().getX() == 195){
-							try {
-								entityManager.getEntity(idState, STICK_ID).removeComponent(new ImageRenderComponent(new Image("/images/stick_big.png")));
-								entityManager.getEntity(idState, STICK_ID).addComponent((new ImageRenderComponent(new Image(STICK_IMAGE))));
-							} catch (SlickException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-						if(entityManager.getEntity(idState, STICK_ID).getSize().getX() == 65){
-							try {
-								entityManager.getEntity(idState, STICK_ID).removeComponent(new ImageRenderComponent(new Image("/images/stick_small.png")));
-								entityManager.getEntity(idState, STICK_ID).addComponent((new ImageRenderComponent(new Image(STICK_IMAGE))));
-							} catch (SlickException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							
-						}
-						
-					}
-				}
-
-			}
-
-		});
-
+		outOfGame.addAction(new GameSwitchOff());
 		// Initializes the Ball(new Ball Object, set Position and Rotation, adds
 		// the Components to the Ball)
 
@@ -614,51 +596,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 		// Collision of Stick and Ball
 		BallStickCollision colBallStick = new BallStickCollision("colBallStick");
-		Action ballStickMovement = new Action() {
-
-			@Override
-			public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
-				// x-coordinate of the Collision
-				float xCoord = ball.getPosition().getX();
-				// x-Coordinate of the stick's Midpoint
-				float stickMidPoint = stick.getPosition().getX();
-				// x-coordinate of the stick's left border
-				float xLeft = stickMidPoint - (stick.getSize().getX()) / 2;
-				// length of the stick
-				float stickLength = stick.getSize().getX();
-				// avoiding code redundancy
-				boolean condition1 = ((ball.getRotation() > 270) && (ball.getRotation() < 360));
-				boolean condition2 = ((ball.getRotation() >= 0) && ((ball.getRotation() < 90)));
-
-				if (condition1 && (xCoord >= xLeft) && (xCoord < (xLeft + stickLength / 5)))
-					ball.setRotation(560 - ball.getRotation());
-				else if (condition1 && (xCoord >= (xLeft + stickLength / 5))
-						&& (xCoord < (xLeft + 2 * stickLength / 5)))
-					ball.setRotation(550 - ball.getRotation());
-				else if (condition1 && (xCoord >= (xLeft + 2 * stickLength / 5))
-						&& (xCoord < (xLeft + 3 * stickLength / 5)))
-					ball.setRotation(540 - ball.getRotation());
-				else if (condition1 && (xCoord >= (xLeft + 3 * stickLength / 5))
-						&& (xCoord < (xLeft + 4 * stickLength / 5)))
-					ball.setRotation(530 - ball.getRotation());
-				else if (condition1 && (xCoord >= (xLeft + 4 * stickLength / 5)) && (xCoord < (xLeft + stickLength)))
-					ball.setRotation(520 - ball.getRotation());
-				else if (condition2 && (xCoord >= xLeft) && (xCoord < (xLeft + stickLength / 5)))
-					ball.setRotation(200 - ball.getRotation());
-				else if (condition2 && (xCoord >= (xLeft + stickLength / 5))
-						&& (xCoord < (xLeft + 2 * stickLength / 5)))
-					ball.setRotation(190 - ball.getRotation());
-				else if (condition2 && (xCoord >= (xLeft + 2 * stickLength / 5))
-						&& (xCoord < (xLeft + (3 * stickLength / 5))))
-					ball.setRotation(180 - ball.getRotation());
-				else if (condition2 && (xCoord >= (xLeft + 3 * stickLength / 5))
-						&& (xCoord < (xLeft + 4 * stickLength / 5)))
-					ball.setRotation(170 - ball.getRotation());
-				else if (condition2 && (xCoord >= (xLeft + 4 * stickLength / 5)) && (xCoord <= (xLeft + stickLength)))
-					ball.setRotation(160 - ball.getRotation());
-			}
-
-		};
+		BallStickMovement ballStickMovement = new BallStickMovement(); 
 		colBallStick.addAction(ballStickMovement);
 		colBallStick.addAction(new PlaySoundAction("/sounds/hitStick.wav"));
 		stick.addComponent(colBallStick);
@@ -674,7 +612,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 			time += delta;
 		gameLost(sbg);
 		gameWon(sbg);
-        if(lives==0)gc.setMusicOn(false);
+        
 	}
 	
 	/**
