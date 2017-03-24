@@ -6,7 +6,13 @@ import org.newdawn.slick.state.StateBasedGame;
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.ui.GameplayState;
 import eea.engine.event.Event;
-
+/**
+ * 
+ * @author Denis Andric
+ * 
+ * Event for detecting collisions with stick
+ *
+ */
 public class TouchStick extends Event implements GameParameters{
 
 	public TouchStick(String id) {

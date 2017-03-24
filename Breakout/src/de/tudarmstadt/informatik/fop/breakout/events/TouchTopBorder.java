@@ -7,7 +7,13 @@ import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.ui.GameplayState;
 import eea.engine.event.Event;
 
-
+/**
+ * 
+ * @author Denis Andric
+ * 
+ * Event for detecting collision with top border
+ *
+ */
 public class TouchTopBorder extends Event implements GameParameters { 
 
 	GameplayState a= new GameplayState(GAMEPLAY_STATE);

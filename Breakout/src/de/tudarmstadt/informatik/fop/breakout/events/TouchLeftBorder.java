@@ -10,6 +10,8 @@ import eea.engine.event.Event;
 /**
  * 
  * @author Denis Andric
+ * 
+ *         Event for detecting collision with left Border
  *
  */
 public class TouchLeftBorder extends Event implements GameParameters {

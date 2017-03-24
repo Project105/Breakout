@@ -20,7 +20,7 @@ import eea.engine.event.basicevents.LoopEvent;
 import eea.engine.event.basicevents.MouseClickedEvent;
 import eea.engine.event.basicevents.MouseEnteredEvent;
 
-/*
+/**
  * @Author Denis Andric
  */
 public class MainMenuState extends BasicGameState implements GameParameters {
@@ -35,7 +35,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 
 	@Override
 	public void init(GameContainer sc, StateBasedGame sb) throws SlickException {
-         /**
+         /*
           * Music Entity
           */
 		sc.setMusicOn(musicSwitch);
@@ -54,7 +54,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		
 		
 		
-		/**
+		/*
 		 * =============== =============== SCREEN BACKGROUND SETUP
 		 * =============== ===============
 		 **/
@@ -63,7 +63,7 @@ public class MainMenuState extends BasicGameState implements GameParameters {
 		background.addComponent(new ImageRenderComponent(new Image(BACK_IMAGE)));
 		entityManager.addEntity(idState, background);
 
-		/**
+		/*
 		 * =============== =============== =============== BUTTONS
 		 * =============== =============== ===============
 		 **/

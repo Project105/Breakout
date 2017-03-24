@@ -1,6 +1,7 @@
 package de.tudarmstadt.informatik.fop.breakout.actions;
 
 import org.newdawn.slick.GameContainer;
+
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
@@ -13,10 +14,17 @@ import eea.engine.action.Action;
 import eea.engine.component.Component;
 import eea.engine.component.render.ImageRenderComponent;
 
-public class GameSwitchOff implements Action,GameParameters {
-	
+/**
+ * 
+ * @author Denis Andric
+ * 
+ *         Action for stopping the ball, it subtract one life and sets stack and ball on
+ *         default
+ *
+ */
+public class GameSwitchOff implements Action, GameParameters {
+
 	GameplayState a = new GameplayState(GAMEPLAY_STATE);
-	
 
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2, Component arg3) {
@@ -31,26 +39,30 @@ public class GameSwitchOff implements Action,GameParameters {
 						a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID).getPosition().getX() + 20, 550));
 				// rotation = orientation
 				a.getEntityManager().getEntity(GAMEPLAY_STATE, BALL_ID).setRotation(180);
-				//Speed Back
-				PrivateBallMovEvent b =new PrivateBallMovEvent("BallMov");
+				// Speed Back
+				PrivateBallMovEvent b = new PrivateBallMovEvent("BallMov");
 				a.getEntityManager().getEntity(GAMEPLAY_STATE, BALL_ID).removeComponent("BallMov");
 				a.setSpeed(INITIAL_BALL_SPEED);
 				b.addAction(new RotationToMove(a.getSpeed()));
 				a.getEntityManager().getEntity(GAMEPLAY_STATE, BALL_ID).addComponent(b);
-				//Size back
-				if(a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID).getSize().getX() == 195){
+				// Size back
+				if (a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID).getSize().getX() == 195) {
 					try {
-						a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID).removeComponent(new ImageRenderComponent(new Image("/images/stick_big.png")));
-						a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID).addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
+						a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID)
+								.removeComponent(new ImageRenderComponent(new Image("/images/stick_big.png")));
+						a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID)
+								.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 					} catch (SlickException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
-				if(a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID).getSize().getX() == 65){
+				if (a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID).getSize().getX() == 65) {
 					try {
-						a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID).removeComponent(new ImageRenderComponent(new Image("/images/stick_small.png")));
-						a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID).addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
+						a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID)
+								.removeComponent(new ImageRenderComponent(new Image("/images/stick_small.png")));
+						a.getEntityManager().getEntity(GAMEPLAY_STATE, STICK_ID)
+								.addComponent(new ImageRenderComponent(new Image(STICK_IMAGE)));
 					} catch (SlickException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

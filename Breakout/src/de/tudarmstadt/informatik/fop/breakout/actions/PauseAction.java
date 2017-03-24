@@ -9,6 +9,8 @@ import eea.engine.component.Component;
 /**
  * 
  * @author Denis Andric
+ * 
+ * Action for pausing the game
  *
  */
 public class PauseAction implements Action,GameParameters {
