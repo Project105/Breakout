@@ -244,6 +244,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	/**
 	 * Creates random items at a certain position
 	 * 
+	 * @author Dirk Schweickard
 	 * @param pos
 	 *            the position of the item
 	 */
@@ -362,6 +363,8 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	/**
 	 * Changes the image of a block, corresponding to its hits left
 	 * 
+	 * @author Dirk Schweickard
+	 * 
 	 * @param hitsleft
 	 *            the amount of hits left for a block
 	 * @param block
@@ -387,6 +390,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 	/**
 	 * Initializes blocks at the correct position reading from a map file
 	 * 
+	 * @author Dirk Schweickard
 	 * @throws SlickException
 	 */
 	public void initBlocks() throws SlickException {
@@ -420,7 +424,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 						// Items
 						Random rn = new Random();
 						int itemChance = rn.nextInt(10) + 1;
-						if (itemChance <= 8) {
+						if (itemChance <= 4) {
 							createItems(arg3.getOwnerEntity().getPosition());
 						}
 						destroyedBlocks += 1;
@@ -436,6 +440,13 @@ public class GameplayState extends BasicGameState implements GameParameters {
 
 	}
 
+	/**
+	 * @author Dirk Schweickard
+	 * @param ownerEntity
+	 *            gets the Block with whom the Ball collided
+	 * 
+	 *            Changes the rotation of the Ball, when colliding with a Block
+	 */
 	public void BallBlockCollisionMovement(Entity ownerEntity) {
 
 		float blockBorderRight;// X
@@ -539,7 +550,6 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		// image of the ball
 		ball.addComponent(new ImageRenderComponent(new Image(BALL_IMAGE)));
 		// setting ball speed
-		ball.setBallSpeed(INITIAL_BALL_SPEED);
 
 		ball.setPassable(false);
 		// putting ball in entity manager
@@ -611,7 +621,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		colBallStick.addAction(new PlaySoundAction("/sounds/hitStick.wav"));
 		stick.addComponent(colBallStick);
 
-		//======================== Pause ========================
+		// ======================== Pause ========================
 		PauseIt();
 	}
 
@@ -663,7 +673,7 @@ public class GameplayState extends BasicGameState implements GameParameters {
 		g.drawString("Lives: " + lives, 300, 10);
 		g.drawString("Points: " + points, 400, 10);
 		g.drawString("Destroyed Blocks: " + destroyedBlocks, 530, 10);
-		
+
 	}
 
 	@Override

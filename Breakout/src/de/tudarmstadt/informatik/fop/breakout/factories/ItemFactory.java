@@ -8,45 +8,51 @@ import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.interfaces.IEntityFactory;
 
+/**
+ * Factory for creating Items Items are visible Objects, changing ballspeed or
+ * stickwidth
+ * 
+ * @author Dirk Schweickard
+ *
+ */
 public class ItemFactory implements IEntityFactory {
 
 	private int itemIndex;
 	private Vector2f spawnPosition;
-	
-	public ItemFactory(int itemIndex, Vector2f spawnPosition){
+
+	public ItemFactory(int itemIndex, Vector2f spawnPosition) {
 		this.itemIndex = itemIndex;
 		this.spawnPosition = spawnPosition;
 	}
 
-	
 	@Override
-	public Entity createEntity(){
-	
+	public Entity createEntity() {
+
 		Entity item;
 		String img;
-		
+
 		switch (itemIndex) {
 
 		case 1:
 			item = new Entity("slower");
 			img = "/images/slower.png";
 			break;
-			
+
 		case 2:
 			item = new Entity("faster");
 			img = "/images/faster.png";
 			break;
-			
+
 		case 3:
 			item = new Entity("smaller");
 			img = "/images/smaller.png";
 			break;
-			
+
 		case 4:
 			item = new Entity("bigger");
 			img = "/images/bigger.png";
 			break;
-				
+
 		default:
 			return null;
 		}
@@ -55,7 +61,7 @@ public class ItemFactory implements IEntityFactory {
 		try {
 			item.addComponent(new ImageRenderComponent(new Image(img)));
 		} catch (SlickException e) {
-	
+
 			e.printStackTrace();
 		}
 		item.setPassable(true);

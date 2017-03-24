@@ -4,8 +4,17 @@ import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import eea.engine.entity.Entity;
 import eea.engine.interfaces.ICollidable;
 
+/**
+ * 
+ * @author Dirk Schweickard Stick in Breakout from type Entity
+ */
 public class Stick extends Entity implements ICollidable, GameParameters {
-
+	/**
+	 * Constructor Stick
+	 * 
+	 * @param entityID
+	 *            ID of the Stick
+	 */
 	public Stick(String entityID) {
 		super(entityID);
 		setPassable(false);

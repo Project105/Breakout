@@ -98,8 +98,7 @@ public class Adapter implements GameParameters {
 
 	public void changeToGameplayState() {
 		this.getStateBasedGame().enterState(GAMEPLAY_STATE);
-		entityManager = StateBasedEntityManager.getInstance();
-		try {
+				try {
 			app.updateGame(1);
 			
 			;
@@ -122,15 +121,15 @@ public class Adapter implements GameParameters {
 	/* Hilfsmethoden*/
 	
 	public Ball getBall(){
-		return (Ball) entityManager.getEntity(GAMEPLAY_STATE, BALL_ID);
+		return (Ball) StateBasedEntityManager.getInstance().getEntity(GAMEPLAY_STATE, BALL_ID);
 		
 	}
 	public Block getBlock(){
-		return (Block) entityManager.getEntity(GAMEPLAY_STATE, "Block1");
+		return (Block) StateBasedEntityManager.getInstance().getEntity(GAMEPLAY_STATE, "Block1");
 		
 	}
 	public Stick getStick(){
-		return (Stick) entityManager.getEntity(GAMEPLAY_STATE, STICK_ID);
+		return (Stick) StateBasedEntityManager.getInstance().getEntity(GAMEPLAY_STATE, STICK_ID);
 	}
 
 	/* ***************************************************
@@ -217,7 +216,7 @@ public class Adapter implements GameParameters {
 	 */
 	public float getSpeed() {
     //TODO write code to retrieve the ball speed
-	  return getBall().getBallSpeed();
+	  return 0;
 	}
 
 	/**
@@ -227,7 +226,7 @@ public class Adapter implements GameParameters {
 	 */
 	public void setSpeed(float speed) {
     //TODO write code to set the ball speed
-		getBall().setBallSpeed(speed);
+		
 	}
 
 	/**
