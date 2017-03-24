@@ -13,7 +13,6 @@ import org.newdawn.slick.geom.Vector2f;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
 import de.tudarmstadt.informatik.fop.breakout.entities.Block;
-import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
 import eea.engine.component.render.ImageRenderComponent;
 
 /**
@@ -22,7 +21,7 @@ import eea.engine.component.render.ImageRenderComponent;
  * 
  * @author Marcel Geibel
  */
-public class MapReader implements GameParameters{
+public class MapReader implements GameParameters {
 
 	/**
 	 * Attributes
@@ -43,11 +42,11 @@ public class MapReader implements GameParameters{
 	public MapReader(String filepath) {
 		this.filePath = filepath;
 	}
-	
+
 	public String getMapString() {
 		return mapString;
 	}
-	
+
 	public ArrayList<Block> getMapAL() {
 		return mapAL;
 	}
@@ -77,7 +76,7 @@ public class MapReader implements GameParameters{
 	 * containing the blocks for the game
 	 * 
 	 * @return an ArrayList of the blocks in the game
-	 * @throws SlickException 
+	 * @throws SlickException
 	 */
 	public ArrayList<Block> toArrayList() throws SlickException {
 		String img = null;
@@ -97,7 +96,7 @@ public class MapReader implements GameParameters{
 			if (chars[i] != ',') {
 				currentNrOfBlocks++;
 				if (chars[i] != '0') {
-					Block newBlock = new Block("Block"+i, Integer.parseInt(String.valueOf(chars[i])));
+					Block newBlock = new Block("Block" + i, Integer.parseInt(String.valueOf(chars[i])));
 					if (chars[i] == '1')
 						img = BLOCK_1_IMAGE;
 					if (chars[i] == '2')
@@ -107,8 +106,9 @@ public class MapReader implements GameParameters{
 					if (chars[i] == '4')
 						img = BLOCK_4_IMAGE;
 					newBlock.addComponent(new ImageRenderComponent(new Image(img)));
-					newBlock.setPosition(new Vector2f(currentNrOfBlocks * newBlock.getSize().getX() - newBlock.getSize().getX() / 2,
-									currentNrOfRows * newBlock.getSize().getY() - newBlock.getSize().getY() / 2));
+					newBlock.setPosition(new Vector2f(
+							1 + currentNrOfBlocks * newBlock.getSize().getX() - newBlock.getSize().getX() / 2,
+							40 + currentNrOfRows * newBlock.getSize().getY() - newBlock.getSize().getY() / 2));
 					mapAL.add(newBlock);
 				}
 			}

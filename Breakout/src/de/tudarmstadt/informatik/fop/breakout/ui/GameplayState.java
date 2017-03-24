@@ -23,7 +23,6 @@ import de.tudarmstadt.informatik.fop.breakout.actions.BounceTopBallAction;
 import de.tudarmstadt.informatik.fop.breakout.actions.GameSwitchOff;
 import de.tudarmstadt.informatik.fop.breakout.actions.GameSwitchOn;
 import de.tudarmstadt.informatik.fop.breakout.actions.PauseAction;
-import de.tudarmstadt.informatik.fop.breakout.actions.PlayMusicAction;
 import de.tudarmstadt.informatik.fop.breakout.actions.PlaySoundAction;
 import de.tudarmstadt.informatik.fop.breakout.actions.RotationToMove;
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
@@ -42,6 +41,7 @@ import de.tudarmstadt.informatik.fop.breakout.factories.BorderFactory;
 import de.tudarmstadt.informatik.fop.breakout.factories.ItemFactory;
 import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
 import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntryAL;
+import de.tudarmstadt.informatik.fop.breakout.map.MapReader;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
 import eea.engine.action.basicactions.DestroyEntityAction;
@@ -53,14 +53,12 @@ import eea.engine.component.render.ImageRenderComponent;
 import eea.engine.entity.Entity;
 import eea.engine.entity.StateBasedEntityManager;
 import eea.engine.event.ANDEvent;
-import eea.engine.event.Event;
 import eea.engine.event.NOTEvent;
 import eea.engine.event.OREvent;
 import eea.engine.event.basicevents.KeyDownEvent;
 import eea.engine.event.basicevents.KeyPressedEvent;
 import eea.engine.event.basicevents.LeavingScreenEvent;
 import eea.engine.event.basicevents.LoopEvent;
-import de.tudarmstadt.informatik.fop.breakout.map.MapReader;
 
 /*
  * @Author Denis Andric

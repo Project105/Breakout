@@ -15,12 +15,14 @@ public interface IHighscoreEntry {
    * 
    * @return elapsed time
    */
-  public float getElapsedTime();
+  //changed return type from float to long
+  public long getElapsedTime();
 
   /**
    * Returns the calculated points
    * 
    * @return calculated points
    */
-  public double getPoints();
+  //changed return type from double to int
+  public int getPoints();
 }

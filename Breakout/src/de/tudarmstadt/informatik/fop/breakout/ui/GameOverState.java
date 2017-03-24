@@ -12,7 +12,6 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import de.tudarmstadt.informatik.fop.breakout.constants.GameParameters;
-import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntry;
 import de.tudarmstadt.informatik.fop.breakout.highscore.HighscoreEntryAL;
 import eea.engine.action.Action;
 import eea.engine.action.basicactions.ChangeStateAction;
@@ -60,7 +59,9 @@ public class GameOverState extends BasicGameState implements GameParameters {
 
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-
+		/*
+		 * Screen setup
+		 */
 		// Setting up background entity
 		Entity background = new Entity(BACKGROUND_ID);
 		// setting up position
@@ -123,8 +124,10 @@ public class GameOverState extends BasicGameState implements GameParameters {
 			arg2.drawString("Please enter your name:", 300, 200);
 			textField.render(arg0, arg2);
 
-		} else
+		} else {
 			arg2.drawString("Too bad, no new top 10 score for you!", 240, 200);
+			arg2.drawString("Press enter to continue...", 280, 320);
+		}
 		
 	}
 
@@ -132,9 +135,6 @@ public class GameOverState extends BasicGameState implements GameParameters {
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
 		entityManager.updateEntities(arg0, arg1, arg2);
 		textField.setFocus(true);
-		/*
-		 * Pulling file
-		 */
 		// pull highscore file
 		newHighscoreAL = new HighscoreEntryAL();
 		newHighscoreAL.readHighscore();

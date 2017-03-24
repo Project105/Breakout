@@ -38,7 +38,7 @@ public class AdapterExtended extends Adapter {
 	 *            time since starting the map/level
 	 */
 	public void addHighscore(String playerName, int numberOfDesBlocks, long elapsedTime) {
-		HighscoreEntry he = new HighscoreEntry(numberOfDesBlocks, (float) elapsedTime, numberOfDesBlocks * 15);
+		HighscoreEntry he = new HighscoreEntry(numberOfDesBlocks, elapsedTime, numberOfDesBlocks * 15);
 		he.setPlayerName(playerName);
 		al.readHighscore();
 		al.addHighscoreEntry(he);
@@ -112,7 +112,6 @@ public class AdapterExtended extends Adapter {
 	 */
 	public int getTimeElapsedAtHighscorePosition(int position) {
 		al.readHighscore();
-		
 		if (al.get(position) == null)
 			return -1;
 		else if(al.get(position).getPlayerName().equals("DummyName"))

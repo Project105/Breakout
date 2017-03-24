@@ -35,7 +35,7 @@ public class HighscoreEntryAL implements Serializable {
 	public HighscoreEntryAL() {
 		// initialize all elements with zero
 		for (int i = 0; i < 10; i++)
-			al.add(i, new HighscoreEntry(0, 0f, 0));
+			al.add(i, new HighscoreEntry(0, 0, 0));
 
 		// create highscore file
 		try {
@@ -43,8 +43,7 @@ public class HighscoreEntryAL implements Serializable {
 			if (!highscoreFile.exists()) {
 				highscoreFile.createNewFile();
 				writeHighscore();
-			}
-			else
+			} else
 				readHighscore();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -141,10 +140,13 @@ public class HighscoreEntryAL implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < 10; i++)
+		long time = 0;
+		for (int i = 0; i < 10; i++) {
+			time = al.get(i).getElapsedTime();
 			sb.append("Player: " + al.get(i).getPlayerName() + "  " + "Destroyed Blocks: "
-					+ al.get(i).getNumberOfDestroyedBlocks() + "  " + "Time: " + al.get(i).getElapsedTime() + "  "
-					+ "Points: " + (int) al.get(i).getPoints() + "\n");
+					+ al.get(i).getNumberOfDestroyedBlocks() + "  " + "Time:   " + (time / 1000) / 60 + ":"
+					+ (time / 1000) % 60 + ":" + time % 1000 + "  " + "Points: " + al.get(i).getPoints() + "\n");
+		}
 		return sb.toString();
 	}
 
@@ -161,24 +163,26 @@ public class HighscoreEntryAL implements Serializable {
 			if (al.get(i).getPlayerName().equals("DummyName"))
 				al.get(i).setPlayerName(name);
 	}
-	
+
 	/**
 	 * re-initializes the ArrayList with zero values
 	 */
 	public void reset() {
-		for(int i = 0; i < al.size(); i++)
-			al.set(i, new HighscoreEntry(0, 0f, 0));
+		for (int i = 0; i < al.size(); i++)
+			al.set(i, new HighscoreEntry(0, 0, 0));
 	}
-	
+
 	/**
 	 * Returns the HighscoreEntry at a given index
-	 * @param index the index of the element
+	 * 
+	 * @param index
+	 *            the index of the element
 	 * @return the HighscoreEntry at the index
 	 */
 	public HighscoreEntry get(int index) {
-		if((index > al.size() - 1) || index < 0)
+		if ((index > al.size() - 1) || index < 0)
 			return null;
-		else 
+		else
 			return al.get(index);
 	}
 

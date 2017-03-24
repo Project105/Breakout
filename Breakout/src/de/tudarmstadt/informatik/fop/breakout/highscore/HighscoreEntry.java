@@ -19,8 +19,8 @@ public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable
 	private static final long serialVersionUID = 1L;
 	private String playerName = null;
 	private int numberOfDestroyedBlocks = 0;
-	private float elapsedTime = 0;
-	private double points = 0;
+	private long elapsedTime = 0;
+	private int points = 0;
 
 	/**
 	 * Constructor
@@ -38,7 +38,7 @@ public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable
 	 * @param points
 	 *            the points scored in the game
 	 */
-	public HighscoreEntry(int blocks, float time, double points) {
+	public HighscoreEntry(int blocks, long time, int points) {
 		// sets the name to "DummyName" so the highscore can be found in the
 		// list easily and the name can be changed later, if the entry
 		// corresponds to a top 10 highscore
@@ -47,7 +47,7 @@ public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable
 		elapsedTime = time;
 		this.points = points;
 	}
-	public HighscoreEntry(int blocks, float time, double points, String name) {
+	public HighscoreEntry(int blocks, long time, int points, String name) {
 		numberOfDestroyedBlocks = blocks;
 		elapsedTime = time;
 		this.points = points;
@@ -64,12 +64,12 @@ public class HighscoreEntry implements IHighscoreEntry, Serializable, Comparable
 	}
 
 	@Override
-	public float getElapsedTime() {
+	public long getElapsedTime() {
 		return elapsedTime;
 	}
 
 	@Override
-	public double getPoints() {
+	public int getPoints() {
 		return points;
 	}
 
