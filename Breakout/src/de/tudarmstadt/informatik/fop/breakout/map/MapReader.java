@@ -61,8 +61,10 @@ public class MapReader implements GameParameters {
 		try {
 			file = new File(filePath);
 			inputReader = new BufferedReader(new FileReader(filePath));
-			for(int i = 0; i < 10; i++) {
-				mapSB.append(inputReader.readLine());
+			String content = inputReader.readLine();
+			while(content != null) {
+				mapSB.append(content);
+				content = inputReader.readLine();
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
